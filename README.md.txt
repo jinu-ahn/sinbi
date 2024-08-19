@@ -1,1 +1,1 @@
-init 테스트
+jira git
