@@ -15,18 +15,18 @@ public class VirtualAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @Column(name = "account_num")
+    @Column(name = "account_num", nullable = false)
     private String accountNum;
 
-    @Column(name = "bank_type")
+    @Column(name = "bank_type", nullable = false)
     private String bankType;
 
-    @Column(name = "amount")
+    @Column(name = "amount", nullable = false)
     private Long amount;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = false)
     private String userName;
 }

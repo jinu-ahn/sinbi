@@ -15,10 +15,10 @@ public class Receiver {
     @Column(name = "recv_id")
     private Long id;
 
-    @Column(name = "recv_name")
+    @Column(name = "recv_name", nullable = false)
     private String recvName;
 
-    @Column(name = "recv_account_num")
+    @Column(name = "recv_account_num", nullable = false)
     private String recvAccountNum;
 
     @Column(name = "recv_alias")

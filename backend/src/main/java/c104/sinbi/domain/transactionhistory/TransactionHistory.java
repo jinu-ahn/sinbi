@@ -14,18 +14,18 @@ public class TransactionHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "transaction_history_type")
+    @Column(name = "transaction_history_type", nullable = false)
     private String transactionHistoryType;
 
-    @Column(name = "recv_account_num")
+    @Column(name = "recv_account_num", nullable = false)
     private String recvAccountNum;
 
-    @Column(name = "recv_account_name")
+    @Column(name = "recv_account_name", nullable = false)
     private String recvAccountName;
 
-    @Column(name = "transfer_amount")
+    @Column(name = "transfer_amount", nullable = false)
     private String transferAmount;
 
-    @Column(name = "bank_type")
+    @Column(name = "bank_type", nullable = false)
     private String bankType;
 }
