@@ -1,5 +1,7 @@
 package c104.sinbi.domain.transactionhistory;
 
+import c104.sinbi.common.BaseTimeEntity;
+import c104.sinbi.common.constant.BankTypeEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class TransactionHistory {
+@AttributeOverride(name = "createdAt", column = @Column(name = "history_date"))
+public class TransactionHistory extends BaseTimeEntity {
 
     @Id
     @Column(name = "transaction_history_id")
@@ -26,6 +29,7 @@ public class TransactionHistory {
     @Column(name = "transfer_amount", nullable = false)
     private String transferAmount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "bank_type", nullable = false)
-    private String bankType;
+    private BankTypeEnum bankType;
 }

@@ -1,5 +1,6 @@
 package c104.sinbi.domain.virtualaccount;
 
+import c104.sinbi.common.constant.BankTypeEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,8 +19,9 @@ public class VirtualAccount {
     @Column(name = "account_num", nullable = false)
     private String accountNum;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "bank_type", nullable = false)
-    private String bankType;
+    private BankTypeEnum bankType;
 
     @Column(name = "amount", nullable = false)
     private Long amount;
