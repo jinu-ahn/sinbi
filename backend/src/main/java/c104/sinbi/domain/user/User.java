@@ -1,10 +1,15 @@
 package c104.sinbi.domain.user;
 
 import c104.sinbi.common.BaseTimeEntity;
+import c104.sinbi.domain.account.Account;
+import c104.sinbi.domain.receiver.Receiver;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,5 +33,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_face_id")
     private String userFaceId;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accountList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Receiver> receiverList = new ArrayList<>();
 }

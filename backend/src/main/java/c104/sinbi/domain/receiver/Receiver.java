@@ -1,5 +1,6 @@
 package c104.sinbi.domain.receiver;
 
+import c104.sinbi.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,4 +24,8 @@ public class Receiver {
 
     @Column(name = "recv_alias")
     private String recvAlias;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

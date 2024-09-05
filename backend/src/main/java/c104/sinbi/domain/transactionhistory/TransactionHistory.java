@@ -2,6 +2,7 @@ package c104.sinbi.domain.transactionhistory;
 
 import c104.sinbi.common.BaseTimeEntity;
 import c104.sinbi.common.constant.BankTypeEnum;
+import c104.sinbi.domain.account.Account;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +33,8 @@ public class TransactionHistory extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "bank_type", nullable = false)
     private BankTypeEnum bankType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 }
