@@ -3,10 +3,13 @@ package c104.sinbi.common.api.sms.service;
 import c104.sinbi.common.api.sms.dto.CoolSmsRequestDto;
 import c104.sinbi.common.api.sms.dto.SmsVerifyDto;
 import c104.sinbi.common.api.sms.repository.SmsRepository;
+import c104.sinbi.common.exception.UserAlreadyExistsException;
 import c104.sinbi.domain.user.User;
 import c104.sinbi.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +25,8 @@ public class CoolSmsService {
         String phoneNum = smsRequestDto.getPhoneNum(); // SmsRequestDto에서 전화번호를 가져옴
 
         // 데이터베이스에서 해당 번호가 이미 가입된 번호인지 확인
-        User existingUser = userRepository.findByUserPhone(phoneNum);
-
-        if (existingUser != null) { // 이미 가입된 번호일 경우 예외 처리
-            throw new IllegalArgumentException("이미 가입된 번호입니다.");
-        }
+        userRepository.findByUserPhone(phoneNum)
+                .orElseThrow(() -> new UserAlreadyExistsException());
 
         String certificationCode = Integer.toString((int)(Math.random() * (9999 - 1000 + 1)) + 1000); // 4자리 인증 코드 생성
         smsCertificationUtil.sendSMS(phoneNum, certificationCode); // SMS 전송

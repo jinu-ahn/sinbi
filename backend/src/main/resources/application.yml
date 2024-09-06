@@ -15,9 +15,3 @@ management:
     web:
       exposure:
         include: refresh
-
-coolsms:
-  api:
-    key: 'NCSEGEPZZWGKUQRK'
-    secret: 'SFVG9A8EBZIU3NEWBUXKXAZNXKVETTKS'
-    fromnumber: '01050393094'
