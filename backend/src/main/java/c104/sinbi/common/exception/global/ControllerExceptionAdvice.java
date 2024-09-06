@@ -1,7 +1,9 @@
 package c104.sinbi.common.exception.global;
 
 import c104.sinbi.common.ApiResponse;
+import c104.sinbi.common.exception.JsonFormatException;
 import c104.sinbi.common.exception.UserAlreadyExistsException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,5 +24,10 @@ public class ControllerExceptionAdvice {
     public ResponseEntity<ApiResponse<?>> handleException(Exception e) {
         // 상태 메시지를 예외 메시지로 설정하고 반환
         return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(JsonFormatException.class)
+    public ResponseEntity<ApiResponse<?>> handleJsonFormatException(JsonFormatException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 }
