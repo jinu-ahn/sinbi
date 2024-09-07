@@ -1,6 +1,9 @@
 package c104.sinbi.common.api.kakao.service;
 
+import c104.sinbi.common.config.s3.S3Uploader;
+import c104.sinbi.common.constant.ErrorCode;
 import c104.sinbi.common.exception.JsonFormatException;
+import c104.sinbi.common.exception.S3Exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.*;
@@ -26,12 +30,18 @@ import java.util.Map;
 public class KakaoFaceAuthenticationService {
     private final String URL = "https://open-api.kakaopay.com/face-recognition/face/compare";
     private final String AUTHORIZATION = "Authorization";
+
+    private final S3Uploader s3Uploader;
     @Value("${kakao.secret}")
     private String kakaoSecret;
 
-    public boolean faceAuthentication() throws IOException {
+    public boolean faceAuthentication(final MultipartFile multiPartFile) throws IOException {
+        if(multiPartFile.isEmpty()) throw new S3Exception(ErrorCode.NOT_FOUND_FILE.getMessage());
+
+        String profileImgPath = s3Uploader.imgPath();
+
         String userImageEncoded = encodeImageToBase64("https://i.namu.wiki/i/ONcLgrWoMFF1zeMYycpI71RmUfOhOlg5pUc9Y3cSazULzBRUVH-ToXNviLKUZPa19kIuwJG8LOQLc1bp2xxCzQ.webp");
-        String cameraImageEncoded = encodeImageToBase64("https://mblogthumb-phinf.pstatic.net/MjAyMDExMjBfMjQ1/MDAxNjA1ODQyMzY4MTY4.7dUKXWpqLVAK_LuZ2mK6njYzLydToQ6ntHxWyU6AP5Ag.e_xwhfbhg-fHeyDRk8isytDBaEQLsRVa9miduzxVGEgg.JPEG.fanclub200/Anne-Hathaway.jpg?type=w800");
+        String cameraImageEncoded = encodeImageToBase64(s3Uploader.putS3(multiPartFile, profileImgPath));
 
         // 각각의 이미지 데이터를 담을 Map 생성
         Map<String, Object> image1Data = new HashMap<>();
