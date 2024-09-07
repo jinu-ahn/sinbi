@@ -38,10 +38,8 @@ public class KakaoFaceAuthenticationService {
     public boolean faceAuthentication(final MultipartFile multiPartFile) throws IOException {
         if(multiPartFile.isEmpty()) throw new S3Exception(ErrorCode.NOT_FOUND_FILE.getMessage());
 
-        String profileImgPath = s3Uploader.imgPath();
-
         String userImageEncoded = encodeImageToBase64("https://i.namu.wiki/i/ONcLgrWoMFF1zeMYycpI71RmUfOhOlg5pUc9Y3cSazULzBRUVH-ToXNviLKUZPa19kIuwJG8LOQLc1bp2xxCzQ.webp");
-        String cameraImageEncoded = encodeImageToBase64(s3Uploader.putS3(multiPartFile, profileImgPath));
+        String cameraImageEncoded = encodeImageToBase64(s3Uploader.putS3(multiPartFile));
 
         // 각각의 이미지 데이터를 담을 Map 생성
         Map<String, Object> image1Data = new HashMap<>();
