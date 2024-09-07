@@ -55,7 +55,10 @@ public class S3Uploader {
     }
 
     public void deleteS3(String path) {
-        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, path));
+        String splitStr = ".com/";
+        String fileName = path.substring(path.lastIndexOf(splitStr) + splitStr.length());
+
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
 
 }

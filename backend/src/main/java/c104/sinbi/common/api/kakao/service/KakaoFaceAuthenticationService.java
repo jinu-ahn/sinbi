@@ -39,14 +39,17 @@ public class KakaoFaceAuthenticationService {
         if(multiPartFile.isEmpty()) throw new S3Exception(ErrorCode.NOT_FOUND_FILE.getMessage());
 
         String userImageEncoded = encodeImageToBase64("https://i.namu.wiki/i/ONcLgrWoMFF1zeMYycpI71RmUfOhOlg5pUc9Y3cSazULzBRUVH-ToXNviLKUZPa19kIuwJG8LOQLc1bp2xxCzQ.webp");
-        String cameraImageEncoded = encodeImageToBase64(s3Uploader.putS3(multiPartFile));
+        String requestImageToS3 = s3Uploader.putS3(multiPartFile);
+        log.info(requestImageToS3);
+        String requestImage = encodeImageToBase64(requestImageToS3);
+        s3Uploader.deleteS3(requestImageToS3);// S3 이미지 삭제
 
         // 각각의 이미지 데이터를 담을 Map 생성
         Map<String, Object> image1Data = new HashMap<>();
         image1Data.put("data", userImageEncoded);
 
         Map<String, Object> image2Data = new HashMap<>();
-        image2Data.put("data", cameraImageEncoded);
+        image2Data.put("data", requestImage);
 
         // 최종적으로 body에 담을 데이터를 구성
         Map<String, Object> bodyData = new HashMap<>();
@@ -62,7 +65,6 @@ public class KakaoFaceAuthenticationService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response);
