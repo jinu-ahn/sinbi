@@ -1,5 +1,7 @@
 package c104.sinbi.common;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Data;
 
@@ -30,5 +32,18 @@ public class ApiResponse<T> {
         return ApiResponse.<T>builder()
                 .status(message)   // 메시지를 status로 설정
                 .build();
+    }
+
+    /**
+     * Json 형태로 반환
+     * @return
+     */
+    public String toJson() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "{}";
+        }
     }
 }
