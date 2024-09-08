@@ -18,7 +18,7 @@ public class SignUpDto {
     private String userName;
 
     @NotNull
-    @Pattern(regexp = "/^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/", message = "전화번호는 01012345678 형식으로 작성해 주세요")
+    @Pattern(regexp = "^\\d{2,3}\\d{3,4}\\d{4}$", message = "전화번호는 01012345678 형식으로 작성해 주세요")
     private String userPhone;
 
     @NotNull
