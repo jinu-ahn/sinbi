@@ -5,18 +5,21 @@ import c104.sinbi.domain.account.Account;
 import c104.sinbi.domain.receiver.Receiver;
 import c104.sinbi.domain.user.dto.SignUpDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseTimeEntity {
+public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
     @Column(name = "user_id")
@@ -35,11 +38,15 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_face_id")
     private String userFaceId;
 
+    @ElementCollection
+    private List<String> roles;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Account> accountList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Receiver> receiverList = new ArrayList<>();
+
 
     @Builder
     public User(SignUpDto signUpDto, String encodedPassword, String convertImageUrl) {
@@ -48,5 +55,23 @@ public class User extends BaseTimeEntity {
         this.userPassword = encodedPassword;
         if(convertImageUrl != null)
             this.userFaceId = convertImageUrl;
+        this.roles = Collections.singletonList("USER");
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getPassword() {
+        return this.userPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userPhone;
     }
 }
