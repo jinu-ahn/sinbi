@@ -1,4 +1,4 @@
-package c104.sinbi.common.api.kakao.service;
+package c104.sinbi.common.util;
 
 import c104.sinbi.common.config.s3.S3Uploader;
 import c104.sinbi.common.constant.ErrorCode;
@@ -27,7 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class KakaoFaceAuthenticationService {
+public class KakaoFaceAuthenticationUtil {
     private final String URL = "https://open-api.kakaopay.com/face-recognition/face/compare";
     private final String AUTHORIZATION = "Authorization";
 
@@ -35,10 +35,10 @@ public class KakaoFaceAuthenticationService {
     @Value("${kakao.secret}")
     private String kakaoSecret;
 
-    public boolean faceAuthentication(final MultipartFile multiPartFile) throws IOException {
+    public boolean faceAuthentication(final String userImage, final MultipartFile multiPartFile) throws IOException {
         if(multiPartFile.isEmpty()) throw new S3Exception(ErrorCode.NOT_FOUND_FILE.getMessage());
 
-        String userImageEncoded = encodeImageToBase64("https://i.namu.wiki/i/ONcLgrWoMFF1zeMYycpI71RmUfOhOlg5pUc9Y3cSazULzBRUVH-ToXNviLKUZPa19kIuwJG8LOQLc1bp2xxCzQ.webp");
+        String userImageEncoded = encodeImageToBase64(userImage);
         String requestImageToS3 = s3Uploader.putS3(multiPartFile);
         log.info(requestImageToS3);
         String requestImage = encodeImageToBase64(requestImageToS3);
