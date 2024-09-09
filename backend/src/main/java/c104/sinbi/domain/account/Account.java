@@ -43,4 +43,13 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    // 새로운 생성자 추가
+    public Account(String accountNum, BankTypeEnum bankType, Long amount, String productName, String userName) {
+        this.accountNum = accountNum;
+        this.bankType = bankType;
+        this.amount = amount;
+        this.productName = productName;
+        this.userName = userName;
+    }
 }
