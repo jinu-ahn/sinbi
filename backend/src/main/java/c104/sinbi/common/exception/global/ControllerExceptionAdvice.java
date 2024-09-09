@@ -1,9 +1,7 @@
 package c104.sinbi.common.exception.global;
 
 import c104.sinbi.common.ApiResponse;
-import c104.sinbi.common.exception.AccountNotFoundException;
-import c104.sinbi.common.exception.JsonFormatException;
-import c104.sinbi.common.exception.UserAlreadyExistsException;
+import c104.sinbi.common.exception.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +35,17 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> handleAccountNotFoundException(AccountNotFoundException e) {
         return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    // ReceiverSaveFailedException 처리
+    @ExceptionHandler(ReceiverSaveFailedException.class)
+    public ResponseEntity<ApiResponse<?>> handleReceiverSaveFailedException(ReceiverSaveFailedException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // ReceiverAlreadyExistsException 처리 (추가된 부분)
+    @ExceptionHandler(ReceiverAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<?>> handleReceiverAlreadyExistsException(ReceiverAlreadyExistsException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.CONFLICT);  // 충돌 상태로 반환
     }
 }
