@@ -3,8 +3,10 @@ package c104.sinbi.domain.user;
 import c104.sinbi.common.BaseTimeEntity;
 import c104.sinbi.domain.account.Account;
 import c104.sinbi.domain.receiver.Receiver;
+import c104.sinbi.domain.user.dto.SignUpDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,4 +40,13 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Receiver> receiverList = new ArrayList<>();
+
+    @Builder
+    public User(SignUpDto signUpDto, String encodedPassword, String convertImageUrl) {
+        this.userName = signUpDto.getUserName();
+        this.userPhone = signUpDto.getUserPhone();
+        this.userPassword = encodedPassword;
+        if(convertImageUrl != null)
+            this.userFaceId = convertImageUrl;
+    }
 }
