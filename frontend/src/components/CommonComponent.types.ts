@@ -7,4 +7,6 @@ export interface YellowBoxProps {
 
 export interface YellowButtonProps {
     children: ReactNode;
+    height: number;
+    width: number;
 }
