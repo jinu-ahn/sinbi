@@ -9,9 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Your App Name',
-        short_name: 'App',
-        description: 'Your app description',
+        name: 'Shinbi',
+        short_name: 'Shinbi',
+        description: 'Mobile Banking App for Seniors',
         theme_color: '#ffffff',
         icons: [
           {
