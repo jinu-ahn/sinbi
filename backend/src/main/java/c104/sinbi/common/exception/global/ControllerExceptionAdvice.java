@@ -1,9 +1,8 @@
 package c104.sinbi.common.exception.global;
 
 import c104.sinbi.common.ApiResponse;
-import c104.sinbi.common.exception.AccountNotFoundException;
-import c104.sinbi.common.exception.JsonFormatException;
-import c104.sinbi.common.exception.UserAlreadyExistsException;
+import c104.sinbi.common.constant.ErrorCode;
+import c104.sinbi.common.exception.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +36,15 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> handleAccountNotFoundException(AccountNotFoundException e) {
         return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleUserNotFoundException(UserNotFoundException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FaceAuthenticationException.class)
+    public ResponseEntity<ApiResponse<?>> handleFaceAuthenticationException(FaceAuthenticationException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getErrorCode().getMessage()), e.getErrorCode().getStatus());
     }
 }

@@ -21,8 +21,9 @@ public enum ErrorCode {
     WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 타입의 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.FORBIDDEN, "지원되지 않는 토큰입니다."),
-    DISCREPANCY_EXCEPTION(HttpStatus.FORBIDDEN,"얼굴인증에 실패하였습니다."),
-    NOT_FOUND_PHONE_NUMBER(HttpStatus.NOT_FOUND,"휴대전화 번호를 찾을 수 없습니다.");
+    DISCREPANCY_EXCEPTION(HttpStatus.FORBIDDEN,"얼굴이 일치하지 않습니다."),
+    NOT_FOUND_PHONE_NUMBER(HttpStatus.NOT_FOUND,"휴대전화 번호를 찾을 수 없습니다."),
+    FACE_AUTHENTICATION_IO_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"입출력 오류로 인해 얼굴 인증에 실패했습니다.");
 
     private HttpStatus status;
     private String message;
