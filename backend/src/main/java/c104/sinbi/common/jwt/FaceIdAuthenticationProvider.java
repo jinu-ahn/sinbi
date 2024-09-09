@@ -55,6 +55,6 @@ public class FaceIdAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return FaceIdAuthenticationToken.class.isAssignableFrom(authentication);
+        return true;
     }
 }
