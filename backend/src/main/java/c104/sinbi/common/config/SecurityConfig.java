@@ -3,13 +3,19 @@ package c104.sinbi.common.config;
 import c104.sinbi.common.jwt.*;
 import c104.sinbi.common.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -20,6 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * 작성자 : jingu
@@ -29,10 +36,12 @@ import java.util.Collections;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
-public class SecurityConfig {
+@Slf4j
+public class SecurityConfig{
     private final TokenProvider tokenProvider;
     private final RedisUtil redisUtil;
-
+    private final UserDetailsService userDetailsService;
+    private final FaceIdAuthenticationProvider faceIdAuthenticationProvider;
     private final String[] PERMIT_ALL_ARRAY = { // 허용할 API
             "/user/signup", "/user/login","/**"
     };
@@ -69,7 +78,7 @@ public class SecurityConfig {
                         // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
-
+                .authenticationManager(authenticationManager(http))
                 // UsernamePasswordAuthenticationFilter 전에 AuthenticationFilter 추가
                 .addFilterBefore(new AuthenticationFilter(tokenProvider, redisUtil), UsernamePasswordAuthenticationFilter.class)
                 // AuthenticationFilter 전에 JwtExceptionFilter 추가
@@ -120,5 +129,25 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    /**
+     * 기존 비밀번호 인증 시 UsernamePasswordAuthenticationToekn에서 비밀번호 인코딩
+     * @return
+     */
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder()); // 기존 비밀번호 인증용
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(faceIdAuthenticationProvider)
+                .authenticationProvider(daoAuthenticationProvider())
+                .build();
     }
 }

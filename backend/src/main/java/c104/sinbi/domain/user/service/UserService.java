@@ -1,9 +1,9 @@
 package c104.sinbi.domain.user.service;
 
+import c104.sinbi.common.jwt.FaceIdAuthenticationProvider;
 import c104.sinbi.common.util.KakaoFaceAuthenticationUtil;
 import c104.sinbi.common.config.s3.S3Uploader;
 import c104.sinbi.common.constant.ErrorCode;
-import c104.sinbi.common.exception.DiscrepancyException;
 import c104.sinbi.common.exception.UserAlreadyExistsException;
 import c104.sinbi.common.jwt.TokenProvider;
 import c104.sinbi.common.util.RedisUtil;
@@ -39,6 +39,7 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final RedisUtil redisUtil;
     private final KakaoFaceAuthenticationUtil authenticationUtil;
+    private final FaceIdAuthenticationProvider faceIdAuthenticationProvider;
 
     @Transactional
     public void signup(@Valid final SignUpDto signUpDto, final MultipartFile multiPartFile) {
@@ -65,17 +66,16 @@ public class UserService {
         User user = userRepository.findByUserPhone(requestDto.getPhone()).orElseThrow(
                 () -> new UserAlreadyExistsException(ErrorCode.NOT_FOUND_PHONE_NUMBER)
         );
-        UsernamePasswordAuthenticationToken authenticationToken;
-        if(!multipartFile.isEmpty()) {
-            if(authenticationUtil.faceAuthentication(user.getUserFaceId(),multipartFile))
-                authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getPhone(), user.getUserFaceId());
-            else {
-                throw new DiscrepancyException(ErrorCode.DISCREPANCY_EXCEPTION);
-            }
-        }else {
+        Authentication authenticationToken;
+        Authentication authentication;
+        if (!multipartFile.isEmpty()) {
+            authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getPhone(), multipartFile);
+            authentication = faceIdAuthenticationProvider.authenticate(authenticationToken);
+        } else {
+            // 비밀번호로 인증 시도
             authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getPhone(), requestDto.getPassword());
+            authentication = managerBuilder.getObject().authenticate(authenticationToken);
         }
-        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
         TokenDto tokenDto = tokenProvider.generateToken(authentication);
         tokenToHeader(tokenDto, response);
 
