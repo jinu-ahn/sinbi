@@ -44,4 +44,12 @@ public class AccountController {
         List<TransactionHistoryResponse> transactionHistory = accountService.getDetailAccount(accountId);
         return ResponseEntity.ok(ApiResponse.success(transactionHistory,"거래 내역 불러오기에 성공하였습니다."));
     }
+
+    //계좌 삭제
+    @DeleteMapping("/{accountId}")
+    @Operation(summary = "계좌 삭제", description = "특정 계좌를 삭제하는 API입니다.")
+    public ResponseEntity<ApiResponse<?>> deleteAccount(@PathVariable Long accountId) {
+        accountService.deleteAccount(accountId);
+        return ResponseEntity.ok(ApiResponse.success("계좌 삭제에 성공 했습니다."));
+    }
 }

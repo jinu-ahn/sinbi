@@ -6,6 +6,7 @@ import c104.sinbi.domain.account.Account;
 import c104.sinbi.domain.account.dto.AccountCreateRequest;
 import c104.sinbi.domain.account.dto.GetAccountListResponse;
 import c104.sinbi.domain.account.repository.AccountRepository;
+import c104.sinbi.domain.receiver.Receiver;
 import c104.sinbi.domain.transactionhistory.TransactionHistory;
 import c104.sinbi.domain.transactionhistory.dto.TransactionHistoryResponse;
 import c104.sinbi.domain.transactionhistory.repository.TransactionHistoryRepository;
@@ -82,5 +83,13 @@ public class AccountService {
                         account.getBankType(),
                         account.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 )).collect(Collectors.toList());
+    }
+
+    //계좌 삭제
+    @Transactional
+    public void deleteAccount(Long accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException());
+        accountRepository.delete(account);
     }
 }
