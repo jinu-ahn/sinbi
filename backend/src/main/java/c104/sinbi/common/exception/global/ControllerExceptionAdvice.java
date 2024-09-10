@@ -1,12 +1,9 @@
 package c104.sinbi.common.exception.global;
 
 import c104.sinbi.common.ApiResponse;
-import c104.sinbi.common.constant.ErrorCode;
 import c104.sinbi.common.exception.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -46,5 +43,17 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(FaceAuthenticationException.class)
     public ResponseEntity<ApiResponse<?>> handleFaceAuthenticationException(FaceAuthenticationException e) {
         return new ResponseEntity<>(ApiResponse.error(e.getErrorCode().getMessage()), e.getErrorCode().getStatus());
+    }
+
+    // ReceiverSaveFailedException 처리
+    @ExceptionHandler(ReceiverSaveFailedException.class)
+    public ResponseEntity<ApiResponse<?>> handleReceiverSaveFailedException(ReceiverSaveFailedException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // ReceiverAlreadyExistsException 처리 (추가된 부분)
+    @ExceptionHandler(ReceiverAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<?>> handleReceiverAlreadyExistsException(ReceiverAlreadyExistsException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.CONFLICT);  // 충돌 상태로 반환
     }
 }
