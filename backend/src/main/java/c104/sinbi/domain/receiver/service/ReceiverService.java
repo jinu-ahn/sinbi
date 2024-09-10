@@ -55,6 +55,11 @@ public class ReceiverService {
     //자주 사용할 계좌 목록 보기
     public List<ReceiverAccountListResponse> receiverAccountList(Long userId) {
         List<Receiver> receiverList = receiverRepository.findByUserId(userId);
+
+        if(receiverList.isEmpty()) {
+            throw new AccountNotFoundException();
+        }
+
         return receiverList.stream()
                 .map(receiver -> new ReceiverAccountListResponse(
                         receiver.getId(),
