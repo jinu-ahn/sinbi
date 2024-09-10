@@ -10,3 +10,9 @@ export interface YellowButtonProps {
     height: number;
     width: number;
 }
+
+export interface BoldTextProps {
+  text: string;
+  boldChars: string[];
+  textSize?: string;
+}
