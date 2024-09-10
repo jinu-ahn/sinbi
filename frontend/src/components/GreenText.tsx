@@ -25,7 +25,7 @@ const GreenText: React.FC<BoldTextProps> = ({ text, boldChars, textSize = "text-
     });
   };
 
-  return <div className={`text-center ${textSize}`}>{renderTextWithBold()}</div>;
+  return <div className={`text-center ${textSize} m-2 p-2`}>{renderTextWithBold()}</div>;
 };
 
 export default GreenText;
