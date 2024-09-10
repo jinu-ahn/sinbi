@@ -1,17 +1,26 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "regenerator-runtime/runtime";
 import "./App.css";
-import YellowBox from "./components/YellowBox";
-import YellowButton from "./components/YellowButton";
+import VoiceCommandPage from "./VoiceCommand";
+import Transfer from "./transfer";
+import Home from "./home";
 
 function App() {
   return (
-    <div className="bg-white flex flex-col items-center justify-center h-screen">
-      <YellowBox>
-        <p>hello</p>
-        <input type="text" placeholder="Enter something here" />
-      </YellowBox>
-      <YellowButton height={70} width={80}>
-        <p className="font-bold">계좌 등록</p>
-      </YellowButton>
+    <div>
+    <Router>
+      {/* VoiceCommandPage is now within the Router */}
+      <VoiceCommandPage />
+
+      {/* Define your routes */}
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        {/* Transfer Page Route */}
+        <Route path="/transfer" element={<Transfer />} />
+
+        {/* Add other routes as needed */}
+      </Routes>
+    </Router>
     </div>
   );
 }
