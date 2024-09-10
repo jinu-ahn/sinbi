@@ -53,7 +53,7 @@ public class ReceiverService {
     }
 
     //자주 사용할 계좌 목록 보기
-    public List<ReceiverAccountListResponse> receiverAccountList(Integer userId) {
+    public List<ReceiverAccountListResponse> receiverAccountList(Long userId) {
         List<Receiver> receiverList = receiverRepository.findByUserId(userId);
         return receiverList.stream()
                 .map(receiver -> new ReceiverAccountListResponse(
@@ -63,5 +63,13 @@ public class ReceiverService {
                         receiver.getBankTypeEnum(),
                         receiver.getRecvAlias()
                 )).collect(Collectors.toList());
+    }
+
+    //자주 사용할 계좌 삭제
+    @Transactional
+    public void deleteReceiverAccount(Long receiverId) {
+        Receiver receiver = receiverRepository.findById(receiverId)
+                .orElseThrow(() -> new AccountNotFoundException());
+        receiverRepository.delete(receiver);
     }
 }

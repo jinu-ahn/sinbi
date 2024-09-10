@@ -12,5 +12,8 @@ public interface ReceiverRepository extends JpaRepository<Receiver, Long> {
     Optional<Receiver> findByRecvAccountNumAndBankTypeEnum(String accountNum, BankTypeEnum bankTypeEnum);
 
     //자주 사용할 계좌 목록 보기
-    List<Receiver> findByUserId(Integer userId);
+    List<Receiver> findByUserId(Long userId);
+    
+    //자주 사용할 계좌 찾기
+    Optional<Receiver> findById(Long recvId);
 }
