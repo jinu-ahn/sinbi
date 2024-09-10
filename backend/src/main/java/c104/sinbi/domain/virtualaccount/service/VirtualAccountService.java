@@ -19,12 +19,9 @@ public class VirtualAccountService {
 
     //상대방 계좌 조회
     public void VirtualAccountCheck(VirtualAccountCheckRequest virtualAccountCheckRequest) {
-        Optional<VirtualAccount> virtualAccountCheck = virtualAccountRepository.findByAccountNumAndBankType(
+        virtualAccountRepository.findByAccountNumAndBankType(
                 virtualAccountCheckRequest.getAccountNum(),
-                virtualAccountCheckRequest.getBankTypeEnum());
-
-        if (virtualAccountCheck.isEmpty()) {
-            throw new AccountNotFoundException();
-        }
+                virtualAccountCheckRequest.getBankTypeEnum())
+                .orElseThrow(() -> new AccountNotFoundException());
     }
 }

@@ -23,24 +23,19 @@ public class AccountService {
     //계좌 등록
     @Transactional
     public void create(AccountCreateRequest accountCreateRequest) {
-        Optional<VirtualAccount> createAccount = virtualAccountRepository.findByAccountNumAndBankType(
+        VirtualAccount virtualAccount = virtualAccountRepository.findByAccountNumAndBankType(
                 accountCreateRequest.getAccountNum(),
-                accountCreateRequest.getBankType());
+                accountCreateRequest.getBankType())
+                .orElseThrow(() -> new AccountNotFoundException());
 
-        if(createAccount.isPresent()) {
-            VirtualAccount virtualAccount = createAccount.get();
+        Account newCreateDto = new Account(
+                virtualAccount.getAccountNum(),
+                virtualAccount.getBankType(),
+                virtualAccount.getAmount(),
+                virtualAccount.getProductName(),
+                virtualAccount.getUserName()
+        );
 
-            Account newCreateDto = new Account(
-                    virtualAccount.getAccountNum(),
-                    virtualAccount.getBankType(),
-                    virtualAccount.getAmount(),
-                    virtualAccount.getProductName(),
-                    virtualAccount.getUserName()
-            );
-
-            accountRepository.save(newCreateDto);
-        }else{
-            throw new AccountNotFoundException();
-        }
+        accountRepository.save(newCreateDto);
     }
 }

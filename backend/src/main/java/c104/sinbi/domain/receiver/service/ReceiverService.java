@@ -26,15 +26,10 @@ public class ReceiverService {
     @Transactional
     public void ReceiverAccountRegistration(ReceiverRegistrationRequest receiverRegistrationRequest){
         // 가상계좌 테이블에 계좌가 존재하는지 확인
-        Optional<VirtualAccount> existingAccount = virtualAccountRepository.findByAccountNumAndBankType(
+        virtualAccountRepository.findByAccountNumAndBankType(
                 receiverRegistrationRequest.getAccountNum(),
                 receiverRegistrationRequest.getBankTypeEnum()
-        );
-
-        // 가상계좌에 해당 계좌가 없으면 AccountNotFoundException 예외 발생
-        if (existingAccount.isEmpty()) {
-            throw new AccountNotFoundException();
-        }
+        ).orElseThrow(() -> new AccountNotFoundException());
 
         Optional<Receiver> existingReceiver = receiverRepository.findByRecvAccountNumAndBankTypeEnum(
                 receiverRegistrationRequest.getAccountNum(),
@@ -53,10 +48,6 @@ public class ReceiverService {
                 receiverRegistrationRequest.getRecvAlias()
         );
 
-        Receiver savedReceiver = receiverRepository.save(receiver);
-
-        if (savedReceiver == null) {
-            throw new ReceiverSaveFailedException();
-        }
+        receiverRepository.save(receiver);
     }
 }
