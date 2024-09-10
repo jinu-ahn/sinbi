@@ -2,6 +2,7 @@ import "./App.css";
 import YellowBox from "./components/YellowBox";
 import YellowButton from "./components/YellowButton";
 import GreenText from "./components/GreenText";
+import SpeechBubble from "./components/SpeechBubble";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         boldChars={["인증번호", "문자"]}
         textSize="text-[24px]"
       ></GreenText>
+      <SpeechBubble></SpeechBubble>
     </div>
   );
 }
