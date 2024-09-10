@@ -2,17 +2,18 @@ package c104.sinbi.domain.receiver.service;
 
 import c104.sinbi.common.exception.AccountNotFoundException;
 import c104.sinbi.common.exception.ReceiverAlreadyExistsException;
-import c104.sinbi.common.exception.ReceiverSaveFailedException;
 import c104.sinbi.domain.receiver.Receiver;
+import c104.sinbi.domain.receiver.dto.ReceiverAccountListResponse;
 import c104.sinbi.domain.receiver.dto.ReceiverRegistrationRequest;
 import c104.sinbi.domain.receiver.repository.ReceiverRepository;
-import c104.sinbi.domain.virtualaccount.VirtualAccount;
 import c104.sinbi.domain.virtualaccount.repository.VirtualAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class ReceiverService {
 
     //자주 사용할 계좌 등록
     @Transactional
-    public void ReceiverAccountRegistration(ReceiverRegistrationRequest receiverRegistrationRequest){
+    public void ReceiverAccountRegistration(ReceiverRegistrationRequest receiverRegistrationRequest) {
         // 가상계좌 테이블에 계좌가 존재하는지 확인
         virtualAccountRepository.findByAccountNumAndBankType(
                 receiverRegistrationRequest.getAccountNum(),
@@ -49,5 +50,26 @@ public class ReceiverService {
         );
 
         receiverRepository.save(receiver);
+    }
+
+    //자주 사용할 계좌 목록 보기
+    public List<ReceiverAccountListResponse> receiverAccountList(Long userId) {
+        List<Receiver> receiverList = receiverRepository.findByUserId(userId);
+        return receiverList.stream()
+                .map(receiver -> new ReceiverAccountListResponse(
+                        receiver.getId(),
+                        receiver.getRecvAccountNum(),
+                        receiver.getRecvName(),
+                        receiver.getBankTypeEnum(),
+                        receiver.getRecvAlias()
+                )).collect(Collectors.toList());
+    }
+
+    //자주 사용할 계좌 삭제
+    @Transactional
+    public void deleteReceiverAccount(Long receiverId) {
+        Receiver receiver = receiverRepository.findById(receiverId)
+                .orElseThrow(() -> new AccountNotFoundException());
+        receiverRepository.delete(receiver);
     }
 }

@@ -23,6 +23,7 @@ public class Receiver {
     @Column(name = "recv_account_num", nullable = false)
     private String recvAccountNum;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "bank_type", nullable = false)
     private BankTypeEnum bankTypeEnum;
 
