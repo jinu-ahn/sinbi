@@ -5,6 +5,7 @@ import c104.sinbi.domain.account.Account;
 import c104.sinbi.domain.account.dto.AccountCreateRequest;
 import c104.sinbi.domain.account.dto.GetAccountListResponse;
 import c104.sinbi.domain.account.service.AccountService;
+import c104.sinbi.domain.transactionhistory.dto.TransactionHistoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,12 @@ public class AccountController {
     public ResponseEntity<ApiResponse<?>> getAccounts(@RequestParam Long userId) {
         List<GetAccountListResponse> getAccountList= accountService.getAccountList(userId);
         return ResponseEntity.ok(ApiResponse.success(getAccountList,"계좌 목록 불러오기에 성공하였습니다."));
+    }
+
+    //계좌 상세 조회
+    @GetMapping("/{accountId}")
+    public ResponseEntity<ApiResponse<?>> getDetailAccount(@PathVariable Long accountId) {
+        List<TransactionHistoryResponse> transactionHistory = accountService.getDetailAccount(accountId);
+        return ResponseEntity.ok(ApiResponse.success(transactionHistory,"거래 내역 블러오기에 성공하였습니다."));
     }
 }
