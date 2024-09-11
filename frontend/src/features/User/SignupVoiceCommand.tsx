@@ -39,7 +39,7 @@ const SignupVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("시작 화면") ||
       lowerCaseTranscript.includes("처음")
     ) {
-      navigate("/home");
+      navigate("/");
       resetTranscript();
     }
   };
