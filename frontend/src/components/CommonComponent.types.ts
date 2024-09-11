@@ -11,3 +11,9 @@ export interface YellowButtonProps {
     width: number;
     onClick: () => void;
 }
+
+export interface BoldTextProps {
+  text: string;
+  boldChars: string[];
+  textSize?: string;
+}

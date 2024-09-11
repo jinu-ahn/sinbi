@@ -1,7 +1,5 @@
 import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import "./App.css";
-// import YellowBox from "./components/YellowBox";
-// import YellowButton from "./components/YellowButton";
 import MainPage from "./features/MainPage/MainPage";
 
 // function App() {
