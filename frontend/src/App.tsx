@@ -1,14 +1,14 @@
-import "./App.css";
 import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
-import SignUp from "./features/User/SignupPage";
+import "./App.css";
+import MainPage from "./features/MainPage/MainPage";
 
-function App() {
+// function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div>
-        <SignUp />
-
         <Routes>
+          <Route path="/" element={<MainPage />}/>
         </Routes>
       </div>
     </BrowserRouter>
