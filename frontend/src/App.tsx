@@ -1,13 +1,17 @@
+import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import "./App.css";
-import YellowBox from "./components/YellowBox";
-import YellowButton from "./components/YellowButton";
-import TitlePage from "./titlepage";
+import MainPage from "./features/MainPage/MainPage";
 
-function App() {
+// function App() {
+const App: React.FC = () => {
   return (
-    <div className="bg-white flex flex-col items-center justify-center h-screen">
-      <TitlePage />
-    </div>
+    <BrowserRouter>
+      <div>
+        <Routes>
+          <Route path="/" element={<MainPage />}/>
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 

@@ -9,4 +9,11 @@ export interface YellowButtonProps {
     children: ReactNode;
     height: number;
     width: number;
+    onClick: () => void;
+}
+
+export interface BoldTextProps {
+  text: string;
+  boldChars: string[];
+  textSize?: string;
 }
