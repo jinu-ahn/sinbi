@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import YellowButton from "./components/YellowButton";
+import YellowButton from "../../components/YellowButton";
 // src url을 직접 쓰는게 아니라 여기서 import 해와야 나중에 avatar 경로가 바뀌어도 업데이트가 된다!!
-import avatar from "./assets/avatar_img.png";
+import avatar from '../../assets/avatar_img.png'
+import MainVoiceCommand from "./MainVoiceCommand";
 
 interface ButtonConfig {
   text: string[];
@@ -103,6 +104,8 @@ const MainPage: React.FC = () => {
           className="w-full h-full object-contain"
         />
       </div>
+
+      <MainVoiceCommand />
     </div>
   );
 };
