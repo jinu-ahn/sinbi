@@ -2,9 +2,12 @@ package c104.sinbi.domain.account.service;
 
 import c104.sinbi.common.constant.BankTypeEnum;
 import c104.sinbi.common.exception.AccountNotFoundException;
+import c104.sinbi.common.exception.IllgalArgumentException;
 import c104.sinbi.domain.account.Account;
 import c104.sinbi.domain.account.dto.AccountCreateRequest;
 import c104.sinbi.domain.account.dto.GetAccountListResponse;
+import c104.sinbi.domain.account.dto.SaveTransactionHistoryRequest;
+import c104.sinbi.domain.account.dto.TransferAccountRequest;
 import c104.sinbi.domain.account.repository.AccountRepository;
 import c104.sinbi.domain.receiver.Receiver;
 import c104.sinbi.domain.transactionhistory.TransactionHistory;
@@ -83,6 +86,46 @@ public class AccountService {
                         account.getBankType(),
                         account.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 )).collect(Collectors.toList());
+    }
+
+    //계좌 이체
+    @Transactional
+    public void transferAccount(TransferAccountRequest transferAccountRequest) {
+        //비관적 락 적용 계좌 조회
+        Account fromAccount = accountRepository.findByAccountIdWithLock(transferAccountRequest.getAccountId())
+                .orElseThrow(() -> new AccountNotFoundException());
+
+        //가상 계좌 조회
+        VirtualAccount toVirtualAccount = virtualAccountRepository.findByAccountNumAndBankType(transferAccountRequest.getToAccountNum(), transferAccountRequest.getToBankType())
+                .orElseThrow(() -> new AccountNotFoundException());
+
+        //계좌 잔액 확인 및 출금 (쿼리 기반)
+        int updateAmount = accountRepository.withdraw(transferAccountRequest.getAccountId(), transferAccountRequest.getTransferAmount());
+        if(updateAmount == 0){
+            throw new IllgalArgumentException();
+        }
+
+        virtualAccountRepository.deposit(toVirtualAccount.getId(),transferAccountRequest.getTransferAmount());
+
+        SaveTransactionHistoryRequest saveTransactionHistoryRequest =
+                new SaveTransactionHistoryRequest(
+                        fromAccount,toVirtualAccount
+                        ,transferAccountRequest.getTransferAmount());
+
+        saveTransactionHistory(saveTransactionHistoryRequest);
+    }
+
+    //거래 내역 저장
+    private void saveTransactionHistory(SaveTransactionHistoryRequest saveTransactionHistoryRequest) {
+        TransactionHistory transactionHistory = new TransactionHistory(
+                "이체",
+                saveTransactionHistoryRequest.getToVirtualAccount().getAccountNum(),
+                saveTransactionHistoryRequest.getToVirtualAccount().getUserName(),
+                saveTransactionHistoryRequest.getTransferAmount().toString(),
+                saveTransactionHistoryRequest.getFromAccount().getBankType(),
+                saveTransactionHistoryRequest.getFromAccount()
+        );
+        transactionHistoryRepository.save(transactionHistory);
     }
 
     //계좌 삭제

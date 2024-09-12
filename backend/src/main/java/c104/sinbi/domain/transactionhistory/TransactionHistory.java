@@ -37,4 +37,14 @@ public class TransactionHistory extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
+
+    public TransactionHistory(String transactionHistoryType, String recvAccountNum, String recvAccountName,
+                              String transferAmount, BankTypeEnum bankType, Account account) {
+        this.transactionHistoryType = transactionHistoryType;
+        this.recvAccountNum = recvAccountNum;
+        this.recvAccountName = recvAccountName;
+        this.transferAmount = transferAmount;
+        this.bankType = bankType;
+        this.account = account;
+    }
 }
