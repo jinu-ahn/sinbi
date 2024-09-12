@@ -3,6 +3,7 @@ package c104.sinbi.domain.account.controller;
 import c104.sinbi.common.ApiResponse;
 import c104.sinbi.domain.account.dto.AccountCreateRequest;
 import c104.sinbi.domain.account.dto.GetAccountListResponse;
+import c104.sinbi.domain.account.dto.TransferAccountRequest;
 import c104.sinbi.domain.account.service.AccountService;
 import c104.sinbi.domain.transactionhistory.dto.TransactionHistoryResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,6 +44,14 @@ public class AccountController {
     public ResponseEntity<ApiResponse<?>> getDetailAccount(@PathVariable Long accountId) {
         List<TransactionHistoryResponse> transactionHistory = accountService.getDetailAccount(accountId);
         return ResponseEntity.ok(ApiResponse.success(transactionHistory,"거래 내역 불러오기에 성공하였습니다."));
+    }
+
+    //계좌 이체
+    @PostMapping("/transfer")
+    @Operation(summary = "계좌 이체", description = "특정 계좌에 이체하는 API 입니다.")
+    public ResponseEntity<ApiResponse<?>> transferAccount(@RequestBody TransferAccountRequest transferAccountRequest) {
+        accountService.transferAccount(transferAccountRequest);
+        return ResponseEntity.ok(ApiResponse.success("이체가 성공적으로 처리됬습니다."));
     }
 
     //계좌 삭제
