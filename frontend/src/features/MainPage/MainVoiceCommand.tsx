@@ -25,13 +25,13 @@ const MainVoiceCommand: React.FC = () => {
     const lowerCaseTranscript = transcript.toLowerCase();
 
     // 계좌 관련 명령어
-    if (lowerCaseTranscript.includes("송금") || lowerCaseTranscript.includes("이체") || lowerCaseTranscript.includes("계좌 이체")) { 
+    if (lowerCaseTranscript.includes("송금") || lowerCaseTranscript.includes("이체") || lowerCaseTranscript.includes("계좌 이체") || lowerCaseTranscript.includes("보낼래")) { 
       navigate("/transfer");
       resetTranscript();
     } else if (lowerCaseTranscript.includes("계좌 조회") || lowerCaseTranscript.includes("통장 조회") || lowerCaseTranscript.includes("계좌 보기") || lowerCaseTranscript.includes("통장 보기") || lowerCaseTranscript.includes("통장")) { // "계좌" or "통장" refers to accounts
       navigate("/account-view");
       resetTranscript();
-    } else if (lowerCaseTranscript.includes("계좌 등록") || lowerCaseTranscript.includes("통장 연결")) { 
+    } else if (lowerCaseTranscript.includes("계좌 등록") || lowerCaseTranscript.includes("통장 연결") || lowerCaseTranscript.includes("연결") || lowerCaseTranscript.includes("등록")) { 
       navigate("/connect-account");
       resetTranscript();
     } else if (lowerCaseTranscript.includes("뉴스") || lowerCaseTranscript.includes("배우기")) { 
