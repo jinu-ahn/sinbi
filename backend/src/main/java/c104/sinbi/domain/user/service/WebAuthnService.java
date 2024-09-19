@@ -6,6 +6,7 @@ import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.exception.AssertionFailedException;
 import com.yubico.webauthn.exception.RegistrationFailedException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -18,6 +19,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WebAuthnService {
 
     private final RelyingParty relyingParty;
@@ -55,8 +57,9 @@ public class WebAuthnService {
     }
 
     // 2. Registration Response 처리
-    public void finishRegistration(String username, PublicKeyCredentialCreationOptions requestOptions,
+    public void finishRegistration(String phone, PublicKeyCredentialCreationOptions requestOptions,
                                    PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> response) throws RegistrationFailedException {
+        log.info("response : {}", response);
         // 등록 완료 요청을 처리
         RegistrationResult result = relyingParty.finishRegistration(
                 FinishRegistrationOptions.builder()
@@ -68,8 +71,8 @@ public class WebAuthnService {
         // 자격 증명 데이터를 저장
         RegisteredCredential credential = RegisteredCredential.builder()
                 .credentialId(result.getKeyId().getId())  // 자격 증명 ID
-                .userHandle(credentialRepositoryImpl.getUserHandleForUsername(username).orElseThrow(() ->
-                        new IllegalStateException("User handle not found for username: " + username)))  // UserHandle을 따로 조회
+                .userHandle(credentialRepositoryImpl.getUserHandleForUsername(phone).orElseThrow(() ->
+                        new IllegalStateException("User handle not found for username: " + phone)))  // UserHandle을 따로 조회
                 .publicKeyCose(result.getPublicKeyCose())  // PublicKey 정보
                 .signatureCount(result.getSignatureCount())  // 서명 카운트
                 .build();

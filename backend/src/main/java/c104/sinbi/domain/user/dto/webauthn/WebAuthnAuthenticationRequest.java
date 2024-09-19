@@ -1,4 +1,4 @@
-package c104.sinbi.domain.user.dto;
+package c104.sinbi.domain.user.dto.webauthn;
 
 import com.yubico.webauthn.data.PublicKeyCredential;
 import com.yubico.webauthn.data.AuthenticatorAssertionResponse;

@@ -1,11 +1,12 @@
 package c104.sinbi.domain.user.controller;
 
-import c104.sinbi.domain.user.dto.WebAuthnAuthenticationRequest;
-import c104.sinbi.domain.user.dto.WebAuthnRegistrationRequest;
+import c104.sinbi.domain.user.dto.webauthn.WebAuthnAuthenticationRequest;
+import c104.sinbi.domain.user.dto.webauthn.WebAuthnRegistrationRequest;
 import c104.sinbi.domain.user.service.WebAuthnService;
-import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions;
+import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.AssertionRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/webauthn")
 @RequiredArgsConstructor
+@Slf4j
 public class WebAuthnController {
 
     private final WebAuthnService webAuthnService;
@@ -29,11 +31,27 @@ public class WebAuthnController {
     @PostMapping("/register/finish")
     public ResponseEntity<String> finishRegistration(@RequestBody WebAuthnRegistrationRequest registrationRequest) {
         try {
+            log.info("registrationRequest : {}", registrationRequest.toString());
+            // AuthenticatorAttestationResponse 생성
+            AuthenticatorAttestationResponse attestationResponse =
+                    AuthenticatorAttestationResponse.builder()
+                            .attestationObject(ByteArray.fromBase64(registrationRequest.getResponse().getResponse().getAttestationObject()))
+                            .clientDataJSON(ByteArray.fromBase64(registrationRequest.getResponse().getResponse().getClientDataJSON()))
+                            .build();
+
+            PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> credential =
+                    PublicKeyCredential.<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs>builder()
+                            .id(attestationResponse.getAttestationObject())
+                            .response(attestationResponse)
+                            .clientExtensionResults(ClientRegistrationExtensionOutputs.builder().build())
+                            .type(PublicKeyCredentialType.PUBLIC_KEY)
+                            .build();
+
             // 등록 완료 처리
             webAuthnService.finishRegistration(
                     registrationRequest.getPhone(),
                     registrationRequest.getRequestOptions(),
-                    registrationRequest.getResponse()
+                    credential
             );
             return ResponseEntity.ok("Registration successful");
         } catch (Exception e) {
