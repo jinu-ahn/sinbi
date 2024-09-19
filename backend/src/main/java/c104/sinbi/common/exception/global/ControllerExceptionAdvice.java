@@ -56,4 +56,10 @@ public class ControllerExceptionAdvice {
     public ResponseEntity<ApiResponse<?>> handleReceiverAlreadyExistsException(ReceiverAlreadyExistsException e) {
         return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.CONFLICT);  // 충돌 상태로 반환
     }
+
+    // IllgalArgumentException 처리 (추가된 부분)
+    @ExceptionHandler(IllgalArgumentException.class)
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(IllgalArgumentException e) {
+        return new ResponseEntity<>(ApiResponse.error(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }
