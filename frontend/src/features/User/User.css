@@ -1,0 +1,20 @@
+.input-field {
+  /* eslint-disable-next-line */
+  @apply w-full p-2 border rounded;
+}
+
+.button {
+  @apply font-bold text-center text-[30px] mobile-medium:text-[35px] mobile-large:text-[40px];
+}
+
+.layout {
+  @apply flex flex-col items-center justify-between min-h-screen py-8 relative bg-white;
+}
+
+.content {
+  @apply w-full max-w-md;
+}
+
+.avatar {
+  @apply absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[318px] h-[204px];
+}

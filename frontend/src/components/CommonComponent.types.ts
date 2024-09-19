@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode,MouseEvent } from "react";
 
 // Export the YellowBoxProps type so it can be used in other files
 export interface YellowBoxProps {
@@ -9,7 +9,7 @@ export interface YellowButtonProps {
     children: ReactNode;
     height: number;
     width: number;
-    onClick: () => void;
+    onClick: (event?: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export interface BoldTextProps {
