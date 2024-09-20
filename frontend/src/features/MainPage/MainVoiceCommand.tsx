@@ -18,6 +18,7 @@ const MainVoiceCommand: React.FC = () => {
 
   useEffect(() => {
     handleVoiceCommands(transcript);
+    console.log(transcript)
   }, [transcript]);
 
 
