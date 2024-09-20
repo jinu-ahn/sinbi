@@ -1,13 +1,53 @@
-import axios from 'axios'
+import axios from "axios";
+import { LoginDto, SignUpDto } from "../features/User/User.types";
 
 const api = axios.create({
-  baseURL: 'https://api.example.com',  // 일단 임시로 baseURL 설정
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}`, // 일단 임시로 baseURL 설정
   timeout: 5000, // 5초안에 응답없으면 cancel
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-})
+});
 
 // 이제 밑에다가 필요한 api function 만들면 된다
 
-export default api
+// api 요청
+export const signup = async (signUpDto: SignUpDto) => {
+  // const formData = new FormData();
+  // formData.append('signUpDto', new Blob([JSON.stringify(signUpDto)], { type: 'application/json' }));
+  // if (image) {
+  //   formData.append('image', image);
+  // }
+  try {
+    console.log(signUpDto)
+    const response = await api.post(
+      "/user/signup",
+      {signUpDto}
+      //    {
+      //   headers: { 'Content-Type': 'multipart/form-data' },
+      // }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("회원가입 불가: ", error);
+    throw error;
+  }
+};
+
+export const login = async (loginDto: LoginDto, image?: File) => {
+  const formData = new FormData();
+  formData.append(
+    "loginDto",
+    new Blob([JSON.stringify(loginDto)], { type: "application/json" })
+  );
+  if (image) {
+    formData.append("image", image);
+  }
+
+  const response = await api.post("/user/login", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};
+
+export default api;
