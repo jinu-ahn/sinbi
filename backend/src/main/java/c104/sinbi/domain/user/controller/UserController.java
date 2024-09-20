@@ -26,7 +26,7 @@ public class UserController {
     @PostMapping("/signup")
     @Operation(summary = "회원 가입", description = "사용자 회원가입 API입니다.")
     public ResponseEntity<ApiResponse<String>> signUp(@Valid @RequestPart(value="signUpDto") SignUpDto signUpDto,
-                                                      @RequestPart(value= "image") MultipartFile multipartFile){
+                                                      @RequestPart(value= "image", required = false) MultipartFile multipartFile){
         userService.signup(signUpDto,multipartFile);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("SUCCESS"));
@@ -35,7 +35,7 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "사용자 로그인 API입니다.")
     public ResponseEntity<ApiResponse<String>> login(@Valid @RequestPart(value="loginDto") LoginDto loginDto,
-                                                     @RequestPart(value = "image") MultipartFile multipartFile,
+                                                     @RequestPart(value = "image", required = false) MultipartFile multipartFile,
                                                      HttpServletResponse response) throws IOException {
         userService.login(loginDto,multipartFile,response);
         return ResponseEntity.status(HttpStatus.OK)

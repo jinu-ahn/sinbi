@@ -45,7 +45,7 @@ public class UserService {
     public void signup(@Valid final SignUpDto signUpDto, final MultipartFile multiPartFile) {
         String encodedPassword = passwordEncoder.encode(signUpDto.getUserPassword()); // 패스워드 인코딩
         String convertImageUrl = null;
-        if(!multiPartFile.isEmpty())
+        if(multiPartFile != null && !multiPartFile.isEmpty())
             convertImageUrl = s3Uploader.putS3(multiPartFile); // 얼굴인증 이미지 S3 저장
         User user = User.builder().signUpDto(signUpDto).encodedPassword(encodedPassword).convertImageUrl(convertImageUrl).build();
 
@@ -68,7 +68,7 @@ public class UserService {
         );
         Authentication authenticationToken;
         Authentication authentication;
-        if (!multipartFile.isEmpty()) {
+        if (multipartFile != null && !multipartFile.isEmpty()) {
             authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getPhone(), multipartFile);
             authentication = faceIdAuthenticationProvider.authenticate(authenticationToken);
         } else {
