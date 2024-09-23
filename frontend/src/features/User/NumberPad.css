@@ -38,7 +38,7 @@
     border-radius: 50%;
     background-color: #FFD33A;
     border: none;
-    font-size: 24px;
+    font-size: 36px;
     font-weight: bold;
     color: #0B4B24;
     cursor: pointer;
@@ -52,5 +52,5 @@
   }
   
   .delete-button {
-    font-size: 16px;
+    font-size: 24px;
   }
