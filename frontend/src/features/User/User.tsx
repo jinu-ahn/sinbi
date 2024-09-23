@@ -7,6 +7,9 @@ import VoiceCommand from "./VoiceCommand";
 import { login, signup } from "../../services/api";
 import SpeechBubble from "../../components/SpeechBubble";
 import { useNavigate } from "react-router-dom";
+import avatar from '../../assets/avatar_img.png'
+import './User.css';
+import NumberPad from "./NumberPad";
 
 const User: React.FC = () => {
   const navigate = useNavigate();
@@ -42,8 +45,8 @@ const User: React.FC = () => {
         userPhone: phone,
         userPassword: password
       };
-      console.log(signUpData)
-      await signup(signUpData)//, faceImage || undefined);
+      console.log('1', signUpData)
+      await signup(signUpData, faceImage || undefined);
       console.log(333)
       setStep(SignUpStep.SignUpComplete);
       console.log(444)
@@ -86,7 +89,7 @@ const User: React.FC = () => {
       case SignUpStep.UserName:
         return (
           <>
-            <GreenText text="이름을 입력해주세요." boldChars={["이름"]} />
+            <GreenText text="이름을 알려주세요." boldChars={["이름"]} />
             <input
               type="text"
               value={name}
@@ -102,9 +105,10 @@ const User: React.FC = () => {
         return (
           <>
             <GreenText
-              text="전화번호를 입력해주세요."
+              text="전화번호를"
               boldChars={["전화번호"]}
             />
+            <GreenText text="알려주세요" boldChars={[""]}/>
             <input
               type="tel"
               value={phone}
@@ -121,15 +125,28 @@ const User: React.FC = () => {
         return (
           <>
             <GreenText
-              text="비밀번호를 입력해주세요."
-              boldChars={["비밀번호"]}
+              text="간편비밀번호"
+              boldChars={[""]}
             />
-            <input
+            <GreenText
+              text="숫자 네 자리를"
+              boldChars={["숫자 네 자리"]}
+            />
+            <GreenText
+              text="눌러주세요"
+              boldChars={[]}
+            />
+            {/* <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input-field"
               pattern="^\d{4}$"
+            /> */}
+            <NumberPad
+              value={password}
+              onChange={setPassword}
+              maxLength={4}
             />
             <YellowButton height={50} width={200} onClick={nextStep}>
               다음
@@ -140,16 +157,25 @@ const User: React.FC = () => {
         return (
           <>
             <GreenText
-              text="비밀번호를 다시 입력해주세요."
-              boldChars={["비밀번호"]}
+              text="다시 한 번"
+              boldChars={["다시"]}
             />
-            <input
+            <GreenText
+              text="눌러주세요."
+              boldChars={["눌러주세요"]}
+            />
+            <NumberPad
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              maxLength={4}
+            />
+            {/* <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input-field"
               pattern="^\d{4}$"
-            />
+            /> */}
             <YellowButton height={50} width={200} onClick={nextStep}>
               다음
             </YellowButton>
@@ -251,14 +277,28 @@ const User: React.FC = () => {
   };
 
   return (
-    <div className="user-container">
-      {renderStep()}
-      {error && <p className="error-message">{error}</p>}
-      {/* <button className="switch-mode-button" onClick={() => setIsLogin(!isLogin)}>
+
+    <div className="user-container flex flex-col items-center justify-between min-h-screen py-8 relative">
+      {/* Wrap the existing content in a div */}
+      <div className="flex-grow flex flex-col items-center justify-center w-full max-w-md z-10">
+        {renderStep()}
+        {error && <p className="error-message">{error}</p>}
+      </div>
+      
+      {/* Add the avatar image */}
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[318px] h-[204px] z-0">
+        <img
+          src={avatar}
+          alt="Avatar"
+          className="w-full h-full object-contain"
+        />
+      </div>
+{/* <button className="switch-mode-button" onClick={() => setIsLogin(!isLogin)}>
         {isLogin ? "회원가입으로 전환" : "로그인으로 전환"}
       </button> */}
       <VoiceCommand />
     </div>
+      
   );
 };
 
