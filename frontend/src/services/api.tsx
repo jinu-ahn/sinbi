@@ -12,20 +12,21 @@ const api = axios.create({
 // 이제 밑에다가 필요한 api function 만들면 된다
 
 // api 요청
-export const signup = async (signUpDto: SignUpDto) => {
-  // const formData = new FormData();
-  // formData.append('signUpDto', new Blob([JSON.stringify(signUpDto)], { type: 'application/json' }));
-  // if (image) {
-  //   formData.append('image', image);
-  // }
+export const signup = async (signUpDto: SignUpDto, image?: File) => {
+  const formData = new FormData();
+  formData.append('signUpDto', new Blob([JSON.stringify(signUpDto)], { type: 'application/json' }));
+  if (image) {
+    formData.append('image', image);
+  }
   try {
     console.log(signUpDto)
+    console.log(formData)
     const response = await api.post(
       "/user/signup",
-      {signUpDto}
-      //    {
-      //   headers: { 'Content-Type': 'multipart/form-data' },
-      // }
+      formData,
+         {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
     );
     return response.data;
   } catch (error) {
