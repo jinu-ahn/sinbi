@@ -56,6 +56,18 @@ const User: React.FC = () => {
     }
   };
 
+  // 비밀번호 일치 여부
+  const handlePasswordConfirmation = () => {
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다. 다시 입력해주세요.")
+      setStep(SignUpStep.UserPassword)
+      setPassword("")
+      setConfirmPassword('')
+    } else {
+      nextStep()
+    }
+  }
+
   const handleLogin = async () => {
     try {
       const loginDto: LoginDto = {
@@ -124,6 +136,9 @@ const User: React.FC = () => {
       case SignUpStep.UserPassword:
         return (
           <>
+          {error && (
+              <SpeechBubble text={error} boldChars={[]} textSize="text-[24px]" />
+            )}
             <GreenText
               text="간편비밀번호"
               boldChars={[""]}
@@ -176,7 +191,7 @@ const User: React.FC = () => {
               className="input-field"
               pattern="^\d{4}$"
             /> */}
-            <YellowButton height={50} width={200} onClick={nextStep}>
+            <YellowButton height={50} width={200} onClick={handlePasswordConfirmation}>
               다음
             </YellowButton>
           </>
