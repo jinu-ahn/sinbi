@@ -1,0 +1,56 @@
+.number-pad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .password-display {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .password-dot {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #0B4B24;
+    border-radius: 50%;
+    margin: 0 5px;
+  }
+  
+  .password-dot.filled {
+    background-color: #0B4B24;
+  }
+  
+  .number-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    /* width: 100%;
+  max-width: 300px; 
+  margin: 0 auto; */
+  }
+  
+  .number-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #FFD33A;
+    border: none;
+    font-size: 36px;
+    font-weight: bold;
+    color: #0B4B24;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .number-button:hover {
+    background-color: #FFE066;
+  }
+  
+  .delete-button {
+    font-size: 24px;
+  }
