@@ -4,11 +4,11 @@ import { LoginDto, SignUpDto, SignUpStep } from "./User.types";
 import GreenText from "../../components/GreenText";
 import YellowButton from "../../components/YellowButton";
 import VoiceCommand from "./VoiceCommand";
-import { login, signup } from "../../services/api";
+import { login, sendSms, signup, verifySms } from "../../services/api";
 import SpeechBubble from "../../components/SpeechBubble";
 import { useNavigate } from "react-router-dom";
-import avatar from '../../assets/avatar_img.png'
-import './User.css';
+import avatar from "../../assets/avatar_img.png";
+import "./User.css";
 import NumberPad from "./NumberPad";
 
 const User: React.FC = () => {
@@ -19,11 +19,13 @@ const User: React.FC = () => {
     currentStep,
     name,
     phone,
+    smsCode,
     password,
     confirmPassword,
     faceImage,
     setName,
     setPhone,
+    setSmsCode,
     setPassword,
     setConfirmPassword,
     setFaceImage,
@@ -39,34 +41,62 @@ const User: React.FC = () => {
   // 변경: handleSignUp 함수 추가
   const handleSignUp = async () => {
     try {
-        console.log('111')
+      console.log("111");
       const signUpData: SignUpDto = {
         userName: name,
         userPhone: phone,
-        userPassword: password
+        userPassword: password,
       };
-      console.log('1', signUpData)
+      console.log("1", signUpData);
       await signup(signUpData, faceImage || undefined);
-      console.log(333)
+      console.log(333);
       setStep(SignUpStep.SignUpComplete);
-      console.log(444)
+      console.log(444);
     } catch (error) {
-      console.error('Signup failed:', error);
-      setError('회원가입에 실패했습니다. 다시 시도해주세요.');
+      console.error("Signup failed:", error);
+      setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  // sms 인증 코드 전송 함수
+  const handleSendSms = async () => {
+    try {
+      await sendSms(phone);
+      setError(null);
+      nextStep();
+    } catch (error) {
+      console.error("sms 전송 실패", error);
+      setError("sms 전송 실패. 다시 시도해주세요.");
+    }
+  };
+
+  // SMS 인증 코드 확인 함수
+  const handleVerifySms = async () => {
+    try {
+      const response = await verifySms(phone, smsCode);
+      if (response.status === "인증이 되었습니다.") {
+        setError(null);
+        nextStep();
+      } else {
+        setError("인증 코드가 일치하지 않습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("SMS 인증 실패:", error);
+      setError("SMS 인증에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
   // 비밀번호 일치 여부
   const handlePasswordConfirmation = () => {
     if (password !== confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다. 다시 입력해주세요.")
-      setStep(SignUpStep.UserPassword)
-      setPassword("")
-      setConfirmPassword('')
+      setError("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+      setStep(SignUpStep.UserPassword);
+      setPassword("");
+      setConfirmPassword("");
     } else {
-      nextStep()
+      nextStep();
     }
-  }
+  };
 
   const handleLogin = async () => {
     try {
@@ -116,11 +146,8 @@ const User: React.FC = () => {
       case SignUpStep.UserPhone:
         return (
           <>
-            <GreenText
-              text="전화번호를"
-              boldChars={["전화번호"]}
-            />
-            <GreenText text="알려주세요" boldChars={[""]}/>
+            <GreenText text="전화번호를" boldChars={["전화번호"]} />
+            <GreenText text="알려주세요" boldChars={[""]} />
             <input
               type="tel"
               value={phone}
@@ -128,29 +155,37 @@ const User: React.FC = () => {
               className="input-field"
               pattern="^\d{2,3}\d{3,4}\d{4}$"
             />
-            <YellowButton height={50} width={200} onClick={nextStep}>
-              다음
+            <YellowButton height={50} width={200} onClick={handleSendSms}>
+              인증번호 받기
+            </YellowButton>
+          </>
+        );
+      case SignUpStep.SmsVerification:
+        return (
+          <>
+            <GreenText text="인증번호가" boldChars={["인증번호"]} />
+            <GreenText text="안 나오면," boldChars={[]} />
+            <GreenText text="문자를 보고" boldChars={["문자"]} />
+            <GreenText text="알려주세요" boldChars={[]} />
+            <NumberPad value={smsCode} onChange={setSmsCode} maxLength={4} />
+            <YellowButton height={50} width={200} onClick={handleVerifySms}>
+              인증하기
             </YellowButton>
           </>
         );
       case SignUpStep.UserPassword:
         return (
           <>
-          {error && (
-              <SpeechBubble text={error} boldChars={[]} textSize="text-[24px]" />
+            {error && (
+              <SpeechBubble
+                text={error}
+                boldChars={[]}
+                textSize="text-[24px]"
+              />
             )}
-            <GreenText
-              text="간편비밀번호"
-              boldChars={[""]}
-            />
-            <GreenText
-              text="숫자 네 자리를"
-              boldChars={["숫자 네 자리"]}
-            />
-            <GreenText
-              text="눌러주세요"
-              boldChars={[]}
-            />
+            <GreenText text="간편비밀번호" boldChars={[""]} />
+            <GreenText text="숫자 네 자리를" boldChars={["숫자 네 자리"]} />
+            <GreenText text="눌러주세요" boldChars={[]} />
             {/* <input
               type="password"
               value={password}
@@ -158,11 +193,7 @@ const User: React.FC = () => {
               className="input-field"
               pattern="^\d{4}$"
             /> */}
-            <NumberPad
-              value={password}
-              onChange={setPassword}
-              maxLength={4}
-            />
+            <NumberPad value={password} onChange={setPassword} maxLength={4} />
             <YellowButton height={50} width={200} onClick={nextStep}>
               다음
             </YellowButton>
@@ -171,14 +202,8 @@ const User: React.FC = () => {
       case SignUpStep.ConfirmPassword:
         return (
           <>
-            <GreenText
-              text="다시 한 번"
-              boldChars={["다시"]}
-            />
-            <GreenText
-              text="눌러주세요."
-              boldChars={["눌러주세요"]}
-            />
+            <GreenText text="다시 한 번" boldChars={["다시"]} />
+            <GreenText text="눌러주세요." boldChars={["눌러주세요"]} />
             <NumberPad
               value={confirmPassword}
               onChange={setConfirmPassword}
@@ -191,7 +216,11 @@ const User: React.FC = () => {
               className="input-field"
               pattern="^\d{4}$"
             /> */}
-            <YellowButton height={50} width={200} onClick={handlePasswordConfirmation}>
+            <YellowButton
+              height={50}
+              width={200}
+              onClick={handlePasswordConfirmation}
+            >
               다음
             </YellowButton>
           </>
@@ -292,14 +321,13 @@ const User: React.FC = () => {
   };
 
   return (
-
     <div className="user-container flex flex-col items-center justify-between min-h-screen py-8 relative">
       {/* Wrap the existing content in a div */}
       <div className="flex-grow flex flex-col items-center justify-center w-full max-w-md z-10">
         {renderStep()}
         {error && <p className="error-message">{error}</p>}
       </div>
-      
+
       {/* Add the avatar image */}
       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[318px] h-[204px] z-0">
         <img
@@ -308,12 +336,11 @@ const User: React.FC = () => {
           className="w-full h-full object-contain"
         />
       </div>
-{/* <button className="switch-mode-button" onClick={() => setIsLogin(!isLogin)}>
+      {/* <button className="switch-mode-button" onClick={() => setIsLogin(!isLogin)}>
         {isLogin ? "회원가입으로 전환" : "로그인으로 전환"}
       </button> */}
       <VoiceCommand />
     </div>
-      
   );
 };
 

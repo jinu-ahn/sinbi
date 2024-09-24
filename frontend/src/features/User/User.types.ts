@@ -2,6 +2,7 @@ export enum SignUpStep {
   Welcome,
   UserName,
   UserPhone,
+  SmsVerification,
   UserPassword,
   ConfirmPassword,
   StartFaceRecognition,
@@ -19,6 +20,7 @@ export interface UserState {
     password: string;
     confirmPassword: string;
     faceImage: File | null;
+    smsCode: string;
   }
 
 export interface UserActions {
@@ -30,6 +32,7 @@ export interface UserActions {
     nextStep: () => void;
     prevStep: () => void;
     setStep: (step: SignUpStep) => void;
+    setSmsCode: (code: string) => void; // SMS 코드 설정 액션 추가
   }
 
 export interface SignUpDto {
