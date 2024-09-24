@@ -33,10 +33,11 @@ const banks = [
 ];
 
 const BankType: React.FC = () => {
-  const { bankType, setBankType } = useConnectAccountStore();
+  const { bankType, setBankType, error, setError } = useConnectAccountStore();
 
   useEffect(() => {
-    console.log("bankType : ", bankType)
+    console.log("bankType : ", bankType);
+    setError(null);
   }, [bankType]);
 
   return (
@@ -44,6 +45,13 @@ const BankType: React.FC = () => {
       <header>
         <h1 className="text-[40px] text-center">통장 등록</h1>
       </header>
+
+      {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
+      {error && (
+        <p className="text-red-500 text-center mt-4 text-[25px] font-bold">
+          {error}
+        </p>
+      )}
 
       <div className="w-full flex justify-center mt-4">
         <YellowBox>

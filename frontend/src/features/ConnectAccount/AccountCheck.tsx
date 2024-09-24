@@ -4,7 +4,7 @@ import { useConnectAccountStore } from "./ConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
 
 const AccountCheck: React.FC = () => {
-  const { bankType, accountNum } = useConnectAccountStore();
+  const { bankType, accountNum, error } = useConnectAccountStore();
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KOOKMIN", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -41,6 +41,13 @@ const AccountCheck: React.FC = () => {
       <header>
         <h1 className="text-[40px] text-center">통장 확인</h1>
       </header>
+
+      {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
+      {error && (
+        <p className="text-red-500 text-center mt-4 text-[25px] font-bold">
+          {error}
+        </p>
+      )}
 
       <div className="flex justify-center mt-4 w-[350px]">
         <YellowBox>

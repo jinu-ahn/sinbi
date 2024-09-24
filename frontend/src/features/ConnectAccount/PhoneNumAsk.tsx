@@ -3,7 +3,7 @@ import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 
 const PhoneNumAsk: React.FC = () => {
-  const { phoneNum, setPhoneNum } = useConnectAccountStore();
+  const { phoneNum, setPhoneNum, error } = useConnectAccountStore();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNum(e.target.value);
   };
@@ -13,6 +13,13 @@ const PhoneNumAsk: React.FC = () => {
       <header>
         <h1 className="text-[40px] text-center">본인 인증</h1>
       </header>
+
+      {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
+      {error && (
+        <p className="text-red-500 text-center mt-4 text-[25px] font-bold">
+          {error}
+        </p>
+      )}
 
       <div className="flex justify-center mt-4 w-[350px]">
         <YellowBox>

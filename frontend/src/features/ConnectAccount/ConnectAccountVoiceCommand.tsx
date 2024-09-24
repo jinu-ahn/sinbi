@@ -26,6 +26,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
     phoneNum,
     verificationCode,
     setVerificationCode,
+    setError,
   } = useConnectAccountStore();
 
   const { transcript, resetTranscript } = useSpeechRecognition();
@@ -79,7 +80,12 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("다음")
       ) {
-        setStep(step + 1);
+        if (!accountNum) {
+          setError("계좌번호를 입력하세요.");
+        } else {
+          setStep(step + 1);
+          setError(null);
+        }
         resetTranscript();
       } else if (
         lowerCaseTranscript.includes("뒤로가") ||
@@ -168,7 +174,12 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("다음")
       ) {
-        setStep(step + 1);
+        if (!bankType) {
+          setError("은행을 고르세요.")
+        } else {
+          setStep(step + 1);
+          setError(null);
+        }
         resetTranscript();
       } else if (
         lowerCaseTranscript.includes("뒤로가") ||
@@ -186,6 +197,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
             setStep(step + 1);
           })
           .catch((error) => {
+            setError("계좌가 없어요.")
             console.error("해당 계좌 없음: ", error);
           });
         resetTranscript();
@@ -221,15 +233,20 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("확인") ||
         lowerCaseTranscript.includes("다음")
       ) {
-        // need to send axios request to BASEURL/virtualAccount/check
-        sendPhoneNumber(phoneNum)
-          .then((data) => {
-            console.log("전화번호 성공적: ", data);
-            setStep(step + 1);
-          })
-          .catch((error) => {
-            console.error("전화번호 없음: ", error);
-          });
+        if (!phoneNum) {
+          setError("전화번호를 입력하세요.")
+        } else {
+          setError(null);
+          sendPhoneNumber(phoneNum)
+            .then((data) => {
+              console.log("전화번호 성공적: ", data);
+              setStep(step + 1);
+            })
+            .catch((error) => {
+              setError("전화번호가 틀렸어요.")
+              console.error("전화번호 없음: ", error);
+            });
+        }
         resetTranscript();
       }
 
@@ -263,14 +280,20 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("확인") ||
         lowerCaseTranscript.includes("끝")
       ) {
-        verificationCodeCheck(phoneNum, verificationCode)
-          .then((data) => {
-            console.log("인증번호 성공적: ", data);
-            setStep(step + 1);
-          })
-          .catch((error) => {
-            console.error("인증번호 오류: ", error);
-          });
+        if (!verificationCode) {
+          setError("인증번호를 입력하세요.")
+        } else {
+          verificationCodeCheck(phoneNum, verificationCode)
+            .then((data) => {
+              console.log("인증번호 성공적: ", data);
+              setError(null);
+              setStep(step + 1);
+            })
+            .catch((error) => {
+              console.error("인증번호 오류: ", error);
+              setError("인증번호가 틀렸어요.")
+            });
+        }
         resetTranscript();
       }
 
