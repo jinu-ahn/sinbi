@@ -41,17 +41,19 @@ const User: React.FC = () => {
   // 변경: handleSignUp 함수 추가
   const handleSignUp = async () => {
     try {
-      console.log("111");
       const signUpData: SignUpDto = {
         userName: name,
         userPhone: phone,
         userPassword: password,
       };
-      console.log("1", signUpData);
       await signup(signUpData, faceImage || undefined);
-      console.log(333);
       setStep(SignUpStep.SignUpComplete);
-      console.log(444);
+
+      // Auto-login and navigation after a delay
+      setTimeout(async () => {
+        await handleLogin();
+        navigate("/"); // Navigate to the start page
+      }, 3000); // Wait for 3 seconds before auto-login
     } catch (error) {
       console.error("Signup failed:", error);
       setError("회원가입에 실패했습니다. 다시 시도해주세요.");
@@ -229,8 +231,16 @@ const User: React.FC = () => {
         return (
           <>
             <GreenText
-              text="얼굴 인식을 시작합니다."
-              boldChars={["얼굴 인식"]}
+              text="얼굴로 로그인하면"
+              boldChars={["얼굴"]}
+            />
+            <GreenText
+              text="더 편해요."
+              boldChars={[""]}
+            />
+            <GreenText
+              text="등록할까요?"
+              boldChars={["등록"]}
             />
             <YellowButton height={50} width={200} onClick={nextStep}>
               시작
@@ -240,7 +250,9 @@ const User: React.FC = () => {
       case SignUpStep.FaceRecognitionInProgress:
         return (
           <>
-            <GreenText text="얼굴 인식 중입니다." boldChars={["얼굴 인식"]} />
+            <GreenText text="얼굴 인식" boldChars={["얼굴 인식"]} />
+            <GreenText text="눈, 코, 입을" boldChars={["눈, 코, 입"]} />
+            <GreenText text="화면에 맞춰주세요" boldChars={["화면"]} />
             <input
               type="file"
               accept="image/*"
@@ -269,14 +281,16 @@ const User: React.FC = () => {
       case SignUpStep.SignUpComplete:
         return (
           <>
-            <GreenText text="회원가입이 완료되었습니다!" boldChars={["완료"]} />
-            <YellowButton
+            <GreenText text="회원가입 끝!" boldChars={["끝"]} />
+            <GreenText text="첫 화면으로" boldChars={["첫 화면"]} />
+            <GreenText text="갈게요" boldChars={[""]} />
+            {/* <YellowButton
               height={50}
               width={200}
               onClick={() => setStep(SignUpStep.Login)}
             >
               로그인하기
-            </YellowButton>
+            </YellowButton> */}
           </>
         );
       //   case SignUpStep.Completed:
