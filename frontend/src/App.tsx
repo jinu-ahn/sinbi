@@ -1,7 +1,8 @@
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import MainPage from "./features/MainPage/MainPage";
 import ConnectAccountPage from "./features/ConnectAccount/ConnectAccountPage";
+import AccountsViewPage from "./features/AccountView/AccountsViewPage";
 
 // function App() {
 const App: React.FC = () => {
@@ -11,6 +12,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<MainPage />}/>
           <Route path="/connect-account" element={<ConnectAccountPage />}/>
+          <Route path="/account-view" element={<AccountsViewPage />}/>
         </Routes>
       </div>
     </BrowserRouter>

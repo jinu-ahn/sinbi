@@ -53,4 +53,34 @@ export const verificationCodeCheck = async (phoneNum: string, certificationCode:
   }
 }
 
+// 내 계좌들 조회
+export const myAccounts = async (userId: number) => {
+  try {
+    const response = await api.get('/account', {
+      params: {
+        userId,
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('계좌 없음', error);
+    throw error;
+  }
+}
+
+// 내 특정 계좌 조회
+export const specificAccount = async (accountId: string) => {
+  try {
+    const response = await api.get(`/account/${accountId}`, {
+      params: {
+        accountId,
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('해당 계좌 없음', error);
+    throw error;
+  }
+}
+
 export default api
