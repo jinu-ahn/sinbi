@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import useUserStore from './useUserStore';
-import { SignUpStep } from './User.types';
+import React, { useEffect } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import useUserStore from "./useUserStore";
+import { SignUpStep } from "./User.types";
 
 const VoiceCommand: React.FC = () => {
   const { transcript, resetTranscript } = useSpeechRecognition();
-  const { currentStep, nextStep, setStep } = useUserStore();
+  const { currentStep, nextStep, prevStep, setStep } = useUserStore();
 
   useEffect(() => {
-    SpeechRecognition.startListening({ continuous: true, language: 'ko-KR' });
+    SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
     return () => {
       SpeechRecognition.stopListening();
     };
@@ -21,11 +23,23 @@ const VoiceCommand: React.FC = () => {
   const handleVoiceCommands = (transcript: string) => {
     const lowerCaseTranscript = transcript.toLowerCase();
 
-    if (lowerCaseTranscript.includes("다음") || lowerCaseTranscript.includes("넘어가기")) {
+    if (
+      lowerCaseTranscript.includes("다음") ||
+      lowerCaseTranscript.includes("넘어가기")
+    ) {
       nextStep();
       resetTranscript();
+    } else if (
+      lowerCaseTranscript.includes("이전") ||
+      lowerCaseTranscript.includes("되돌아가기")
+    ) {
+      prevStep();
+      resetTranscript();
     } else if (lowerCaseTranscript.includes("시작")) {
-      if (currentStep === SignUpStep.Welcome || currentStep === SignUpStep.StartFaceRecognition) {
+      if (
+        currentStep === SignUpStep.Welcome ||
+        currentStep === SignUpStep.StartFaceRecognition
+      ) {
         nextStep();
         resetTranscript();
       }
@@ -46,7 +60,6 @@ const VoiceCommand: React.FC = () => {
 };
 
 export default VoiceCommand;
-
 
 // // VoiceCommand.tsx
 // import React, { useEffect } from 'react';
