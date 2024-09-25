@@ -3,7 +3,8 @@ import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 
 const AccountNumber: React.FC = () => {
-  const { accountNum, setAccountNum, error, setError } = useConnectAccountStore();
+  const { accountNum, setAccountNum, error, setError } =
+    useConnectAccountStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountNum(e.target.value);
@@ -13,23 +14,27 @@ const AccountNumber: React.FC = () => {
   return (
     <div>
       <header>
-        <h1 className="text-[40px] text-center">통장 등록</h1>
+        <h1 className="text-center text-[40px]">통장 등록</h1>
       </header>
 
       {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
-      {error && <p className="text-red-500 text-center mt-4 text-[25px] font-bold">{error}</p>}
+      {error && (
+        <p className="mt-4 text-center text-[25px] font-bold text-red-500">
+          {error}
+        </p>
+      )}
 
-      <div className="w-full flex justify-center">
+      <div className="flex w-full justify-center">
         <YellowBox>
           <div>
-            <p className="font-bold text-[30px] mb-[20px]">계좌번호</p>
+            <p className="mb-[20px] text-[30px] font-bold">계좌번호</p>
           </div>
           <div>
             <input
               type="number"
               value={accountNum}
               onChange={handleInputChange}
-              className="w-full border border-gray-300 p-2 rounded-lg text-[35px]"
+              className="w-full rounded-lg border border-gray-300 p-2 text-[35px]"
             />
           </div>
         </YellowBox>

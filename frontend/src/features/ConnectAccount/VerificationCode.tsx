@@ -12,27 +12,27 @@ const VerificationCode: React.FC = () => {
   return (
     <div>
       <header>
-        <h1 className="text-[40px] text-center">본인 인증</h1>
+        <h1 className="text-center text-[40px]">본인 인증</h1>
       </header>
 
       {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
       {error && (
-        <p className="text-red-500 text-center mt-4 text-[25px] font-bold">
+        <p className="mt-4 text-center text-[25px] font-bold text-red-500">
           {error}
         </p>
       )}
 
-      <div className="flex justify-center mt-4 w-[350px]">
+      <div className="mt-4 flex w-[350px] justify-center">
         <YellowBox>
           <div>
-            <p className="font-bold text-[30px] mb-[20px]">인증번호</p>
+            <p className="mb-[20px] text-[30px] font-bold">인증번호</p>
           </div>
           <div>
             <input
               type="number"
               value={verificationCode}
               onChange={handleInputChange}
-              className="w-full border border-gray-300 p-2 rounded-lg text-[35px]"
+              className="w-full rounded-lg border border-gray-300 p-2 text-[35px]"
             />
           </div>
         </YellowBox>

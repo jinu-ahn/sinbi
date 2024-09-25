@@ -6,10 +6,10 @@ export interface YellowBoxProps {
 }
 
 export interface YellowButtonProps {
-    children: ReactNode;
-    height: number;
-    width: number;
-    onClick: () => void;
+  children: ReactNode;
+  height: number;
+  width: number;
+  onClick: () => void;
 }
 
 export interface BoldTextProps {

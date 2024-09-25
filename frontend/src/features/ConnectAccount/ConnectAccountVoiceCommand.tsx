@@ -175,7 +175,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("다음")
       ) {
         if (!bankType) {
-          setError("은행을 고르세요.")
+          setError("은행을 고르세요.");
         } else {
           setStep(step + 1);
           setError(null);
@@ -197,7 +197,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
             setStep(step + 1);
           })
           .catch((error) => {
-            setError("계좌가 없어요.")
+            setError("계좌가 없어요.");
             console.error("해당 계좌 없음: ", error);
           });
         resetTranscript();
@@ -234,7 +234,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("다음")
       ) {
         if (!phoneNum) {
-          setError("전화번호를 입력하세요.")
+          setError("전화번호를 입력하세요.");
         } else {
           setError(null);
           sendPhoneNumber(phoneNum)
@@ -243,7 +243,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
               setStep(step + 1);
             })
             .catch((error) => {
-              setError("전화번호가 틀렸어요.")
+              setError("전화번호가 틀렸어요.");
               console.error("전화번호 없음: ", error);
             });
         }
@@ -281,7 +281,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("끝")
       ) {
         if (!verificationCode) {
-          setError("인증번호를 입력하세요.")
+          setError("인증번호를 입력하세요.");
         } else {
           verificationCodeCheck(phoneNum, verificationCode)
             .then((data) => {
@@ -291,7 +291,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
             })
             .catch((error) => {
               console.error("인증번호 오류: ", error);
-              setError("인증번호가 틀렸어요.")
+              setError("인증번호가 틀렸어요.");
             });
         }
         resetTranscript();

@@ -230,18 +230,9 @@ const User: React.FC = () => {
       case SignUpStep.StartFaceRecognition:
         return (
           <>
-            <GreenText
-              text="얼굴로 로그인하면"
-              boldChars={["얼굴"]}
-            />
-            <GreenText
-              text="더 편해요."
-              boldChars={[""]}
-            />
-            <GreenText
-              text="등록할까요?"
-              boldChars={["등록"]}
-            />
+            <GreenText text="얼굴로 로그인하면" boldChars={["얼굴"]} />
+            <GreenText text="더 편해요." boldChars={[""]} />
+            <GreenText text="등록할까요?" boldChars={["등록"]} />
             <YellowButton height={50} width={200} onClick={nextStep}>
               시작
             </YellowButton>
@@ -335,19 +326,19 @@ const User: React.FC = () => {
   };
 
   return (
-    <div className="user-container flex flex-col items-center justify-between min-h-screen py-8 relative">
+    <div className="user-container relative flex min-h-screen flex-col items-center justify-between py-8">
       {/* Wrap the existing content in a div */}
-      <div className="flex-grow flex flex-col items-center justify-center w-full max-w-md z-10">
+      <div className="z-10 flex w-full max-w-md flex-grow flex-col items-center justify-center">
         {renderStep()}
         {error && <p className="error-message">{error}</p>}
       </div>
 
       {/* Add the avatar image */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[318px] h-[204px] z-0">
+      <div className="absolute bottom-0 left-1/2 z-0 h-[204px] w-[318px] -translate-x-1/2 transform">
         <img
           src={avatar}
           alt="Avatar"
-          className="w-full h-full object-contain"
+          className="h-full w-full object-contain"
         />
       </div>
       {/* <button className="switch-mode-button" onClick={() => setIsLogin(!isLogin)}>

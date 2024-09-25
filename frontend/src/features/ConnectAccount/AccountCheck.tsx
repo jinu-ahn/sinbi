@@ -39,17 +39,17 @@ const AccountCheck: React.FC = () => {
   return (
     <div>
       <header>
-        <h1 className="text-[40px] text-center">통장 확인</h1>
+        <h1 className="text-center text-[40px]">통장 확인</h1>
       </header>
 
       {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
       {error && (
-        <p className="text-red-500 text-center mt-4 text-[25px] font-bold">
+        <p className="mt-4 text-center text-[25px] font-bold text-red-500">
           {error}
         </p>
       )}
 
-      <div className="flex justify-center mt-4 w-[350px]">
+      <div className="mt-4 flex w-[350px] justify-center">
         <YellowBox>
           {/* 은행 로고와 이름 */}
           <div className="flex items-center space-x-4">
@@ -58,16 +58,16 @@ const AccountCheck: React.FC = () => {
                 <img
                   src={selectedBank.logo}
                   alt={selectedBank.name}
-                  className="w-10 h-10"
+                  className="h-10 w-10"
                 />
-                <p className="font-bold text-[30px]">{selectedBank.name}</p>
+                <p className="text-[30px] font-bold">{selectedBank.name}</p>
               </>
             )}
           </div>
 
           {/* 계좌번호 */}
           <div>
-            <p className="font-bold text-[30px]">{accountNum}</p>
+            <p className="text-[30px] font-bold">{accountNum}</p>
           </div>
         </YellowBox>
       </div>

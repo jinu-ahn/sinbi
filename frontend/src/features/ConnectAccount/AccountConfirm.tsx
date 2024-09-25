@@ -39,10 +39,10 @@ const AccountConfirm: React.FC = () => {
   return (
     <div>
       <header>
-        <h1 className="text-[40px] text-center">통장 등록 완료</h1>
+        <h1 className="text-center text-[40px]">통장 등록 완료</h1>
       </header>
 
-      <div className="flex justify-center mt-4 w-[350px]">
+      <div className="mt-4 flex w-[350px] justify-center">
         <YellowBox>
           {/* 은행 로고와 이름 */}
           <div className="flex items-center space-x-4">
@@ -51,16 +51,16 @@ const AccountConfirm: React.FC = () => {
                 <img
                   src={selectedBank.logo}
                   alt={selectedBank.name}
-                  className="w-10 h-10"
+                  className="h-10 w-10"
                 />
-                <p className="font-bold text-[30px]">{selectedBank.name}</p>
+                <p className="text-[30px] font-bold">{selectedBank.name}</p>
               </>
             )}
           </div>
 
           {/* 계좌번호 */}
           <div>
-            <p className="font-bold text-[30px]">{accountNum}</p>
+            <p className="text-[30px] font-bold">{accountNum}</p>
           </div>
         </YellowBox>
       </div>
