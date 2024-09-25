@@ -1,7 +1,11 @@
 import React from "react";
 import { BoldTextProps } from "./CommonComponent.types";
 
-const GreenText: React.FC<BoldTextProps> = ({ text, boldChars, textSize = "text-[36px]" }) => {
+const GreenText: React.FC<BoldTextProps> = ({
+  text,
+  boldChars,
+  textSize = "text-[36px]",
+}) => {
   const renderTextWithBold = () => {
     const regex = new RegExp(`(${boldChars.join("|")})`, "g");
     // 만약 볼드로 만들고싶은게 "처음", "비서"면
@@ -21,11 +25,19 @@ const GreenText: React.FC<BoldTextProps> = ({ text, boldChars, textSize = "text-
         );
       }
       // bold로 바꿔야하는 애들이 아니면 className 적용x
-      return <span key={index} className="text-[#0B4B24]">{part}</span>;
+      return (
+        <span key={index} className="text-[#0B4B24]">
+          {part}
+        </span>
+      );
     });
   };
 
-  return <div className={`text-center ${textSize} m-2 p-2`}>{renderTextWithBold()}</div>;
+  return (
+    <div className={`text-center ${textSize} leading-relaxed`}>
+      {renderTextWithBold()}
+    </div>
+  );
 };
 
 export default GreenText;

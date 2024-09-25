@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import YellowButton from "../../components/YellowButton";
 // src url을 직접 쓰는게 아니라 여기서 import 해와야 나중에 avatar 경로가 바뀌어도 업데이트가 된다!!
-import avatar from '../../assets/avatar_img.png'
+import avatar from "../../assets/avatar_img.png";
 import MainVoiceCommand from "./MainVoiceCommand";
 
 interface ButtonConfig {
@@ -52,12 +52,12 @@ const MainPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-between min-h-screen py-8 relative">
+    <div className="relative flex min-h-screen flex-col items-center justify-between py-8">
       <div className="w-full max-w-md">
-        <div className="grid grid-cols-2 gap-6 mobile-medium:gap-8 mobile-large:gap-10 p-2">
+        <div className="grid grid-cols-2 gap-6 p-2 mobile-medium:gap-8 mobile-large:gap-10">
           {buttons.map((button, index) => (
             // grid 안에 감싸인 버튼들 중앙정렬하기 위해서 div로 한번더 감쌈
-            <div key={index} className="flex justify-center items-center">
+            <div key={index} className="flex items-center justify-center">
               <YellowButton
                 //   key={index}
                 // 변경: 고정 값 대신 동적으로 계산된 크기 사용
@@ -68,14 +68,11 @@ const MainPage: React.FC = () => {
               >
                 {/* 변경: div 추가 및 클래스 수정 */}
                 {/* 이유: 버튼 내부 컨텐츠의 레이아웃 개선 및 전체 영역 활용 */}
-                <div className="flex flex-col items-center justify-center h-full w-full leading-relaxed">
+                <div className="flex h-full w-full flex-col items-center justify-center leading-relaxed">
                   {button.text.map((line, lineIndex) => (
                     <p
                       key={lineIndex}
-                      className="font-bold text-center
-                                text-[30px] 
-                                mobile-medium:text-[35px]
-                                mobile-large:text-[40px]"
+                      className="text-center text-[30px] font-bold mobile-medium:text-[35px] mobile-large:text-[40px]"
                       // 변경: 클래스 수정
                       // 이유: 반응형 폰트 크기 적용
                       // - text-[30px]: 기본 폰트 크기 (320px 미만 화면)
@@ -95,13 +92,13 @@ const MainPage: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       {/* 아바타 이미지 추가 */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[318px] h-[204px]">
+      <div className="absolute bottom-0 left-1/2 h-[204px] w-[318px] -translate-x-1/2 transform">
         <img
           src={avatar}
           alt="Avatar"
-          className="w-full h-full object-contain"
+          className="h-full w-full object-contain"
         />
       </div>
 

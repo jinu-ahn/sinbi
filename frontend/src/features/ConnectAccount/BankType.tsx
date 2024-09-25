@@ -43,33 +43,33 @@ const BankType: React.FC = () => {
   return (
     <div>
       <header>
-        <h1 className="text-[40px] text-center">통장 등록</h1>
+        <h1 className="text-center text-[40px]">통장 등록</h1>
       </header>
 
       {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
       {error && (
-        <p className="text-red-500 text-center mt-4 text-[25px] font-bold">
+        <p className="mt-4 text-center text-[25px] font-bold text-red-500">
           {error}
         </p>
       )}
 
-      <div className="w-full flex justify-center mt-4">
+      <div className="mt-4 flex w-full justify-center">
         <YellowBox>
           <div>
-            <p className="font-bold text-[30px]">은행</p>
+            <p className="text-[30px] font-bold">은행</p>
           </div>
 
           {/* 스크린 길이 말고 div 내에서 계속 스크롤되게 div 고정 */}
-          <div className="grid grid-cols-3 gap-4 max-h-64 overflow-y-auto">
+          <div className="grid max-h-64 grid-cols-3 gap-4 overflow-y-auto">
             {banks.map((bank) => (
               <div
                 key={bank.id}
                 onClick={() => setBankType(bank.id)}
-                className={`border p-2 rounded-lg flex flex-col items-center cursor-pointer ${
+                className={`flex cursor-pointer flex-col items-center rounded-lg border p-2 ${
                   bankType === bank.id ? "border-blue-500" : "border-gray-300"
                 }`}
               >
-                <img src={bank.logo} alt={bank.name} className="w-16 h-16" />
+                <img src={bank.logo} alt={bank.name} className="h-16 w-16" />
                 <p className="font-bold">{bank.name}</p>
               </div>
             ))}

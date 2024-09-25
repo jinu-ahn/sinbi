@@ -7,7 +7,7 @@ import BankType from "./BankType";
 import AccountCheck from "./AccountCheck";
 import PhoneNumAsk from "./PhoneNumAsk";
 import VerificationCode from "./VerificationCode";
-import AccountConfirm from "./AccountConfirm"
+import AccountConfirm from "./AccountConfirm";
 
 const ConnectAccountPage: React.FC = () => {
   const { step } = useConnectAccountStore();
@@ -19,13 +19,13 @@ const ConnectAccountPage: React.FC = () => {
       case 1:
         return <BankType />;
       case 2:
-        return <AccountCheck />
+        return <AccountCheck />;
       case 3:
-        return <PhoneNumAsk />
+        return <PhoneNumAsk />;
       case 4:
-        return <VerificationCode />
+        return <VerificationCode />;
       case 5:
-        return <AccountConfirm />
+        return <AccountConfirm />;
       // case 별 컴포넌트 추가해나가면 됨
       default:
         return <AccountNumber />;
@@ -33,11 +33,15 @@ const ConnectAccountPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen py-8">
+    <div className="flex min-h-screen flex-col items-center py-8">
       {renderComponent()}
 
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[318px] h-[204px]">
-        <img src={avatar} alt="Avatar" className="w-full h-full object-contain" />
+      <div className="absolute bottom-0 left-1/2 h-[204px] w-[318px] -translate-x-1/2 transform">
+        <img
+          src={avatar}
+          alt="Avatar"
+          className="h-full w-full object-contain"
+        />
       </div>
 
       <ConnectAccountVoiceCommand />

@@ -3,52 +3,52 @@ import avatar from "./assets/avatar.png";
 
 const TitlePage: React.FC = () => {
   return (
-    <div className="relative h-screen flex flex-col items-center">
+    <div className="relative flex h-screen flex-col items-center">
       <div className="mt-[100px]">
         {/* 제일 윗부분 */}
         <div className="mt-4 text-center">
-          <h1 className="text-3xl mt-5 mb-5">
+          <h1 className="mb-5 mt-5 text-3xl">
             은행을 안가도 <br /> 말로 편하게
           </h1>
 
-          <div className="mt-10 mb-[60px]">
+          <div className="mb-[60px] mt-10">
             {/* 신 뒤에 작은 노란원 */}
             <div className="relative inline-block">
-              <div className="absolute left-[5px] top-[10px] transform -translate-y-1/2 bg-[#FFC700] rounded-full w-[20px] h-[20px] z-0"></div>
-              <span className="relative z-10 text-[#0D690D] text-[50px] font-bold -mt-3 block">
+              <div className="absolute left-[5px] top-[10px] z-0 h-[20px] w-[20px] -translate-y-1/2 transform rounded-full bg-[#FFC700]"></div>
+              <span className="relative z-10 -mt-3 block text-[50px] font-bold text-[#0D690D]">
                 신
               </span>
             </div>
 
             {/* 비 뒤에 큰 노란원 */}
-            <div className="relative inline-block top-5">
-              <div className="absolute z-0 inset-0 left-[-20px] top-[-20px] bg-[#FFC700] rounded-full w-[90px] h-[90px] flex items-center justify-center mr-5"></div>
-              <span className="relative z-10 text-[#0D690D] text-[50px] mt-5 font-bold">
+            <div className="relative top-5 inline-block">
+              <div className="absolute inset-0 left-[-20px] top-[-20px] z-0 mr-5 flex h-[90px] w-[90px] items-center justify-center rounded-full bg-[#FFC700]"></div>
+              <span className="relative z-10 mt-5 text-[50px] font-bold text-[#0D690D]">
                 비
               </span>
             </div>
           </div>
 
-          <h2 className="mt-4 mb-5 text-2xl font-bold text-[#0B4B24] relative">
-            <p className="mr-10 mt-5 mb-5">어르신을 위한</p>
-            <span className="ml-10 relative mt-5 mb-5">
+          <h2 className="relative mb-5 mt-4 text-2xl font-bold text-[#0B4B24]">
+            <p className="mb-5 mr-10 mt-5">어르신을 위한</p>
+            <span className="relative mb-5 ml-10 mt-5">
               맞춤 은행 비서
               {/* "신" 위 노란 강조점 */}
-              <div className="absolute -top-[65px] left-[20px] w-[10px] h-[10px] bg-[#FFC700] rounded-full"></div>
+              <div className="absolute -top-[65px] left-[20px] h-[10px] w-[10px] rounded-full bg-[#FFC700]"></div>
               {/* "비" 위 노란 강조점 */}
-              <div className="absolute -top-3 left-[120px] w-[10px] h-[10px] bg-[#FFC700] rounded-full"></div>
+              <div className="absolute -top-3 left-[120px] h-[10px] w-[10px] rounded-full bg-[#FFC700]"></div>
             </span>
           </h2>
         </div>
       </div>
 
       {/* 아바타 들어갈 부분 */}
-      <div className="mt-6 absolute bottom-1 flex flex-col items-center">
-        <div className="w-40 h-40 overflow-hidden">
+      <div className="absolute bottom-1 mt-6 flex flex-col items-center">
+        <div className="h-40 w-40 overflow-hidden">
           <img
             src={avatar}
             alt="Avatar"
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
       </div>
