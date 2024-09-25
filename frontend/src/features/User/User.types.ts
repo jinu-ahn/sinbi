@@ -43,7 +43,7 @@ export interface SignUpDto {
 
 export interface LoginDto {
   phone: string;
-  password: string;
+  password?: string;
 }
 
 export interface TokenDto {
