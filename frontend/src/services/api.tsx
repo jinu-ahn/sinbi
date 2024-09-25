@@ -44,26 +44,6 @@ export const sendPhoneNumber = async (phoneNum: string) => {
   }
 };
 
-// // 문자 전송
-// export const sendSms = async (phoneNum: string) => {
-//   const response = await api.post("/sms/send", { phoneNum });
-
-//   return response.data;
-// };
-
-// 인증코드 확인
-// export const verifySms = async (
-//   phoneNum: string,
-//   certificationCode: string,
-// ) => {
-//   console.log({ phoneNum, certificationCode });
-//   const response = await api.post("/sms/verify", {
-//     phoneNum,
-//     certificationCode,
-//   });
-//   return response.data;
-// };
-
 // 인증코드 확인
 export const verificationCodeCheck = async (
   phoneNum: string,
