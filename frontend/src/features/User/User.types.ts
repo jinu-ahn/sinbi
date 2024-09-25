@@ -43,12 +43,10 @@ export interface SignUpDto {
 
 export interface LoginDto {
   phone: string;
-  password?: string;
+  password: string;
 }
 
 export interface TokenDto {
-  grantType: string;
-  accessToken: string;
-  refreshToken: string;
-  refreshTokenExpiresIn: number;
+  status: string;
+  data: string; // "SUCCESS" 문자열이 여기에 들어갑니다.
 }
