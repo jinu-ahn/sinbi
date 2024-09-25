@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
 import useUserStore from "./useUserStore";
-import { LoginDto, SignUpDto, SignUpStep } from "./User.types";
+import { LoginDto, SignUpDto, SignUpStep, TokenDto } from "./User.types";
 import GreenText from "../../components/GreenText";
 import YellowButton from "../../components/YellowButton";
 import VoiceCommand from "./VoiceCommand";
-import { login, sendPhoneNumber, signup, verificationCodeCheck } from "../../services/api";
+import {
+  login,
+  sendPhoneNumber,
+  signup,
+  verificationCodeCheck,
+} from "../../services/api";
 import SpeechBubble from "../../components/SpeechBubble";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/avatar_img.png";
 import "./User.css";
 import NumberPad from "./NumberPad";
+import { getCookie, setCookie } from "../../utils/cookieUtils";
 
-const User: React.FC = () => {
+const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [isLogin, setIsLogin] = useState(false);
@@ -34,9 +40,39 @@ const User: React.FC = () => {
   } = useUserStore();
 
   useEffect(() => {
+    // 자동 로그인 체크
+    const storedPhone = getCookie("userPhone");
+    if (storedPhone) {
+      setPhone(storedPhone);
+      handleAutoLogin();
+    } else {
+      setStep(SignUpStep.Login);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     // Reset error when step changes
     setError(null);
   }, [currentStep]);
+
+  const handleAutoLogin = async () => {
+    try {
+      // 리프레시 토큰을 사용하여 자동 로그인 시도
+      // 이 부분은 백엔드 API에 따라 구현이 달라질 수 있습니다.
+      const response = await login({ phone });
+      if (response.data === "SUCCESS") {
+        navigate("/"); // 메인 페이지로 이동
+      } else {
+        setStep(SignUpStep.Login);
+      }
+    } catch (error) {
+      console.error("Auto login failed:", error);
+      setStep(SignUpStep.Login);
+    }
+  };
+
+
 
   // 변경: handleSignUp 함수 추가
   const handleSignUp = async () => {
@@ -47,6 +83,7 @@ const User: React.FC = () => {
         userPassword: password,
       };
       await signup(signUpData, faceImage || undefined);
+      setCookie("userPhone", phone, 300); // 30일 동안 쿠키 저장
       setStep(SignUpStep.SignUpComplete);
 
       // Auto-login and navigation after a delay
@@ -106,10 +143,23 @@ const User: React.FC = () => {
         phone,
         password: faceImage ? undefined : password,
       };
-      const response = await login(loginDto, faceImage || undefined);
-      localStorage.setItem("accessToken", response.accessToken);
-      localStorage.setItem("refreshToken", response.refreshToken);
-      setStep(SignUpStep.ServiceIntro);
+      const response: TokenDto = await login(loginDto, faceImage || undefined);
+
+      // 토큰 저장은 login 함수 내에서 처리됨
+      // 로그인 성공 처리
+      // 로그인 성공 확인
+      if (response.data === "SUCCESS") {
+        console.log("로그인 성공");
+        // 토큰은 이미 login 함수 내에서 저장되었으므로 여기서는 추가 처리가 필요 없음
+        setCookie("userPhone", phone, 30); // 30일 동안 쿠키 저장
+        navigate("/"); // 메인 페이지로 이동
+      } else {
+        console.error("Login failed:", error);
+        setError("로그인 처리 중 오류가 발생했습니다.");
+      }
+      // 필요한 경우 사용자 정보를 상태나 스토어에 저장
+      // 예: setUserInfo(response.userInfo);
+
     } catch (error) {
       console.error("Login failed:", error);
       setError("로그인에 실패했습니다. 다시 시도해주세요.");
@@ -349,4 +399,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default SignUp;
