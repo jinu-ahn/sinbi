@@ -2,6 +2,7 @@ package c104.sinbi.domain.virtualaccount.controller;
 
 import c104.sinbi.common.ApiResponse;
 import c104.sinbi.common.constant.BankTypeEnum;
+import c104.sinbi.domain.virtualaccount.VirtualAccount;
 import c104.sinbi.domain.virtualaccount.dto.VirtualAccountCheckRequest;
 import c104.sinbi.domain.virtualaccount.service.VirtualAccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,8 +26,8 @@ public class VirtualAccountController {
             @RequestParam String accountNum,
             @RequestParam BankTypeEnum bankTypeEnum) {
         VirtualAccountCheckRequest virtualAccountCheckRequest = new VirtualAccountCheckRequest(accountNum, bankTypeEnum);
-        virtualAccountService.VirtualAccountCheck(virtualAccountCheckRequest);
+        VirtualAccount virtualAccount = virtualAccountService.VirtualAccountCheck(virtualAccountCheckRequest);
 
-        return ResponseEntity.ok(ApiResponse.success("계좌가 존재합니다."));
+        return ResponseEntity.ok(ApiResponse.success(virtualAccount, "계좌가 존재합니다."));
     }
 }

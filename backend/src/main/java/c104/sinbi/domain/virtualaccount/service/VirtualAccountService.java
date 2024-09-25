@@ -18,10 +18,12 @@ public class VirtualAccountService {
     private final VirtualAccountRepository virtualAccountRepository;
 
     //상대방 계좌 조회
-    public void VirtualAccountCheck(VirtualAccountCheckRequest virtualAccountCheckRequest) {
-        virtualAccountRepository.findByAccountNumAndBankType(
+    public VirtualAccount VirtualAccountCheck(VirtualAccountCheckRequest virtualAccountCheckRequest) {
+        VirtualAccount virtualAccount = virtualAccountRepository.findByAccountNumAndBankType(
                 virtualAccountCheckRequest.getAccountNum(),
                 virtualAccountCheckRequest.getBankTypeEnum())
                 .orElseThrow(() -> new AccountNotFoundException());
+
+        return virtualAccount;
     }
 }
