@@ -30,7 +30,8 @@ const MainVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("송금") ||
       lowerCaseTranscript.includes("이체") ||
       lowerCaseTranscript.includes("계좌 이체") ||
-      lowerCaseTranscript.includes("보낼래")
+      lowerCaseTranscript.includes("보낼래") ||
+      lowerCaseTranscript.includes("돈 보내기")
     ) {
       navigate("/transfer");
       resetTranscript();
@@ -39,14 +40,14 @@ const MainVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("통장 조회") ||
       lowerCaseTranscript.includes("계좌 보기") ||
       lowerCaseTranscript.includes("통장 보기") ||
-      lowerCaseTranscript.includes("통장")
+      lowerCaseTranscript.includes("모든 통장")
     ) {
       // "계좌" or "통장" refers to accounts
       navigate("/account-view");
       resetTranscript();
     } else if (
-      lowerCaseTranscript.includes("계좌 등록") ||
-      lowerCaseTranscript.includes("통장 연결") ||
+      lowerCaseTranscript.includes("통장 등록") ||
+      lowerCaseTranscript.includes("계좌 연결") ||
       lowerCaseTranscript.includes("연결") ||
       lowerCaseTranscript.includes("등록")
     ) {
