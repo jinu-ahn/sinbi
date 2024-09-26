@@ -7,7 +7,7 @@ const AccountCheck: React.FC = () => {
   const { bankType, accountNum, error } = useConnectAccountStore();
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
-    { id: "KOOKMIN", name: "국민은행", logo: bankLogos["KB국민은행"] },
+    { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
     { id: "KDB", name: "KDB산업은행", logo: bankLogos["KDB산업은행"] },
     { id: "KEB", name: "KEB외환은행", logo: bankLogos["KEB외환은행"] },
     { id: "NH", name: "NH농협은행", logo: bankLogos["NH농협은행"] },

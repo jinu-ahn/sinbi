@@ -104,7 +104,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("케이비") ||
         lowerCaseTranscript.includes("국민")
       ) {
-        setBankType("KOOKMIN");
+        setBankType("KB");
       } else if (
         lowerCaseTranscript.includes("케이디비") ||
         lowerCaseTranscript.includes("산업")

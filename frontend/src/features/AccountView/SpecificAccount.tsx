@@ -66,7 +66,10 @@ const SpecificAccount: React.FC<{ accountId: string }> = ({ accountId }) => {
       {/* div 고정시키고 그 안에서 scroll */}
       <div className="h-[150px] overflow-y-auto">
         {Object.keys(groupedTransactions).length > 0 ? (
-          Object.keys(groupedTransactions).map((date) => (
+          Object.keys(groupedTransactions)
+          // 날짜 제일 최신순으로 정렬
+          .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+          .map((date) => (
             <div key={date} className="mb-4 w-[250px]">
               {/* 날짜 */}
               <h2 className="text-lg text-left font-bold mb-2">{date}</h2>

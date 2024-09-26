@@ -1,10 +1,10 @@
 import React from "react";
+import { useTransferStore } from "./TransferStore";
+import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
-import { useConnectAccountStore } from "./ConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
 
-const AccountConfirm: React.FC = () => {
-  const { bankType, accountNum } = useConnectAccountStore();
+const AddToFavorite: React.FC = () => {
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -34,38 +34,36 @@ const AccountConfirm: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const selectedBank = banks.find((bank) => bank.id === bankType);
+  const { formalName, sendBankType, sendAccountNum } = useTransferStore();
+  const selectedBank = banks.find((bank) => bank.id === sendBankType);
+  const boldChars = ["또"];
+  const text = `다음에도 또 보낼래요?`;
 
   return (
-    <div>
+    <div className="mt-[30px]">
       <header>
-        <h1 className="text-center text-[40px]">통장 등록 완료</h1>
+        <BlackText
+          textSize="text-[30px]"
+          text={text}
+          boldChars={boldChars}
+        ></BlackText>
       </header>
-
-      <div className="mt-4 flex w-[350px] justify-center">
+      <div className="mt-[40px] flex items-center justify-center">
         <YellowBox>
-          {/* 은행 로고와 이름 */}
-          <div className="flex items-center space-x-4">
-            {selectedBank && (
-              <>
-                <img
-                  src={selectedBank.logo}
-                  alt={selectedBank.name}
-                  className="h-10 w-10"
-                />
-                <p className="text-[30px] font-bold">{selectedBank.name}</p>
-              </>
-            )}
+          <p className="text-[30px] font-bold">{formalName}</p>
+          <div className="flex m-2">
+            <img
+              src={selectedBank.logo}
+              alt={selectedBank.name}
+              className="h-6 w-6"
+            />
+            <p>{selectedBank.name}</p>
           </div>
-
-          {/* 계좌번호 */}
-          <div>
-            <p className="text-[30px] font-bold">{accountNum}</p>
-          </div>
+          <p className="text-[30px]">{sendAccountNum}</p>
         </YellowBox>
       </div>
     </div>
   );
 };
 
-export default AccountConfirm;
+export default AddToFavorite;

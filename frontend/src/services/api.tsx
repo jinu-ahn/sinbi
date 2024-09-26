@@ -101,21 +101,20 @@ export const login = async (loginDto: LoginDto, image?: File) => {
   return response.data;
 };
 
-
 // 내 계좌들 조회
 export const myAccounts = async (userId: number) => {
   try {
-    const response = await api.get('/account', {
+    const response = await api.get("/account", {
       params: {
         userId,
-      }
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('계좌 없음', error);
+    console.error("계좌 없음", error);
     throw error;
   }
-}
+};
 
 // 내 특정 계좌 조회
 export const specificAccount = async (accountId: string) => {
@@ -123,13 +122,70 @@ export const specificAccount = async (accountId: string) => {
     const response = await api.get(`/account/${accountId}`, {
       params: {
         accountId,
-      }
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('해당 계좌 없음', error);
+    console.error("해당 계좌 없음", error);
+    throw error;
+  }
+};
+
+// 계좌 이체
+export const sendMoney = async (
+  accountId: number,
+  toAccountNum: string,
+  toBankType: string,
+  transferAmount: number,
+) => {
+  try {
+    const response = await api.post("/account/transfer", {
+      accountId,
+      toAccountNum,
+      toBankType,
+      transferAmount,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("이체할 수 없습니다: ", error);
+    throw error;
+  }
+};
+
+// 즐겨찾는 계좌에 등록
+export const addFavorite = async (
+  recvName: string,
+  accountNum: string,
+  bankTypeEnum: string,
+  recvAlias: string,
+) => {
+  try {
+    const response = await api.post("/receiverAccount/registration", {
+      recvName,
+      accountNum,
+      bankTypeEnum,
+      recvAlias,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("이체할 수 없습니다: ", error);
     throw error;
   }
 }
 
-export default api
+// 즐겨찾는 계좌 목록 보기
+export const favoriteAccounts = async (userId: number) => {
+  try {
+    const response = await api.get('/receiverAccount/list', {
+      params: {
+        userId,
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("즐겨찾는 계좌 못 찾음", error);
+    throw error;
+  }
+};
+
+export default api;

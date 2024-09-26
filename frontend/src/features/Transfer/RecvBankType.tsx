@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
-import { useConnectAccountStore } from "./ConnectAccountStore";
+import { useTransferStore } from "./TransferStore";
 import bankLogos from "../../assets/bankLogos";
 
 const banks = [
@@ -32,13 +32,13 @@ const banks = [
   { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
 ];
 
-const BankType: React.FC = () => {
-  const { bankType, setBankType, error, setError } = useConnectAccountStore();
+const RecvBankType: React.FC = () => {
+  const { sendBankType, setSendBankType, error, setError } = useTransferStore();
 
   useEffect(() => {
-    console.log("bankType : ", bankType);
+    console.log("bankType : ", sendBankType);
     setError(null);
-  }, [bankType]);
+  }, [sendBankType]);
 
   return (
     <div>
@@ -64,9 +64,9 @@ const BankType: React.FC = () => {
             {banks.map((bank) => (
               <div
                 key={bank.id}
-                onClick={() => setBankType(bank.id)}
+                onClick={() => setSendBankType(bank.id)}
                 className={`flex cursor-pointer flex-col items-center rounded-lg border p-2 ${
-                  bankType === bank.id ? "border-blue-500" : "border-gray-300"
+                  sendBankType === bank.id ? "border-blue-500" : "border-gray-300"
                 }`}
               >
                 <img src={bank.logo} alt={bank.name} className="h-16 w-16" />
@@ -80,4 +80,4 @@ const BankType: React.FC = () => {
   );
 };
 
-export default BankType;
+export default RecvBankType;
