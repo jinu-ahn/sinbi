@@ -322,6 +322,10 @@ const TransferVoiceCommand: React.FC = () => {
           .catch((error) => {
             console.error("계좌이체 못함: ", error);
           });
+      } else if (
+        lowerCaseTranscript.includes("아니")
+      ) {
+        setStep(1)
       }
       resetTranscript();
     } else if (step === 7) {
