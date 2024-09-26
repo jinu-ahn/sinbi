@@ -1,6 +1,7 @@
 package c104.sinbi.domain.user.service;
 
 import c104.sinbi.common.jwt.FaceIdAuthenticationProvider;
+import c104.sinbi.common.util.CookieUtil;
 import c104.sinbi.common.util.KakaoFaceAuthenticationUtil;
 import c104.sinbi.common.config.s3.S3Uploader;
 import c104.sinbi.common.constant.ErrorCode;
@@ -31,15 +32,15 @@ import java.io.IOException;
 @Transactional(readOnly = true)
 @Slf4j
 public class UserService {
+    private final String AUTHORIZATION = "Authorization";
     private final UserRepository userRepository;
-
     private final BCryptPasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
     private final AuthenticationManagerBuilder managerBuilder;
     private final TokenProvider tokenProvider;
     private final RedisUtil redisUtil;
-    private final KakaoFaceAuthenticationUtil authenticationUtil;
     private final FaceIdAuthenticationProvider faceIdAuthenticationProvider;
+    private final CookieUtil cookieUtil;
 
     @Transactional
     public void signup(@Valid final SignUpDto signUpDto, final MultipartFile multiPartFile) {
@@ -63,7 +64,7 @@ public class UserService {
      */
     @Transactional
     public void login(@Valid final LoginDto requestDto, final MultipartFile multipartFile, HttpServletResponse response) throws IOException {
-        User user = userRepository.findByUserPhone(requestDto.getPhone()).orElseThrow(
+        userRepository.findByUserPhone(requestDto.getPhone()).orElseThrow(
                 () -> new UserAlreadyExistsException(ErrorCode.NOT_FOUND_PHONE_NUMBER)
         );
         Authentication authenticationToken;
@@ -77,10 +78,11 @@ public class UserService {
             authentication = managerBuilder.getObject().authenticate(authenticationToken);
         }
         TokenDto tokenDto = tokenProvider.generateToken(authentication);
-        tokenToHeader(tokenDto, response);
-
+        response.addHeader(AUTHORIZATION,tokenDto.accessToken());
+        cookieUtil.addRefreshTokenCookie(response, tokenDto);
         redisUtil.setData(requestDto.getPhone(), tokenDto.refreshToken(), tokenDto.refreshTokenExpiresIn());
     }
+
 
     /**
      * @ 작성자   : 안진우
