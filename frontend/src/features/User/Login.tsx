@@ -21,11 +21,12 @@ const Login: React.FC = () => {
         password,
       };
       const response: TokenDto = await login(loginDto);
+      console.log("response", response)
 
-      if (response.data === "SUCCESS") {
+      if (response.status === "SUCCESS") {
         console.log("로그인 성공");
         setCookie("userPhone", phone, 30); // 30일 동안 쿠키 저장
-        navigate("/"); // 메인 페이지로 이동
+        navigate("/main"); // 메인 페이지로 이동
       } else {
         setError("로그인 처리 중 오류가 발생했습니다.");
       }

@@ -46,7 +46,7 @@ const SignUp: React.FC = () => {
       setPhone(storedPhone);
       handleAutoLogin();
     } else {
-      setStep(SignUpStep.Login);
+      setStep(SignUpStep.Welcome);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,13 +84,24 @@ const SignUp: React.FC = () => {
       };
       await signup(signUpData, faceImage || undefined);
       setCookie("userPhone", phone, 300); // 30일 동안 쿠키 저장
-      setStep(SignUpStep.SignUpComplete);
-
+      // setStep(SignUpStep.SignUpComplete);
+      console.log("Signup successful, attempting auto-login");
       // Auto-login and navigation after a delay
-      setTimeout(async () => {
-        await handleLogin();
-        navigate("/"); // Navigate to the start page
-      }, 3000); // Wait for 3 seconds before auto-login
+      // setTimeout(async () => {
+      //   await handleLogin();
+      //   navigate("/"); // Navigate to the start page
+      // }, 3000); // Wait for 3 seconds before auto-login
+      // What: 회원가입 후 자동 로그인
+    // Why: 사용자 경험 향상
+    const loginResponse = await login({ phone, password:password });
+    console.log("오토로그인 response:", loginResponse); // 디버깅 로그 추가
+
+    if (loginResponse.status === "SUCCESS") {
+      navigate("/main");
+    } else {
+      setError("자동 로그인에 실패했습니다. 다시 로그인해주세요.");
+      navigate("/login");
+    }
     } catch (error) {
       console.error("Signup failed:", error);
       setError("회원가입에 실패했습니다. 다시 시도해주세요.");
@@ -148,7 +159,8 @@ const SignUp: React.FC = () => {
       // 토큰 저장은 login 함수 내에서 처리됨
       // 로그인 성공 처리
       // 로그인 성공 확인
-      if (response.data === "SUCCESS") {
+      console.log("response", response)
+      if (response.status === "SUCCESS") {
         console.log("로그인 성공");
         // 토큰은 이미 login 함수 내에서 저장되었으므로 여기서는 추가 처리가 필요 없음
         setCookie("userPhone", phone, 30); // 30일 동안 쿠키 저장

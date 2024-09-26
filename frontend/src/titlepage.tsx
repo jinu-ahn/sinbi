@@ -3,6 +3,7 @@ import avatar from "./assets/avatar.png";
 import { useNavigate } from "react-router-dom";
 import { getCookie } from "./utils/cookieUtils";
 import { tokenStorage } from "./features/User/tokenUtils";
+import { refreshAccessToken } from "./services/api";
 
 const TitlePage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,7 +14,8 @@ const TitlePage: React.FC = () => {
     const checkAutoLogin = async () => {
       const storedPhone = getCookie("userPhone");
       if (storedPhone) {
-        const refreshToken = tokenStorage.getRefreshToken();
+        // const refreshToken = tokenStorage.getRefreshToken();
+        const refreshToken = localStorage.getItem("refreshToken")
         if (refreshToken) {
           try {
             // TODO: 리프레시 토큰을 사용하여 새 액세스 토큰을 요청하는 API 호출
@@ -22,10 +24,12 @@ const TitlePage: React.FC = () => {
             //   navigate("/main");
             //   return;
             // }
+            await refreshAccessToken(refreshToken);
+            navigate("/main");
           } catch (error) {
             console.error("Auto login failed:", error);
           }
-        }
+        } 
       }
       // 자동 로그인 실패 시 "처음이신가요?" 페이지로 이동
       navigate("/welcome");
