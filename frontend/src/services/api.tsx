@@ -10,6 +10,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // 쿠키 포함해서 요청보냄
 });
 
 // 이제 밑에다가 필요한 api function 만들면 된다
@@ -85,23 +86,23 @@ export const signup = async (signUpDto: SignUpDto, image?: File) => {
   }
 };
 
-// 로그인
 // What: 요청 인터셉터를 추가하여 모든 요청에 인증 토큰을 첨부합니다.
 // Why: 사용자 인증이 필요한 API 호출마다 수동으로 토큰을 추가하는 것을 방지하고, 중앙에서 일괄적으로 처리하기 위함입니다.
-// api.interceptors.request.use(
-//   (config) => {
-//     const token = tokenStorage.getAccessToken();
-//     if (token) {
-//       config.headers['Authorization'] = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
+api.interceptors.request.use(
+  (config) => {
+    // const token = tokenStorage.getAccessToken();
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
-
+// 응답 인터셉터
 // What: axios 인터셉터 추가
 // Why: 401 에러 발생 시 토큰 갱신을 자동으로 시도하기 위함
 api.interceptors.response.use(
@@ -113,21 +114,28 @@ api.interceptors.response.use(
       try {
         // What: 토큰 갱신 함수 호출
         // Why: 액세스 토큰이 만료되었을 때 새로운 토큰을 얻기 위함
-        await refreshAccessToken();
+        // await refreshAccessToken();
         // What: 원래 요청 재시도
         // Why: 새로운 토큰으로 실패했던 요청을 다시 시도하기 위함
-        return api(originalRequest);
-      } catch (refreshError) {
-        console.error("Token refresh failed:", refreshError);
+        // What: 401 에러 발생 시 요청을 재시도합니다.
+        // Why: 백엔드에서 자동으로 토큰을 갱신했을 수 있으므로, 한 번 더 시도합니다.
+        return await api(originalRequest);
+      } catch (retryError) {
+        console.error("Token refresh failed:", retryError);
         // What: 토큰 제거 및 로그인 페이지로 리다이렉트
         // Why: 리프레시 토큰도 만료된 경우 사용자를 로그아웃 시키고 재로그인을 유도하기 위함
+        // tokenStorage.clearTokens();
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        window.location.href = "/login";
+        return Promise.reject(retryError);
+
+        // What: 에러를 다시 throw
+        // Why: 호출자에게 에러 상황을 알리기 위함
+        // throw error;
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 // What: 응답 인터셉터를 추가하여 인증 오류(401)를 처리합니다.
 // Why: 액세스 토큰이 만료되었을 때 자동으로 리프레시 토큰을 사용하여 새 토큰을 발급받고, 원래의 요청을 재시도하기 위함입니다.
@@ -143,16 +151,16 @@ api.interceptors.response.use(
 //         const refreshToken = tokenStorage.getRefreshToken();
 //         const response = await api.post<TokenDto>("/user/refresh", { refreshToken });
 //         const { accessToken, refreshToken: newRefreshToken } = response.data;
-        
+
 //         // What: 새로 받은 토큰들을 저장합니다.
 //         // Why: 향후 API 요청에 사용하기 위해 최신 토큰을 유지합니다.
 //         tokenStorage.setAccessToken(accessToken);
 //         tokenStorage.setRefreshToken(newRefreshToken);
-        
+
 //         // What: 새 액세스 토큰을 요청 헤더에 설정합니다.
 //         // Why: 재시도할 원래 요청에 새 토큰을 사용하기 위함입니다.
 //         api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-        
+
 //         // What: 원래의 요청을 새 토큰으로 재시도합니다.
 //         // Why: 사용자 경험을 끊김 없이 유지하기 위함입니다.
 //         return api(originalRequest);
@@ -172,19 +180,20 @@ export const refreshAccessToken = async (): Promise<TokenDto> => {
   try {
     // What: 임의의 보호된 엔드포인트로 요청
     // Why: JwtExceptionFilter에서 토큰 갱신 로직을 트리거하기 위함
-    const refreshToken = localStorage.getItem('refreshToken');
-    const response = await api.get('/any-protected-endpoint', {
+    const refreshToken = localStorage.getItem("refreshToken");
+    const response = await api.post("/user/login", null, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'refreshToken': refreshToken
-      }
+        // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "Content-Type": "application/json",
+        refreshToken: refreshToken,
+      },
     });
-    
+
     // What: 응답 헤더에서 새로운 토큰 추출
     // Why: 백엔드에서 제공하는 새로운 토큰을 저장하기 위함
-    const newAccessToken = response.headers['authorization'];
-    const newRefreshToken = response.headers['refreshtoken'];
-    
+    const newAccessToken = response.headers["authorization"];
+    const newRefreshToken = response.headers["refreshtoken"];
+
     if (newAccessToken && newRefreshToken) {
       // tokenStorage.setAccessToken(newAccessToken);
       // tokenStorage.setRefreshToken(newRefreshToken);
@@ -193,7 +202,7 @@ export const refreshAccessToken = async (): Promise<TokenDto> => {
       localStorage.setItem("accessToken", newAccessToken);
       localStorage.setItem("refreshToken", newRefreshToken);
     }
-    
+
     return response.data;
   } catch (error) {
     console.error("Failed to refresh token:", error);
@@ -204,13 +213,16 @@ export const refreshAccessToken = async (): Promise<TokenDto> => {
 // What: 로그인 함수입니다.
 // Why: 사용자 인증을 처리하고 인증 토큰을 받아오기 위함입니다.
 // 로그인 성공 시 토큰을 로컬스토리지에 저장 하기 위함
-export const login = async (loginDto: LoginDto, image?: File): Promise<TokenDto> => {
+export const login = async (
+  loginDto: LoginDto,
+  image?: File,
+): Promise<TokenDto> => {
   // What: FormData 객체를 생성하고 로그인 정보를 추가합니다.
   // Why: 멀티파트 형식으로 데이터를 전송하기 위함입니다. (이미지 파일 포함 가능)
   const formData = new FormData();
   formData.append(
     "loginDto",
-    new Blob([JSON.stringify(loginDto)], { type: "application/json" })
+    new Blob([JSON.stringify(loginDto)], { type: "application/json" }),
   );
   if (image) {
     formData.append("image", image);
@@ -222,11 +234,11 @@ export const login = async (loginDto: LoginDto, image?: File): Promise<TokenDto>
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-  console.log("로그인 response: ", response)
+  console.log("로그인 response: ", response);
   // 토큰은 응답 헤더에서 가져와야 함
   // const accessToken = response.headers['authorization'];
   // const refreshToken = response.headers['refreshtoken'];
-  
+
   // What: 받아온 토큰을 저장합니다.
   // Why: 향후 API 요청에 사용하기 위해 토큰을 로컬에 저장합니다.
   // if (accessToken && refreshToken) {
@@ -248,25 +260,24 @@ export const login = async (loginDto: LoginDto, image?: File): Promise<TokenDto>
   } else {
     console.error("Tokens not found in response headers");
   }
-  
+
   return response.data;
 };
-
 
 // 내 계좌들 조회
 export const myAccounts = async (userId: number) => {
   try {
-    const response = await api.get('/account', {
+    const response = await api.get("/account", {
       params: {
         userId,
-      }
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('계좌 없음', error);
+    console.error("계좌 없음", error);
     throw error;
   }
-}
+};
 
 // 내 특정 계좌 조회
 export const specificAccount = async (accountId: string) => {
@@ -274,13 +285,13 @@ export const specificAccount = async (accountId: string) => {
     const response = await api.get(`/account/${accountId}`, {
       params: {
         accountId,
-      }
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('해당 계좌 없음', error);
+    console.error("해당 계좌 없음", error);
     throw error;
   }
-}
+};
 
-export default api
+export default api;

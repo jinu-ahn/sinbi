@@ -13,9 +13,11 @@ const TitlePage: React.FC = () => {
     // Why: 사용자 경험 향상을 위해 이미 로그인한 사용자를 자동으로 로그인시킵니다.
     const checkAutoLogin = async () => {
       const storedPhone = getCookie("userPhone");
+      console.log(storedPhone)
       if (storedPhone) {
-        // const refreshToken = tokenStorage.getRefreshToken();
-        const refreshToken = localStorage.getItem("refreshToken")
+        const refreshToken = tokenStorage.getRefreshToken();
+        // const refreshToken = localStorage.getItem("refreshToken")
+        console.log(refreshToken)
         if (refreshToken) {
           try {
             // TODO: 리프레시 토큰을 사용하여 새 액세스 토큰을 요청하는 API 호출
@@ -24,7 +26,7 @@ const TitlePage: React.FC = () => {
             //   navigate("/main");
             //   return;
             // }
-            await refreshAccessToken(refreshToken);
+            await refreshAccessToken();
             navigate("/main");
           } catch (error) {
             console.error("Auto login failed:", error);
