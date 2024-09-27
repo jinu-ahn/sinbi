@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import YellowButton from "../../components/YellowButton";
 // src url을 직접 쓰는게 아니라 여기서 import 해와야 나중에 avatar 경로가 바뀌어도 업데이트가 된다!!
-import avatar from "../../assets/avatar_img.png";
+import avatar from "../../assets/avatar.png";
 import MainVoiceCommand from "./MainVoiceCommand";
 
 interface ButtonConfig {
@@ -94,7 +94,7 @@ const MainPage: React.FC = () => {
       </div>
 
       {/* 아바타 이미지 추가 */}
-      <div className="absolute bottom-0 left-1/2 h-[204px] w-[318px] -translate-x-1/2 transform">
+      <div className="absolute bottom-0 left-1/2 h-[300px] w-[318px] -translate-x-1/2 transform">
         <img
           src={avatar}
           alt="Avatar"
