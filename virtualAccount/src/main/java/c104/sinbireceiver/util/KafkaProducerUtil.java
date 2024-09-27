@@ -16,9 +16,6 @@ public class KafkaProducerUtil<K, T> {
     @Value("${spring.kafka.topics.second-deposit}")
     private String depositTopic;
 
-    @Value("${spring.kafka.topics.find-user-id}")
-    private String findUserIdTopic;
-
     private final KafkaTemplate<K, ApiResponse<?>> kafkaTemplate;
 
     /**
@@ -37,14 +34,6 @@ public class KafkaProducerUtil<K, T> {
      */
     public void sendCompletDeposit(ApiResponse<?> value) {
         kafkaTemplate.send(depositTopic, value);
-    }
-    /**
-     * 가상계좌에 대한 값을 가져오는 토픽에 메시지를 전송합니다.
-     *
-     * @param value   메시지 값
-     */
-    public void sendFindUserId(ApiResponse<?> value) {
-        kafkaTemplate.send(findUserIdTopic, value);
     }
 
 }

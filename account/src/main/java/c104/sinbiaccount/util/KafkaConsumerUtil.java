@@ -52,14 +52,4 @@ public class KafkaConsumerUtil {
     public boolean listenDeposit(ApiResponse<String> response) {
         return response.getStatus().equals("SUCCESS");
     }
-
-    /**
-     * 사용자 ID를 찾는 토픽에 대한 리스너.
-     *
-     * @param record 수신된 메시지
-     */
-    @KafkaListener(topics = "${spring.kafka.topics.second-find-user-id}", groupId = "${spring.kafka.consumer.group-id}")
-    public Object listenFindUserId(ConsumerRecord<String, Object> record) {
-        return record.value();
-    }
 }

@@ -2,29 +2,11 @@ spring:
   application:
     name: sinbi
   profiles:
-    active: local
+    active: local,account
   config:
     import: optional:configserver:http://15.164.159.172:8888
-  kafka:
-    bootstrap-servers: localhost:9092  # Kafka 브로커 주소
-    consumer:
-      group-id: account  # 컨슈머 그룹 ID
-      auto-offset-reset: earliest   # 메시지 읽기 시작 위치 (earliest, latest 등)
-      properties:
-        spring.json.trusted.packages: "*"  # JSON 메시지 수신 시 신뢰할 패키지
-    topics:  # 여러 토픽 설정
-      first-find-virtual-account: sinbi.firstFindVirtualAccount  # ? ?? ??
-      second-find-virtual-account: sinbi.secondFindVirtualAccount  # ? ?? ??
-      first-deposit: sinbi.firstDeposit  # 두 번째 토픽
-      second-deposit: sinbi.secondDeposit
-      first-find-user-id: sinbi.firstFindUserId
-      second-find-user-id: sinbi.secondFindUserId
-    listener:
-      concurrency: 3  # 리스너 스레드 수 (옵션)
 management:
   endpoints:
     web:
       exposure:
         include: refresh
-
-

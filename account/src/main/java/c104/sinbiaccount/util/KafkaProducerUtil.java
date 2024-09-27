@@ -16,9 +16,6 @@ public class KafkaProducerUtil<K, V> {
     @Value("${spring.kafka.topics.first-deposit}")
     private String firstDepositTopic;
 
-    @Value("${spring.kafka.topics.first-find-user-id}")
-    private String findUserIdTopic;
-
     private final KafkaTemplate<K, ApiResponse<?>> kafkaTemplate;
 
     /**
@@ -37,14 +34,6 @@ public class KafkaProducerUtil<K, V> {
      */
     public void sendDeposit(ApiResponse<?> value) {
         kafkaTemplate.send(firstDepositTopic, value);
-    }
-    /**
-     *  유저에 대한 토픽에 메시지를 전송합니다.
-     *
-     * @param value   메시지 값
-     */
-    public void sendFindUserId(ApiResponse<?> value) {
-        kafkaTemplate.send(findUserIdTopic, value);
     }
 
 }

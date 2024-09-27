@@ -1,37 +1,15 @@
+server:
+  port: 8082
+
 spring:
-  redis:
-    user:
-      host: 34.47.86.148
-      port: 6379
-      password: AdminC104!
   application:
     name: sinbi
   profiles:
-    active: local
+    active: local,user
   config:
     import: optional:configserver:http://15.164.159.172:8888
-  kafka:
-    bootstrap-servers: localhost:9092  # Kafka ??? ??
-    consumer:
-      group-id: user  # ??? ?? ID
-      auto-offset-reset: earliest   # ??? ?? ?? ?? (earliest, latest ?)
-      properties:
-        spring.json.trusted.packages: "*"  # JSON ??? ?? ? ??? ???
-    topics:  # ?? ?? ??
-      first-find-virtual-account: sinbi.firstFindVirtualAccount  # ? ?? ??
-      second-find-virtual-account: sinbi.secondFindVirtualAccount  # ? ?? ??
-      first-deposit: sinbi.firstDeposit  # ? ?? ??
-      second-deposit: sinbi.secondDeposit
-      find-user-id: sinbi.findUserId
-      first-reissue: sinbi.firstReissue
-      second-reissue: sinbi.secondReissue
-    listener:
-      concurrency: 3  # ??? ??? ? (??)
 management:
   endpoints:
     web:
       exposure:
         include: refresh
-server:
-  port: 8082
-

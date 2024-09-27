@@ -12,9 +12,7 @@ import c104.sinbicommon.user.dto.SignUpDto;
 import c104.sinbicommon.user.dto.TokenDto;
 import c104.sinbicommon.user.repository.UserRepository;
 import c104.sinbicommon.util.CookieUtil;
-import c104.sinbicommon.util.KafkaProducerUtil;
 import c104.sinbicommon.util.RedisUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +43,6 @@ public class UserService {
     private final RedisUtil redisUtil;
     private final FaceIdAuthenticationProvider faceIdAuthenticationProvider;
     private final CookieUtil cookieUtil;
-    private final KafkaProducerUtil kafkaProducerUtil;
-    private final KafkaProducerUtil producerUtil;
 
     @Transactional
     public void signup(@Valid final SignUpDto signUpDto, final MultipartFile multiPartFile) {
