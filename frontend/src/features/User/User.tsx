@@ -7,14 +7,14 @@ import VoiceCommand from "./VoiceCommand";
 import { login, sendPhoneNumber, signup, verificationCodeCheck } from "../../services/api";
 import SpeechBubble from "../../components/SpeechBubble";
 import { useNavigate } from "react-router-dom";
-import avatar from "../../assets/avatar_img.png";
+import avatar from "../../assets/avatar.png";
 import "./User.css";
 import NumberPad from "./NumberPad";
 
 const User: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
-  const [isLogin, setIsLogin] = useState(false);
+
   const {
     currentStep,
     name,

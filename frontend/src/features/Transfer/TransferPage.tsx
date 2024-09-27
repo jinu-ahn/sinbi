@@ -13,7 +13,7 @@ import TransferCheck from "./TransferCheck";
 import TransferConfirm from "./TransferConfirm";
 import AddToFavorite from "./AddToFavorite";
 import AddNickName from "./AddNickName";
-import GoBackHome from "./goBackHome";
+import GoBackHome from "./GoBackHome";
 
 import TransferVoiceCommand from "./TransferVoiceCommand";
 
@@ -64,7 +64,7 @@ const TransferPage: React.FC = () => {
     <div className="flex min-h-screen flex-col items-center py-8">
       {renderComponent()}
 
-      <div className="absolute bottom-0 left-1/2 z-0 h-[204px] w-[318px] -translate-x-1/2 transform">
+      <div className="absolute bottom-0 left-1/2 z-0 h-[230px] w-[318px] -translate-x-1/2 transform">
         <img
           src={avatar}
           alt="Avatar"

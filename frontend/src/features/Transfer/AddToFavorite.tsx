@@ -3,6 +3,7 @@ import { useTransferStore } from "./TransferStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
+import defaultBankLogo from "../../assets/defaultBankLogo.png"
 
 const AddToFavorite: React.FC = () => {
   const banks = [
@@ -34,8 +35,14 @@ const AddToFavorite: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const { formalName, sendBankType, sendAccountNum } = useTransferStore();
-  const selectedBank = banks.find((bank) => bank.id === sendBankType);
+  const { formalName, sendAccountNum, sendBankType } = useTransferStore();
+
+  const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
+    id: 'BASIC',
+    name: '기본은행',
+    logo: defaultBankLogo
+  };
+
   const boldChars = ["또"];
   const text = `다음에도 또 보낼래요?`;
 

@@ -36,7 +36,7 @@ const ConnectAccountPage: React.FC = () => {
     <div className="flex min-h-screen flex-col items-center py-8">
       {renderComponent()}
 
-      <div className="absolute bottom-0 left-1/2 h-[204px] w-[318px] -translate-x-1/2 transform">
+      <div className="absolute bottom-0 left-1/2 h-[300px] w-[318px] -translate-x-1/2 transform">
         <img
           src={avatar}
           alt="Avatar"

@@ -3,6 +3,7 @@ import { useTransferStore } from "./TransferStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
+import defaultBankLogo from "../../assets/defaultBankLogo.png"
 
 const AddToFavorite: React.FC = () => {
   const banks = [
@@ -35,7 +36,13 @@ const AddToFavorite: React.FC = () => {
   ];
 
   const { nickName, setNickName, formalName, sendBankType, sendAccountNum } = useTransferStore();
-  const selectedBank = banks.find((bank) => bank.id === sendBankType);
+
+  const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
+    id: 'BASIC',
+    name: '기본은행',
+    logo: defaultBankLogo
+  };
+
   const boldChars = [`${formalName}`];
   const text = `${formalName} 님을 어떻게 부를까요?`;
 

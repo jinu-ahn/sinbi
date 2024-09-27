@@ -2,6 +2,7 @@ import React from "react";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
+import defaultBankLogo from "../../assets/defaultBankLogo.png"
 
 const AccountCheck: React.FC = () => {
   const { bankType, accountNum, error } = useConnectAccountStore();
@@ -34,7 +35,11 @@ const AccountCheck: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const selectedBank = banks.find((bank) => bank.id === bankType);
+  const selectedBank = banks.find((bank) => bank.id === bankType) || {
+    id: 'BASIC',
+    name: '기본은행',
+    logo: defaultBankLogo
+  };
 
   return (
     <div>
