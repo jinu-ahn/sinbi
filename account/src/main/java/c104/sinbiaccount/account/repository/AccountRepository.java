@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    List<Account> findByUserPhone(String userPhone);
+    List<Account> findAllByUserPhone(String userPhone);
+
+    Optional<Account> findByAccountNum(String accountNum);
 
     Optional<Account> findById(Long accountId);
 

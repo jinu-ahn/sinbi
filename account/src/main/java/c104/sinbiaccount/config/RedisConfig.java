@@ -1,8 +1,8 @@
 package c104.sinbiaccount.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -10,6 +10,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -22,6 +23,7 @@ public class RedisConfig {
     private int port;
     @Value("${spring.redis.account.password}")
     private String password;
+    private final ObjectMapper objectMapper;
 
     @Bean // 스프링 컨텍스트에 RedisConnectionFactory 빈 등록
     public RedisConnectionFactory redisConnectionFactory(){
@@ -35,9 +37,17 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>(); // RedisTemplate 인스턴스 생성
         redisTemplate.setConnectionFactory(redisConnectionFactory()); // Redis 연결 팩토리 설정
-        redisTemplate.setKeySerializer(new StringRedisSerializer()); // 키를 문자열로 직렬화하도록 설정
-        redisTemplate.setValueSerializer(new StringRedisSerializer()); // 값을 문자열로 직렬화하도록 설정
 
+        // 키와 값 직렬화 설정
+        StringRedisSerializer stringSerializer = new StringRedisSerializer();
+        GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+
+        redisTemplate.setKeySerializer(stringSerializer); // 키를 문자열로 직렬화
+        redisTemplate.setValueSerializer(jsonSerializer); // 값을 JSON으로 직렬화
+        redisTemplate.setHashKeySerializer(stringSerializer); // 해시 키를 문자열로 직렬화
+        redisTemplate.setHashValueSerializer(jsonSerializer); // 해시 값을 JSON으로 직렬화
+
+        redisTemplate.afterPropertiesSet();
         return redisTemplate; // 설정이 완료된 RedisTemplate 인스턴스를 반환
     }
 }

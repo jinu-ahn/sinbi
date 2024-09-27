@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class VirtualAccountDto {
+@Builder
+public class CommandVirtualAccountDto {
     private Long id;
     private String accountNum;
     private BankTypeEnum bankType;
@@ -16,8 +17,7 @@ public class VirtualAccountDto {
     private String userName;
     private String userPhone;
 
-    @Builder
-    public VirtualAccountDto(Long id, String accountNum, BankTypeEnum bankType, Long amount, String productName, String userName, String userPhone) {
+    public CommandVirtualAccountDto(Long id, String accountNum, BankTypeEnum bankType, Long amount, String productName, String userName, String userPhone) {
         this.id = id;
         this.accountNum = accountNum;
         this.bankType = bankType;
