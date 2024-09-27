@@ -26,8 +26,7 @@ redis_client = redis.StrictRedis(
 
 app = Flask(__name__)
 
-# GPU 사용 여부 확인 및 device 2 설정
-device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # 모델 초기화
 summary_model = AutoModelForSeq2SeqLM.from_pretrained("lcw99/t5-large-korean-text-summary").to(device)
@@ -139,7 +138,7 @@ def crawl_news():
             else:
                 news_url = news_link
 
-            article_res = requests.get(news_url, headers=headers)
+            article_res = requests.get(news_url, headers=headers, timeout=100)
             article_soup = BeautifulSoup(article_res.text, 'html.parser')
 
             try:
@@ -161,7 +160,7 @@ def remove_special_characters_and_chinese(text):
 
 # 요약 함수
 def summarize_text(text):
-    summarizer = pipeline("summarization", model=summary_model, tokenizer=summary_tokenizer, device=2)
+    summarizer = pipeline("summarization", model=summary_model, tokenizer=summary_tokenizer)
     summary = summarizer(text, min_length=100, max_length=300, clean_up_tokenization_spaces=True)
     return summary
 
@@ -184,12 +183,14 @@ def update_news_data():
     # Redis에 데이터를 저장하기 전에 JSON 형식으로 변환
     news_data_json = json.dumps(newsData)
 
-    # Redis에 데이터 저장 (키를 'news_data'로 설정)
-    redis_client.set('news_data', news_data_json)
+     # Redis 저장 부분
+    try:
+        redis_client.set('news_data', news_data_json)
+        print("Redis에 데이터가 성공적으로 저장되었습니다.")
+    except Exception as e:
+        print(f"Redis에 데이터를 저장하는 중 오류가 발생했습니다: {e}")
 
-    print("뉴스 데이터가 성공적으로 업데이트되었습니다.")
-
-# 스케줄러를 사용하여 1~2시간마다 뉴스 데이터 업데이트
+# 스케줄러를 사용하여 2시간마다 뉴스 데이터 업데이트
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=update_news_data, trigger="interval", hours=2)
 scheduler.start()
@@ -208,6 +209,13 @@ def get_news():
         return jsonify(newsData)
     else:
         return jsonify({"error": "Redis에 저장된 데이터가 없습니다."}), 404
+
+# Redis 연결 확인 코드
+try:
+    redis_client.ping()
+    print("Redis 서버와 성공적으로 연결되었습니다.")
+except redis.exceptions.ConnectionError:
+    print("Redis 서버 연결에 실패했습니다.")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=False)
