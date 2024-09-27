@@ -5,14 +5,11 @@ import c104.sinbiaccount.account.dto.GetAccountListResponse;
 import c104.sinbiaccount.account.dto.TransferAccountRequest;
 import c104.sinbiaccount.account.service.AccountService;
 import c104.sinbiaccount.exception.global.ApiResponse;
-import c104.sinbiaccount.transactionhistory.dto.TransactionHistoryResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +25,7 @@ public class AccountController {
     //계좌 등록
     @PostMapping("/create")
     @Operation(summary = "계좌 등록", description = "사용자의 계좌를 등록")
-    public ResponseEntity<ApiResponse<?>> createAccount(@RequestBody AccountCreateRequest accountCreateRequest) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse<?>> createAccount(@RequestBody AccountCreateRequest accountCreateRequest){
         accountService.create(accountCreateRequest);
         return ResponseEntity.ok(ApiResponse.success("계좌가 성공적으로 등록되었습니다."));
     }
@@ -39,14 +36,6 @@ public class AccountController {
     public ResponseEntity<ApiResponse<?>> getAccounts(HttpServletRequest request) {
         List<GetAccountListResponse> getAccountList = accountService.getAccountList(request);
         return ResponseEntity.ok(ApiResponse.success(getAccountList,"계좌 목록 불러오기에 성공하였습니다."));
-    }
-
-    //계좌 상세 조회
-    @GetMapping("/{accountId}")
-    @Operation(summary = "계좌 상세 조회", description = "특정 계좌의 상세 내역을 조회하는 API입니다.")
-    public ResponseEntity<ApiResponse<?>> getDetailAccount(@PathVariable Long accountId) {
-        List<TransactionHistoryResponse> transactionHistory = accountService.getDetailAccount(accountId);
-        return ResponseEntity.ok(ApiResponse.success(transactionHistory,"거래 내역 불러오기에 성공하였습니다."));
     }
 
     //계좌 이체

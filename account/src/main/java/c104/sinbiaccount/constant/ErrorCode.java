@@ -26,7 +26,8 @@ public enum ErrorCode {
     UNSUPPORTED_TOKEN(HttpStatus.FORBIDDEN, "지원되지 않는 토큰입니다."),
     DISCREPANCY_EXCEPTION(HttpStatus.FORBIDDEN,"얼굴이 일치하지 않습니다."),
     NOT_FOUND_PHONE_NUMBER(HttpStatus.NOT_FOUND,"휴대전화 번호를 찾을 수 없습니다."),
-    FACE_AUTHENTICATION_IO_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"입출력 오류로 인해 얼굴 인증에 실패했습니다.");
+    FACE_AUTHENTICATION_IO_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"입출력 오류로 인해 얼굴 인증에 실패했습니다."),
+    JSON_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"JSON 파싱에 실패하였습니다.");
 
     private HttpStatus status;
     private String message;

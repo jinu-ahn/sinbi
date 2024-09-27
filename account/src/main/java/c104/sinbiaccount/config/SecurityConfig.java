@@ -1,6 +1,8 @@
 package c104.sinbiaccount.config;
 
 import c104.sinbiaccount.filter.*;
+import c104.sinbiaccount.util.CookieUtil;
+import c104.sinbiaccount.util.KafkaProducerUtil;
 import c104.sinbiaccount.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +39,9 @@ import java.util.Collections;
 @Slf4j
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
-    private final RedisUtil redisUtil;
-    private final UserDetailsService userDetailsService;
+    private final CookieUtil cookieUtil;
+    private final KafkaProducerUtil kafkaProducerUtil;
+
     private final String[] PERMIT_ALL_ARRAY = { // 허용할 API
             "/user/signup", "/user/login","/**"
     };
@@ -76,9 +79,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 // UsernamePasswordAuthenticationFilter 전에 AuthenticationFilter 추가
-                .addFilterBefore(new AuthenticationFilter(tokenProvider, redisUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 // AuthenticationFilter 전에 JwtExceptionFilter 추가
-                .addFilterBefore(new JwtExceptionFilter(tokenProvider, redisUtil), AuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(tokenProvider,cookieUtil,kafkaProducerUtil), AuthenticationFilter.class)
                 // 예외 처리 설정
                 .exceptionHandling(e -> {
                     // 인증 실패 시 CustomAuthenticationEntryPoint 사용

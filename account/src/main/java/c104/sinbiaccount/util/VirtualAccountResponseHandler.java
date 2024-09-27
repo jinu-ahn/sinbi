@@ -1,6 +1,5 @@
 package c104.sinbiaccount.util;
 
-import c104.sinbiaccount.account.dto.VirtualAccountDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

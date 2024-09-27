@@ -4,18 +4,17 @@ package c104.sinbiaccount.account.service;
 import c104.sinbiaccount.account.Account;
 import c104.sinbiaccount.account.dto.*;
 import c104.sinbiaccount.account.repository.AccountRepository;
+import c104.sinbiaccount.exception.AccountAlreadyExistsException;
 import c104.sinbiaccount.exception.AccountNotFoundException;
 import c104.sinbiaccount.exception.IllgalArgumentException;
-import c104.sinbiaccount.exception.UserNotFoundException;
 import c104.sinbiaccount.exception.global.ApiResponse;
-import c104.sinbiaccount.filter.TokenProvider;
 import c104.sinbiaccount.transactionhistory.TransactionHistory;
 import c104.sinbiaccount.transactionhistory.dto.TransactionHistoryResponse;
 import c104.sinbiaccount.transactionhistory.repository.TransactionHistoryRepository;
 import c104.sinbiaccount.util.HeaderUtil;
 import c104.sinbiaccount.util.KafkaProducerUtil;
+import c104.sinbiaccount.util.RedisUtil;
 import c104.sinbiaccount.util.VirtualAccountResponseHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +37,7 @@ public class AccountService {
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final KafkaProducerUtil kafkaProducerUtil;
     private final VirtualAccountResponseHandler virtualAccountResponseHandler;
+    private final RedisUtil redisUtil;
     private final HeaderUtil headerUtil;
 
     //계좌 등록
@@ -43,7 +45,14 @@ public class AccountService {
     public void create(AccountCreateRequest accountCreateRequest) {
         kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountCreateRequest, "SUCCESS"));
         try {
-            VirtualAccountDto virtualAccount = (VirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture().get();
+            CommandVirtualAccountDto virtualAccount = (CommandVirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture().get();
+
+            // 계좌 등록 시 중복 체크 로직
+            Optional<Account> existingAccount = accountRepository.findByAccountNum(virtualAccount.getAccountNum());
+            if (existingAccount.isPresent()) {
+                throw new AccountAlreadyExistsException();
+            }
+
             Account account = new Account(
                     virtualAccount.getAccountNum(),
                     virtualAccount.getBankType(),
@@ -53,15 +62,15 @@ public class AccountService {
                     virtualAccount.getUserPhone()
             );
             accountRepository.save(account);
-        } catch (Exception e) {
-            log.info(e.getMessage());
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("가상 계좌 조회 실패: {}", e.getMessage());
+            throw new AccountNotFoundException();
         }
-
     }
 
     //계좌 목록 불러오기
     public List<GetAccountListResponse> getAccountList(HttpServletRequest request) {
-        List<Account> accountList = accountRepository.findByUserPhone(headerUtil.getUserPhone(request));
+        List<Account> accountList = accountRepository.findAllByUserPhone(headerUtil.getUserPhone(request));
         return accountList.stream()
                 .map(account -> new GetAccountListResponse(
                         account.getId(),
@@ -69,25 +78,6 @@ public class AccountService {
                         account.getBankType(),
                         account.getAmount(),
                         account.getProductName()
-                )).collect(Collectors.toList());
-    }
-
-    //계좌 상세 보기
-    public List<TransactionHistoryResponse> getDetailAccount(Long accountId) {
-        accountRepository.findById(
-                accountId.describeConstable()
-                        .orElseThrow(() -> new AccountNotFoundException()));
-
-        List<TransactionHistory> accountList = transactionHistoryRepository.findByAccountId(accountId);
-        return accountList.stream()
-                .map(account -> new TransactionHistoryResponse(
-                        account.getId(),
-                        account.getTransactionHistoryType(),
-                        account.getRecvAccountNum(),
-                        account.getRecvAccountName(),
-                        account.getTransferAmount(),
-                        account.getBankType(),
-                        account.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 )).collect(Collectors.toList());
     }
 
@@ -113,8 +103,8 @@ public class AccountService {
         //가상 계좌 조회
         kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountCreateRequest, "SUCCESS"));
         try {
-            VirtualAccountDto virtualAccount = (VirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture().get();
-            VirtualAccountDto toVirtualAccount = new VirtualAccountDto(
+            CommandVirtualAccountDto virtualAccount = (CommandVirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture().get();
+            CommandVirtualAccountDto toVirtualAccount = new CommandVirtualAccountDto(
                     virtualAccount.getId(),
                     virtualAccount.getAccountNum(),
                     virtualAccount.getBankType(),
@@ -141,6 +131,14 @@ public class AccountService {
                         );
 
                 saveTransactionHistory(saveTransactionHistoryRequest);
+
+                // 이벤트 발행: 거래 완료 후 Redis 갱신을 위해 이벤트 전송
+                AccountEvent event = new AccountEvent("ACCOUNT_TRANSFER_COMPLETED", fromAccount.getUserPhone(), transferAccountRequest.getAccountId());
+
+                // Redis에 저장
+                redisUtil.setData("TRANSFER_EVENT:" + transferAccountRequest.getAccountId(), event.toString(), 3600000L); // 1시간 TTL
+                // Kafka로 이벤트 전송
+                kafkaProducerUtil.sendAccountEvent(ApiResponse.success(event, "SUCCESS"));
             } catch (Exception e) {
                 log.info(e.getMessage());
                 // 입금 실패 시, 보상 로직 (출금 롤백)
@@ -156,7 +154,7 @@ public class AccountService {
         }
     }
 
-    //거래 내역 저장
+    // 거래 내역 저장
     private void saveTransactionHistory(SaveTransactionHistoryRequest saveTransactionHistoryRequest) {
         TransactionHistory transactionHistory = new TransactionHistory(
                 "이체",
@@ -166,7 +164,12 @@ public class AccountService {
                 saveTransactionHistoryRequest.getFromAccount().getBankType(),
                 saveTransactionHistoryRequest.getFromAccount()
         );
+
+        // 먼저 저장
         transactionHistoryRepository.save(transactionHistory);
+
+        // 저장 후 createdAt을 사용할 수 있음
+        log.info("거래 내역 저장 완료: 생성 시각 = {}", transactionHistory.getCreatedAt());
     }
 
     // 출금 롤백 (보상 로직)
@@ -187,6 +190,15 @@ public class AccountService {
         transactionHistoryRepository.save(rollbackHistory);
 
         log.info("출금이 롤백되었습니다. 계좌 번호: {}, 금액: {}", rollbackDto.getFromAccount().getAccountNum(), rollbackDto.getTransferAmount());
+
+        // 이벤트 발행: 출금 롤백 후 Redis 갱신을 위해 이벤트 전송
+        AccountEvent event = new AccountEvent("ACCOUNT_WITHDRAW_ROLLED_BACK", rollbackDto.getFromAccount().getUserPhone(), rollbackDto.getAccountId());
+
+        // Redis에 저장
+        redisUtil.setData("WITHDRAW_ROLLBACK_EVENT:" + rollbackDto.getAccountId(), event.toString(), 3600000L); // 1시간 TTL
+
+        // Kafka로 이벤트 전송
+        kafkaProducerUtil.sendAccountEvent(ApiResponse.success(event, "SUCCESS"));
     }
 
     //계좌 삭제
@@ -195,5 +207,22 @@ public class AccountService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException());
         accountRepository.delete(account);
+    }
+
+    public List<TransactionHistoryResponse> getDetailAccountFromDB(Long accountId) {
+        accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException());
+
+        return transactionHistoryRepository.findByAccountId(accountId)
+                .stream()
+                .map(history -> new TransactionHistoryResponse(
+                        history.getId(),
+                        history.getTransactionHistoryType(),
+                        history.getRecvAccountNum(),
+                        history.getRecvAccountName(),
+                        history.getTransferAmount(),
+                        history.getBankType(),
+                        history.getCreatedAt() != null ? history.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "N/A"
+                )).collect(Collectors.toList());
     }
 }

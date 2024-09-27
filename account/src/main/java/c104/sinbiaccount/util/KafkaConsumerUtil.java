@@ -1,6 +1,6 @@
 package c104.sinbiaccount.util;
 
-import c104.sinbiaccount.account.dto.VirtualAccountDto;
+import c104.sinbiaccount.account.dto.CommandVirtualAccountDto;
 import c104.sinbiaccount.constant.BankTypeEnum;
 import c104.sinbiaccount.exception.global.ApiResponse;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+
+import java.util.LinkedHashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -21,28 +23,31 @@ public class KafkaConsumerUtil {
      * 가상계좌에 대한 값을 가져오는 토픽에 대한 리스너.
      */
     @KafkaListener(topics = "${spring.kafka.topics.second-find-virtual-account}", groupId = "${spring.kafka.consumer.group-id}")
-    public void listenFindVirtualAccount(ApiResponse<VirtualAccountDto> response) {
+    public void listenFindVirtualAccount(ApiResponse<?> response) {
         if(response.getStatus().equals("SUCCESS")){
             try {
                 JsonNode jsonNode = objectMapper.readTree(response.toJson());  // JSON 문자열을 JsonNode로 변환
-                // VirtualAccountDto로 변환
-                VirtualAccountDto virtualAccountDto = VirtualAccountDto.builder()
+
+                CommandVirtualAccountDto commandVirtualAccountDto = CommandVirtualAccountDto.builder()
                         .id(jsonNode.get("data").get("id").asLong())
                         .accountNum(jsonNode.get("data").get("accountNum").textValue())
                         .bankType(BankTypeEnum.valueOf(jsonNode.get("data").get("bankType").textValue()))
                         .userName(jsonNode.get("data").get("userName").textValue())
                         .productName(jsonNode.get("data").get("productName").textValue())
                         .amount(jsonNode.get("data").get("amount").asLong())
+                        .userPhone(jsonNode.get("data").get("userPhone").textValue())
                         .build();
-                virtualAccountResponseHandler.complete(virtualAccountDto);
+
+                virtualAccountResponseHandler.complete(commandVirtualAccountDto);
             } catch(Exception e) {
                 log.info(e.getMessage());
             }
         } else {
             virtualAccountResponseHandler.complete(response.getStatus());
         }
-
     }
+
+
     /**
      * 입금에 대한 값을 가져오는 토픽에 대한 리스너.
      *

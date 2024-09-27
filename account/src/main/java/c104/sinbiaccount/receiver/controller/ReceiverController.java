@@ -33,13 +33,13 @@ public class ReceiverController {
         return ResponseEntity.ok(ApiResponse.success("자주 사용할 계좌 등록이 완료 되었습니다."));
     }
 
-    //자주 사용할 계좌 목록 보기
-    @GetMapping("/list")
-    @Operation(summary = "자주 사용할 계좌 목록 보기", description = "사용자가 등록한 자주 사용할 계좌 목록을 조회하는 API입니다.")
-    public ResponseEntity<ApiResponse<?>> ReceiverAccountList(HttpServletRequest request){
-        List<ReceiverAccountListResponse> receiverAccountListResponses = receiverService.receiverAccountList(request);
-        return ResponseEntity.ok(ApiResponse.success(receiverAccountListResponses,"자주 사용할 계좌 목록 불러오기 완료"));
-    }
+//    //자주 사용할 계좌 목록 보기
+//    @GetMapping("/list")
+//    @Operation(summary = "자주 사용할 계좌 목록 보기", description = "사용자가 등록한 자주 사용할 계좌 목록을 조회하는 API입니다.")
+//    public ResponseEntity<ApiResponse<?>> ReceiverAccountList(HttpServletRequest request){
+//        List<ReceiverAccountListResponse> receiverAccountListResponses = receiverService.receiverAccountList(request);
+//        return ResponseEntity.ok(ApiResponse.success(receiverAccountListResponses,"자주 사용할 계좌 목록 불러오기 완료"));
+//    }
 
     //자주 사용할 계좌 삭제
     @DeleteMapping("/{recvId}")

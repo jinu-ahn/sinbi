@@ -2,6 +2,7 @@ package c104.sinbiaccount.filter;
 
 import c104.sinbiaccount.constant.ErrorCode;
 import c104.sinbiaccount.exception.global.ApiResponse;
+import c104.sinbiaccount.util.CookieUtil;
 import c104.sinbiaccount.util.RedisUtil;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -25,8 +26,6 @@ import java.io.IOException;
 @Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
-    private final RedisUtil redisUtil;
-
     /**
      * @ 작성자   : 안진우
      * @ 작성일   : 2024-09-08
@@ -39,8 +38,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("AuthenticationFilter");
-        String token = request.getHeader("Authorization").substring(7);
+        String token = tokenProvider.resolveToken(request);
         tokenProvider.validateToken(token);
         filterChain.doFilter(request, response);
     }

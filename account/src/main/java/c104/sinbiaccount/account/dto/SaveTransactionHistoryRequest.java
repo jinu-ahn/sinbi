@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SaveTransactionHistoryRequest {
     private Account fromAccount;
-    private VirtualAccountDto toVirtualAccount;
+    private CommandVirtualAccountDto toVirtualAccount;
     private Long transferAmount;
 }
