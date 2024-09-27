@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import avatar from "../../assets/avatar.png";
 import { useTransferStore } from "./TransferStore";
 
@@ -17,8 +17,25 @@ import GoBackHome from "./GoBackHome";
 
 import TransferVoiceCommand from "./TransferVoiceCommand";
 
+import howCanIHelp from "../../assets/audio/01_네_무엇을_도와드릴까요.mp3"
+
 const TransferPage: React.FC = () => {
   const { step } = useTransferStore();
+  const [audioPlayed, setAudioPlayed] = useState(true)
+
+  const playAudio = (audioFile: string) => {
+    const audio = new Audio(audioFile);
+    audio.play().catch((error) => {
+      console.error("Audio playback failed: ", error);
+    });
+  };
+
+  useEffect(() => {
+    if (audioPlayed) {
+      playAudio(howCanIHelp)
+    }
+    setAudioPlayed(false)
+  }, [audioPlayed])
 
   // step 0 : 내 통장 목록 띄우기
   // step 1 : 즐겨찾는 계좌 목록 띄우기

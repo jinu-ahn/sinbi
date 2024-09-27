@@ -10,9 +10,17 @@ import {
   addFavorite,
 } from "../../services/api";
 
+import howCanIHelp from "../../assets/audio/01_네_무엇을_도와드릴까요.mp3";
+
 const TransferVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 오디오말하기
+  const playAudio = (audioFile: string) => {
+    const audio = new Audio(audioFile);
+    audio.play();
+  };
 
   // Store에서 필요한거 전부 import!!
   const {
@@ -322,10 +330,8 @@ const TransferVoiceCommand: React.FC = () => {
           .catch((error) => {
             console.error("계좌이체 못함: ", error);
           });
-      } else if (
-        lowerCaseTranscript.includes("아니")
-      ) {
-        setStep(1)
+      } else if (lowerCaseTranscript.includes("아니")) {
+        setStep(1);
       }
       resetTranscript();
     } else if (step === 7) {
@@ -375,6 +381,14 @@ const TransferVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("처음")
     ) {
       navigate("/");
+      resetTranscript();
+    }
+
+    if (
+      lowerCaseTranscript.includes("신비야") ||
+      lowerCaseTranscript.includes("도와줘")
+    ) {
+      playAudio(howCanIHelp);
       resetTranscript();
     }
   };
