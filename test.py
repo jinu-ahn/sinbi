@@ -13,6 +13,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 import numpy as np
+from flask_cors import CORS 
 
 # Redis 연결 설정
 redis_client = redis.StrictRedis(
@@ -25,6 +26,7 @@ redis_client = redis.StrictRedis(
 )
 
 app = Flask(__name__)
+CORS(app, resources={r"/news": {"origins": "http://localhost:5173"}})
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
