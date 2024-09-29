@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import YellowBox from "../../components/YellowBox";
 import BlackText from "../../components/BlackText";
 import YellowButton from "../../components/YellowButton";
 import { useLearnNewsStore } from "./useLearnNewsStore";
-import { NewsItem } from "./LearnNews.types";
+// import { NewsItem } from "./LearnNews.types";
 import Avatar from "../../assets/avatar.png";
 // 홈 아이콘 컴포넌트
 const HomeIcon: React.FC = () => (
@@ -16,18 +16,48 @@ const HomeIcon: React.FC = () => (
   </div>
 );
 
-const LearnNews: React.FC = () => {
-  const [currentView, setCurrentView] = useState<"main" | "learn" | "news">(
-    "main",
-  );
-  const { newsData, currentIndex, fetchNews, handlePrevious, handleNext } =
-    useLearnNewsStore();
+// 뉴스 데이터 새로고침 간격 (2시간)
+const REFRESH_INTERVAL = 2 * 60 * 60 * 1000; 
 
-  React.useEffect(() => {
-    fetchNews();
+const LearnNews: React.FC = () => {
+  // const [currentView, setCurrentView] = useState<"main" | "learn" | "news">(
+  // "main",
+  // );
+  const {
+    newsData,
+    currentIndex,
+    currentView,
+    isLoading,
+    error,
+    fetchNews,
+    handlePrevious,
+    handleNext,
+    setCurrentView,
+  } = useLearnNewsStore();
+
+  // React.useEffect(() => {
+  //   fetchNews();
+  // }, [fetchNews]);
+  useEffect(() => {
+    fetchNews(); // 컴포넌트 마운트 시 뉴스 데이터 가져오기
+    const intervalId = setInterval(fetchNews, REFRESH_INTERVAL); // 주기적으로 뉴스 데이터 새로고침
+    return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 인터벌 제거
   }, [fetchNews]);
 
-  const currentNews: NewsItem | undefined = newsData[currentIndex];
+  // const currentNews: NewsItem | undefined = newsData[currentIndex];
+  const currentNews = newsData[currentIndex];
+
+  // 추가된 부분: 현재 뉴스 데이터를 콘솔에 출력
+  useEffect(() => {
+    if (currentNews) {
+      console.log("Current news data:", {
+        title: currentNews.title,
+        summary: currentNews.summary,
+        keywords: currentNews.keywords
+      });
+    }
+  }, [currentNews]);
+
 
   const renderView = () => {
     switch (currentView) {
@@ -53,8 +83,8 @@ const LearnNews: React.FC = () => {
                 뉴스
               </YellowButton>
             </div>
-            {/* 여기에 캐릭터 이미지를 추가할 수 있습니다 */}
-            <Avatar />
+            {/* <Avatar /> */}
+            <img src={Avatar} alt="Avatar" className="w-24 h-24" />
           </div>
         );
       case "learn":
@@ -75,32 +105,41 @@ const LearnNews: React.FC = () => {
         return (
           <div className="flex flex-col items-center justify-center">
             <BlackText text="오늘의 금융 소식" boldChars={["금융"]} />
-            <YellowBox>
-              {currentNews && (
-                <>
-                  <BlackText
-                    text={currentNews.title}
-                    boldChars={[]}
-                    textSize="text-2xl"
-                  />
-                  <BlackText
-                    text={currentNews.summary}
-                    boldChars={[]}
-                    textSize="text-lg"
-                  />
-                  <div className="mt-4 flex flex-wrap">
-                    {currentNews.keywords.map(([keyword, _], index) => (
-                      <span
-                        key={index}
-                        className="mb-2 mr-2 rounded bg-yellow-200 p-1"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              )}
-            </YellowBox>
+            {isLoading ? ( // 로딩 중일 때 표시
+              <div>Loading...</div>
+            ) : error ? ( // 에러 발생 시 표시
+              <div className="text-red-500">{error}</div>
+            ) : currentNews ? ( // 뉴스 데이터가 있을 때 표시
+              <YellowBox>
+                {currentNews && (
+                  <>
+                    <BlackText
+                      text={currentNews.title}
+                      boldChars={[]}
+                      textSize="text-2xl"
+                    />
+                    <BlackText
+                      text={currentNews.summary}
+                      boldChars={[]}
+                      textSize="text-lg"
+                    />
+                    <div className="mt-4 flex flex-wrap">
+                      {currentNews.keywords.map(([keyword, _], index) => (
+                        <span
+                          key={index}
+                          className="mb-2 mr-2 rounded bg-yellow-200 p-1"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </YellowBox>
+            ) : (
+              // 뉴스 데이터가 없을 때 표시
+              <div>No news available</div>
+            )}
             <div className="mt-4 flex w-4/5 justify-between">
               <YellowButton height={50} width={100} onClick={handlePrevious}>
                 이전
