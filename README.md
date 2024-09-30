@@ -2,9 +2,7 @@
 
 # 🤵 Sinbi - 노년층을 위한 AI 비서 서비스
 
-<div style="text-align: center;">
-  <img src="README_asset/Sinbi.png" width="200" height="350" alt="Sinbi">
-</div>
+![메인](README_asset/Sinbi.png)
 
 ## Sinbi 링크 : https://sinbi.life/
 
