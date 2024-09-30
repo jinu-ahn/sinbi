@@ -2,7 +2,9 @@
 
 # 🤵 Sinbi - 노년층을 위한 AI 비서 서비스
 
-![메인](README_asset/드리몽.jpg)
+<p align="center">
+  <img src="README_asset/sinbi.png" width="200" height="350">
+</p>
 
 ## Sinbi 링크 : https://sinbi.life/
 
@@ -17,15 +19,15 @@
 👨‍👨‍👦‍👦 **팀원 소개**
 ---
 
-| **안진우(팀장) [FE]**        | **김희주 [FE]**               | **김시온 [INFRA]**            |
+| **안진우(팀장) [BE]**                                          | **김희주 [FE]**                                                                      | **김시온 [INFRA]**                                                    |
 | -------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| <img src="README_asset/나무늘보.jpg" width="150" height="150"> | <img src="README_asset/코알라.png" width="150" height="150"> | <img src="README_asset/침팬치.png" width="150" height="150"> |
-| 팀장 <br> 디자인 <br>          | AI <br> Notion 정리 <br> 커서 공유 <br> 공유 마커   | 프론트 리더 <br> 프론트 스켈레톤 설계 <br> 기능 구현 <br> 답변 전문가 |
+| <img src="README_asset/나무늘보.jpg" width="200" height="200"> | <img src="README_asset/코알라.png" width="200" height="200"> | <img src="README_asset/침팬치.png" width="200" height="200"> |
+| 팀장 <br> SpringCloudConfig <br> Security <br> JWT <br> Kafka | 계좌 조회 <br> 계좌 등록 <br> 계좌 이체 <br> tts/stt | 인프라 담당 <br> 아키텍쳐 설계 <br> K8S <br> GitOps |
 
-| **이정하 [FE]**         | **이학현 [BE]**                    | **지민경 [AI]**                          |
+| **이정하 [FE]**                                                | **이학현 [BE]**                                                                      | **지민경 [AI/데이터 시각화]**                                               |
 | -------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| <img src="README_asset/앵무새.png" width="150" height="150">  | <img src="README_asset/벨루가.png" width="150" height="150"> | <img src="README_asset/금붕어.jpg" width="150" height="150"> |
-| 채팅 구현 <br> 공유 마커 <br> DB 설계 <br> jwt 로그인          | <br> UCC 제작 <br> 무중단 배포 <br> 채널 crud <br> test 코드 작성 <br> openvidu 세팅 | api 설계 및 구현<br> 피드 채널 <br> 정보 채널 <br> 발표 및 ppt 제작   |
+| <img src="README_asset/앵무새.png" width="200" height="200">  | <img src="README_asset/벨루가.png" width="200" height="200"> | <img src="README_asset/금붕어.jpg" width="200" height="200"> |
+| 회원가입 <br> 로그인 <br> 배우기 <br> 뉴스 페이지          | Kafka 기능 적용 <br> MSA 설계 <br> SAGA 패턴 적용 <br> 문서화 | T5 기반 방언 데이터 학습 모델 <br> T5-Text summary <br> Sentence-Bert <br> Mecab <br> Okt <br> Flask API  <br> Redis  <br> BeautifulSoup |
 
 
 📕 **기획 의도**
@@ -134,7 +136,6 @@
 - Three.js
 - Spring Boot 3.3.2
 - spring Data JPA
-- swagger(Spring docs)
 - spring security
 - JWT
 - Spring Cloud Config
@@ -150,7 +151,6 @@
 - EC2
 - S3
 - MySQL
-- MongoDB
 - Server API(Ingress Controller)
 - pytorch
 - flask
@@ -200,7 +200,6 @@
 - **Spring Data JAP** : 데이터베이스와의 통신을 위해 JPA를 사용해 간편한 CRUD 기능 및 쿼리 최적화를 제공.
 - **Spring Cloud Config** : 분산 환경에서 중앙화된 설정 관리와 버전 관리를 통해 서비스의 일관성을 유지.
 - **MySQL** : 회원 정보, 금융 기록 등 주요 데이터를 저장하는 데 사용.
-- **Redis** : 비정형 데이터를 저장하기 위해 NoSQL 데이터베이스로 사용.
 - **Pytorch** : 머신러닝 모델 구현과 학습을 위해 사용.
 - **Flask** : 간단한 RESTful API 서버나 머신러닝 모델의 서빙을 위해 Python 기반의 마이크로 웹 프레임워크로 사용.
 
