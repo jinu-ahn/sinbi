@@ -1,11 +1,8 @@
-server:
-  port: 8081
-
 spring:
   application:
     name: sinbi
   profiles:
-    active: local,virtualAccount
+    active: deployment,virtualAccount
   config:
     import: optional:configserver:http://15.164.159.172:8888
 management:

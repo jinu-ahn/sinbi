@@ -1,11 +1,9 @@
-server:
-  port: 8082
 
 spring:
   application:
     name: sinbi
   profiles:
-    active: local,user
+    active: deployment,user
   config:
     import: optional:configserver:http://15.164.159.172:8888
 management:
