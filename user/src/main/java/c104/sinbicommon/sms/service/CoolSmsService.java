@@ -12,14 +12,11 @@ public class CoolSmsService {
 
     private final SmsCertificationUtil smsCertificationUtil;
     private final SmsRepository smsRepository;
-//    private final AccountRepository accountRepository;
-
-
 
     public void SendSms(CoolSmsRequestDto smsRequestDto) {
         String phoneNum = smsRequestDto.getPhoneNum(); // SmsRequestDto에서 전화번호를 가져옴
 
-        String certificationCode = Integer.toString((int)(Math.random() * (9999 - 1000 + 1)) + 1000); // 4자리 인증 코드 생성
+        String certificationCode = Integer.toString((int) (Math.random() * (9999 - 1000 + 1)) + 1000); // 4자리 인증 코드 생성
         smsCertificationUtil.sendSMS(phoneNum, certificationCode); // SMS 전송
         smsRepository.createSmsCertification(phoneNum, certificationCode); // 인증 코드를 Redis에 저장
     }

@@ -1,6 +1,5 @@
 package c104.sinbicommon.sms.controller;
 
-
 import c104.sinbicommon.exception.global.ApiResponse;
 import c104.sinbicommon.sms.dto.CoolSmsRequestDto;
 import c104.sinbicommon.sms.dto.SmsVerifyDto;
@@ -25,14 +24,14 @@ public class SmsController {
 
     @PostMapping("/send")
     @Operation(summary = "문자 전송", description = "사용자의 휴대폰 번호로 문자를 전송하는 API입니다.")
-    public ResponseEntity<ApiResponse<String>> sendSMS(@RequestBody @Valid CoolSmsRequestDto smsRequestDto){
+    public ResponseEntity<ApiResponse<String>> sendSMS(@RequestBody @Valid CoolSmsRequestDto smsRequestDto) {
         smsService.SendSms(smsRequestDto);
         return ResponseEntity.ok(ApiResponse.success("문자를 전송했습니다."));
     }
 
     @PostMapping("/verify")
     @Operation(summary = "인증 코드 확인", description = "사용자가 받은 인증 코드를 확인하는 API입니다.")
-    public ResponseEntity<ApiResponse<String>> verifyCode(@RequestBody @Valid SmsVerifyDto smsVerifyDto){
+    public ResponseEntity<ApiResponse<String>> verifyCode(@RequestBody @Valid SmsVerifyDto smsVerifyDto) {
         boolean verify = smsService.verifyCode(smsVerifyDto);
         if (verify) {
             return ResponseEntity.ok(ApiResponse.success("인증이 되었습니다."));

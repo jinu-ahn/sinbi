@@ -38,7 +38,7 @@ public class KakaoFaceAuthenticationUtil {
     private String kakaoSecret;
 
     public boolean faceAuthentication(final String userImage, final MultipartFile multiPartFile) throws IOException {
-        if(multiPartFile.isEmpty()) throw new S3Exception(ErrorCode.NOT_FOUND_FILE.getMessage());
+        if (multiPartFile.isEmpty()) throw new S3Exception(ErrorCode.NOT_FOUND_FILE.getMessage());
 
         String userImageEncoded = encodeImageToBase64(userImage);
         String requestImageToS3 = s3Uploader.putS3(multiPartFile);
@@ -61,7 +61,7 @@ public class KakaoFaceAuthenticationUtil {
                 .post()
                 .uri(URL)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION,kakaoSecret)
+                .header(AUTHORIZATION, kakaoSecret)
                 .bodyValue(bodyData)
                 .retrieve()
                 .bodyToMono(String.class)
@@ -69,7 +69,7 @@ public class KakaoFaceAuthenticationUtil {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response);
-            double similarity =  jsonNode.get("similarity").asDouble();
+            double similarity = jsonNode.get("similarity").asDouble();
             return similarity > 0.8;
         } catch (JsonProcessingException e) {
             throw new JsonFormatException();
@@ -78,26 +78,26 @@ public class KakaoFaceAuthenticationUtil {
 
     // Image를 Base64로 인코딩
     public static String encodeImageToBase64(String imagePath) throws IOException {
-            // URL로부터 이미지 데이터 읽기
-            InputStream inputStream = new URL(imagePath).openStream();
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        // URL로부터 이미지 데이터 읽기
+        InputStream inputStream = new URL(imagePath).openStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-            byte[] buffer = new byte[1024];
-            int bytesRead;
+        byte[] buffer = new byte[1024];
+        int bytesRead;
 
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                byteArrayOutputStream.write(buffer, 0, bytesRead);
-            }
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            byteArrayOutputStream.write(buffer, 0, bytesRead);
+        }
 
-            byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
-            // Base64 인코딩
-            String base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
+        // Base64 인코딩
+        String base64Encoded = Base64.getEncoder().encodeToString(imageBytes);
 
-            // 리소스 정리
-            inputStream.close();
-            byteArrayOutputStream.close();
-            return base64Encoded;
+        // 리소스 정리
+        inputStream.close();
+        byteArrayOutputStream.close();
+        return base64Encoded;
 
     }
 }

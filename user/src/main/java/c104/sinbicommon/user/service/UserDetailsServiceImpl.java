@@ -19,12 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
+
     /**
+     * @param phone 유저 휴대전화 번호
+     * @return 유저 객체를 담고있는 Adapter
      * @ 작성자   : 안진우
      * @ 작성일   : 2024-09-08
      * @ 설명     : SecurityContextHolder에 저장할 유저 디테일 생성
-     * @param phone 유저 휴대전화 번호
-     * @return 유저 객체를 담고있는 Adapter
      */
     @Transactional
     @Override

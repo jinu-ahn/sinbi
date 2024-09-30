@@ -1,8 +1,6 @@
 package c104.sinbicommon.config;
 
 import c104.sinbicommon.jwt.FaceIdAuthenticationProvider;
-import c104.sinbicommon.jwt.TokenProvider;
-import c104.sinbicommon.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -49,10 +47,9 @@ public class SecurityConfig {
     }
 
 
-
-
     /**
      * 비밀번호 인코딩
+     *
      * @return BcryptPasswordEncoder
      */
     @Bean
@@ -61,9 +58,9 @@ public class SecurityConfig {
     }
 
 
-
     /**
      * 기존 비밀번호 인증 시 UsernamePasswordAuthenticationToekn에서 비밀번호 인코딩
+     *
      * @return
      */
     @Bean

@@ -1,6 +1,5 @@
 package c104.sinbicommon.user.repository;
 
-
 import c104.sinbicommon.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

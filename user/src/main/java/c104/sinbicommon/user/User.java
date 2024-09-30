@@ -38,19 +38,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     @ElementCollection
     private List<String> roles;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Account> accountList = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Receiver> receiverList = new ArrayList<>();
-
-
     @Builder
     public User(SignUpDto signUpDto, String encodedPassword, String convertImageUrl) {
         this.userName = signUpDto.getUserName();
         this.userPhone = signUpDto.getUserPhone();
         this.userPassword = encodedPassword;
-        if(convertImageUrl != null)
+        if (convertImageUrl != null)
             this.userFaceId = convertImageUrl;
         this.roles = Collections.singletonList("USER");
     }

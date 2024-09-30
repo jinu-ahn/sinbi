@@ -1,4 +1,5 @@
 package c104.sinbicommon.exception;
+
 import c104.sinbicommon.constant.ErrorCode;
 import lombok.Getter;
 

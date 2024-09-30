@@ -48,6 +48,7 @@ public class TokenProvider {
 
     /**
      * JWT 토큰 생성
+     *
      * @param authentication
      * @return TokenDto
      */
@@ -65,7 +66,7 @@ public class TokenProvider {
 
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName()) // 인증된 사용자의 이름을 Subject로 설정하여 JWT가 어떤 사용자에 관한 것인지 식별
-                .claim("auth",authority) // 'auth'라는 키로 authorities(권한 목록)을 클레임으로 추가, 클레임은 페이로드부분에 포함
+                .claim("auth", authority) // 'auth'라는 키로 authorities(권한 목록)을 클레임으로 추가, 클레임은 페이로드부분에 포함
                 .setExpiration(new Date(now.getTime() + 1000)) // 만료시간
                 .signWith(key, SignatureAlgorithm.HS256) // SHA-256알고리즘을 사용하여 JWT 서명 (JWT 무결성 보장)
                 .compact(); // 위에서 설정한 정보를 사용하영 JWT를 생성하고 문자열로 반환
@@ -85,6 +86,7 @@ public class TokenProvider {
 
     /**
      * 토큰을 복호화 하여 토큰에 들어있는 정보를 꺼내기
+     *
      * @param accessToken
      * @return Authentication
      */
@@ -98,23 +100,25 @@ public class TokenProvider {
     /**
      * AccessToken 복호화
      * ParseClaimsJws 메서드가 JWT 토큰의 검증과 파싱을 모두 수행
+     *
      * @param accessToken
      * @return Claims
      */
     public Claims parseClaims(String accessToken) {
-        try{
+        try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(accessToken)
                     .getBody();
-        }catch (JwtException e) {
+        } catch (JwtException e) {
             throw new JwtException(ErrorCode.EXPIRED_TOKEN.getMessage());
         }
     }
 
     /**
      * 주어진 토큰을 검증하여 유효성 검사
+     *
      * @param token
      * @return boolean
      */
@@ -138,6 +142,7 @@ public class TokenProvider {
 
     /**
      * AccessToken 유효시간 가져오기 (로그아웃된 유저 블랙리스트 위함)
+     *
      * @param accessToken
      * @return
      */

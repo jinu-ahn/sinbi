@@ -21,7 +21,7 @@ public class SignUpDto {
     private String userPhone;
 
     @NotNull
-    @Pattern(regexp = "^[0-9]{4}$", message= "숫자 4자리로 입력해주세요.")
+    @Pattern(regexp = "^[0-9]{4}$", message = "숫자 4자리로 입력해주세요.")
     @Size(min = 4, max = 4)
     private String userPassword;
 

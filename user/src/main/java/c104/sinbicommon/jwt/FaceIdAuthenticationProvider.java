@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,11 +30,11 @@ public class FaceIdAuthenticationProvider implements AuthenticationProvider {
 
         User user = (User) userDetailsService.loadUserByUsername(phone);
         try {
-            if (authenticationUtil.faceAuthentication(user.getUserFaceId(), faceFile)){
+            if (authenticationUtil.faceAuthentication(user.getUserFaceId(), faceFile)) {
                 // UsernamePasswordAuthenticationToken에 UserDetails를 넣어 반환
                 return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new FaceAuthenticationException(ErrorCode.FACE_AUTHENTICATION_IO_ERROR);
         }
 

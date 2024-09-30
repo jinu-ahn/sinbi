@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class SinbiCommonApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SinbiCommonApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SinbiCommonApplication.class, args);
+    }
 
 }

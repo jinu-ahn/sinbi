@@ -46,11 +46,11 @@ public class UserService {
 
     @Transactional
     public void signup(@Valid final SignUpDto signUpDto, final MultipartFile multiPartFile) {
-        if(duplicatePhoneNumber(signUpDto.getUserPhone()))
+        if (duplicatePhoneNumber(signUpDto.getUserPhone()))
             throw new UserAlreadyExistsException();
         String encodedPassword = passwordEncoder.encode(signUpDto.getUserPassword()); // 패스워드 인코딩
         String convertImageUrl = null;
-        if(multiPartFile != null && !multiPartFile.isEmpty())
+        if (multiPartFile != null && !multiPartFile.isEmpty())
             convertImageUrl = s3Uploader.putS3(multiPartFile); // 얼굴인증 이미지 S3 저장
         User user = User.builder().signUpDto(signUpDto).encodedPassword(encodedPassword).convertImageUrl(convertImageUrl).build();
 
@@ -58,12 +58,12 @@ public class UserService {
     }
 
     /**
+     * @param requestDto 로그인할 이메일과 비밀번호
+     * @param response   토큰을 헤더에 추가하기 위한 servlet 데이터
+     * @return 데이터베이스에 저장된 유저 데이터
      * @ 작성자   : 안진우
      * @ 작성일   : 2024-09-08
      * @ 설명     : 로그인 시 토큰 발급 및 헤더에 Access, Refresh 토큰 추가
-     * @param requestDto 로그인할 이메일과 비밀번호
-     * @param response 토큰을 헤더에 추가하기 위한 servlet 데이터
-     * @return 데이터베이스에 저장된 유저 데이터
      * @status 성공 : 200, 실패 : 401, 404
      */
     @Transactional
@@ -82,7 +82,7 @@ public class UserService {
             authentication = managerBuilder.getObject().authenticate(authenticationToken);
         }
         TokenDto tokenDto = tokenProvider.generateToken(authentication);
-        response.addHeader(AUTHORIZATION,tokenDto.accessToken());
+        response.addHeader(AUTHORIZATION, tokenDto.accessToken());
         cookieUtil.addRefreshTokenCookie(response, tokenDto);
         redisUtil.setData(requestDto.getPhone(), tokenDto.refreshToken(), tokenDto.refreshTokenExpiresIn());
     }
