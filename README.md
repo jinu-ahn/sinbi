@@ -242,7 +242,7 @@
 
 ## 🌝 폴더 구조
 
-### 🌞[FE]
+## 🌞[FE]
 
 ```
 📦src
@@ -316,169 +316,245 @@
  ┗ 📜main.jsx
 ```
 
-### 🌚[BE]
+## 🌚[BE]
 
+### 📕 account
+
+---
 ```
-📦domain
- ┣ 📂api
- ┃ ┣ 📂controller
- ┃ ┃ ┗ 📜ImageController.java
- ┃ ┣ 📂dto
- ┃ ┃ ┣ 📜Translation.java
- ┃ ┃ ┣ 📜TranslationRequest.java
- ┃ ┃ ┗ 📜TranslationResponse.java
- ┃ ┗ 📂service
- ┃ ┃ ┣ 📜ImageService.java
- ┃ ┃ ┗ 📜NovitaAiService.java
- ┣ 📂aws
- ┃ ┣ 📜FileController.java
- ┃ ┗ 📜S3UploadService.java
- ┣ 📂config
- ┃ ┣ 📜AuditConfig.java
- ┃ ┣ 📜BeanConfig.java
- ┃ ┣ 📜CorsMvcConfig.java
- ┃ ┣ 📜DeepLConfig.java
- ┃ ┣ 📜FilterConfig.java
- ┃ ┣ 📜FirebaseConfig.java
- ┃ ┣ 📜S3Config.java
- ┃ ┣ 📜SchedulingConfig.java
- ┃ ┣ 📜SecurityConfig.java
- ┃ ┗ 📜SwaggerConfig.java
- ┣ 📂entity
- ┃ ┣ 📂category
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜CategoryController.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📜CategoryResponseDto.java
- ┃ ┃ ┃ ┣ 📜CommonResponseDto.java
- ┃ ┃ ┃ ┣ 📜DreamTypeCountDto.java
- ┃ ┃ ┃ ┗ 📜ObjectResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜CategoryRepository.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┗ 📜CategoryService.java
- ┃ ┃ ┣ 📜Category.java
- ┃ ┃ ┗ 📜Type.java
- ┃ ┣ 📂comment
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜CommentController.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📜CommentRequest.java
- ┃ ┃ ┃ ┣ 📜CommentResponse.java
- ┃ ┃ ┃ ┗ 📜CommentUpdateLikesDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜CommentRepository.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┗ 📜CommentService.java
- ┃ ┃ ┗ 📜Comment.java
- ┃ ┣ 📂commentlike
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜CommentLikeRepository.java
- ┃ ┃ ┗ 📜CommentLike.java
- ┃ ┣ 📂common
- ┃ ┃ ┣ 📜ApiResponse.java
- ┃ ┃ ┗ 📜BaseTimeEntity.java
- ┃ ┣ 📂dream
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┣ 📜DreamController.java
- ┃ ┃ ┃ ┗ 📜SquareController.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📜DreamCategoryDto.java
- ┃ ┃ ┃ ┣ 📜DreamCreateRequest.java
- ┃ ┃ ┃ ┣ 📜DreamDto.java
- ┃ ┃ ┃ ┣ 📜DreamGetResponse.java
- ┃ ┃ ┃ ┣ 📜DreamMainRequest.java
- ┃ ┃ ┃ ┣ 📜DreamMainResponse.java
- ┃ ┃ ┃ ┣ 📜DreamMainResponseWithCount.java
- ┃ ┃ ┃ ┣ 📜DreamUpdateLikesDto.java
- ┃ ┃ ┃ ┣ 📜DreamUpdateRequest.java
- ┃ ┃ ┃ ┣ 📜SquareDetailResponse.java
- ┃ ┃ ┃ ┗ 📜SquareGetResponseDto.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜DreamRepository.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┣ 📜DreamService.java
- ┃ ┃ ┃ ┗ 📜SquareService.java
- ┃ ┃ ┗ 📜Dream.java
- ┃ ┣ 📂dreamcategory
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜DreamCategoryRepository.java
- ┃ ┃ ┗ 📜DreamCategory.java
- ┃ ┣ 📂notification
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜NotificationController.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┗ 📜NotificationRequest.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜NotificationRepository.java
- ┃ ┃ ┣ 📂scheduler
- ┃ ┃ ┃ ┗ 📜NotificationScheduler.java
- ┃ ┃ ┣ 📜Notification.java
- ┃ ┃ ┗ 📜NotificationType.java
- ┃ ┣ 📂room
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┗ 📜RoomController.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┗ 📜RoomListResponse.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜RoomRepository.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┗ 📜RoomService.java
- ┃ ┃ ┗ 📜Room.java
- ┃ ┗ 📂user
- ┃ ┃ ┣ 📂controller
- ┃ ┃ ┃ ┣ 📜AuthController.java
- ┃ ┃ ┃ ┣ 📜MainController.java
- ┃ ┃ ┃ ┣ 📜MyController.java
- ┃ ┃ ┃ ┗ 📜UserController.java
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┃ ┣ 📜UpdateNicknameRequest.java
- ┃ ┃ ┃ ┣ 📜UserDto.java
- ┃ ┃ ┃ ┗ 📜UserInfoResponse.java
- ┃ ┃ ┣ 📂repository
- ┃ ┃ ┃ ┗ 📜UserRepository.java
- ┃ ┃ ┣ 📂service
- ┃ ┃ ┃ ┗ 📜UserService.java
- ┃ ┃ ┣ 📜Role.java
- ┃ ┃ ┗ 📜User.java
- ┣ 📂exception
- ┃ ┣ 📂global
- ┃ ┃ ┗ 📜ControllerExceptionAdvice.java
- ┃ ┣ 📜BadRequestException.java
- ┃ ┣ 📜ForbiddenException.java
- ┃ ┣ 📜InvalidCommentException.java
- ┃ ┣ 📜InvalidDreamException.java
- ┃ ┣ 📜InvalidUserException.java
- ┃ ┣ 📜NicknameAlreadyExistsException.java
- ┃ ┣ 📜NotFoundException.java
- ┃ ┣ 📜RoomNotFoundException.java
- ┃ ┣ 📜ServerErrorException.java
- ┃ ┣ 📜UnauthenticatedException.java
- ┃ ┗ 📜UserNotFoundException.java
- ┣ 📂fcm
- ┃ ┗ 📜FcmService.java
- ┣ 📂jwt
- ┃ ┣ 📜JWTFilter.java
- ┃ ┗ 📜JWTUtil.java
- ┣ 📂oauth
- ┃ ┣ 📂dto
- ┃ ┃ ┣ 📜CustomOAuth2User.java
- ┃ ┃ ┣ 📜GoogleResponse.java
- ┃ ┃ ┣ 📜KakaoResponse.java
- ┃ ┃ ┣ 📜NaverResponse.java
- ┃ ┃ ┗ 📜OAuth2Response.java
- ┃ ┣ 📂factory
- ┃ ┃ ┣ 📜GoogleResponseFactory.java
- ┃ ┃ ┣ 📜KakaoResponseFactory.java
- ┃ ┃ ┣ 📜NaverResponseFactory.java
- ┃ ┃ ┗ 📜OAuth2ResponseFactory.java
- ┃ ┣ 📂handler
- ┃ ┃ ┗ 📜CustomSuccessHandler.java
- ┃ ┗ 📂service
- ┃ ┃ ┗ 📜CustomOAuth2UserService.java
- ┗ 📂socket
- ┃ ┣ 📜ChatMessage.java
- ┃ ┣ 📜SocketIoConfig.java
- ┃ ┣ 📜SocketIOEventHandler.java
- ┃ ┗ 📜SocketIOServerRunner.java
+📦main
+ ┣ 📂java
+ ┃ ┗ 📂c104
+ ┃ ┃ ┗ 📂sinbiaccount
+ ┃ ┃ ┃ ┣ 📂account
+ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountController.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜AccountQueryController.java
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountCreateRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountDetailView.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountEvent.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountListView.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CommandVirtualAccountDto.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜DepositRequestDto.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜GetAccountListResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜RollBackDto.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜SaveTransactionHistoryRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TransferAccountRequest.java
+ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountQueryRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜AccountRepository.java
+ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountQueryService.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜AccountService.java
+ ┃ ┃ ┃ ┃ ┗ 📜Account.java
+ ┃ ┃ ┃ ┣ 📂config
+ ┃ ┃ ┃ ┃ ┣ 📜KafkaConfig.java
+ ┃ ┃ ┃ ┃ ┣ 📜RedisConfig.java
+ ┃ ┃ ┃ ┃ ┗ 📜SecurityConfig.java
+ ┃ ┃ ┃ ┣ 📂constant
+ ┃ ┃ ┃ ┃ ┣ 📜BankTypeEnum.java
+ ┃ ┃ ┃ ┃ ┗ 📜ErrorCode.java
+ ┃ ┃ ┃ ┣ 📂exception
+ ┃ ┃ ┃ ┃ ┣ 📂global
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ApiResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ControllerExceptionAdvice.java
+ ┃ ┃ ┃ ┃ ┣ 📜AccountAlreadyExistsException.java
+ ┃ ┃ ┃ ┃ ┣ 📜AccountNotFoundException.java
+ ┃ ┃ ┃ ┃ ┣ 📜IllgalArgumentException.java
+ ┃ ┃ ┃ ┃ ┣ 📜ReceiverAlreadyExistsException.java
+ ┃ ┃ ┃ ┃ ┣ 📜ReceiverSaveFailedException.java
+ ┃ ┃ ┃ ┃ ┣ 📜RefreshTokenNotFoundException.java
+ ┃ ┃ ┃ ┃ ┣ 📜UserAlreadyExistsException.java
+ ┃ ┃ ┃ ┃ ┗ 📜UserNotFoundException.java
+ ┃ ┃ ┃ ┣ 📂filter
+ ┃ ┃ ┃ ┃ ┣ 📜AuthenticationFilter.java
+ ┃ ┃ ┃ ┃ ┣ 📜CustomAccessDeniedHandler.java
+ ┃ ┃ ┃ ┃ ┣ 📜CustomAuthenticationEntryPoint.java
+ ┃ ┃ ┃ ┃ ┣ 📜JwtExceptionFilter.java
+ ┃ ┃ ┃ ┃ ┗ 📜TokenProvider.java
+ ┃ ┃ ┃ ┣ 📂receiver
+ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReceiverController.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReceiverQueryController.java
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReceiverAccountListResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReceiverAccountListView.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReceiverEvent.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReceiverRegistrationRequest.java
+ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReceiverQueryRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReceiverRepository.java
+ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReceiverQueryService.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReceiverService.java
+ ┃ ┃ ┃ ┃ ┗ 📜Receiver.java
+ ┃ ┃ ┃ ┣ 📂transactionhistory
+ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TransactionHistoryController.java
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TransactionHistoryResponse.java
+ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TransactionHistoryRepository.java
+ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TransactionHistoryService.java
+ ┃ ┃ ┃ ┃ ┗ 📜TransactionHistory.java
+ ┃ ┃ ┃ ┣ 📂util
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TokenDto.java
+ ┃ ┃ ┃ ┃ ┣ 📜AccountEventListener.java
+ ┃ ┃ ┃ ┃ ┣ 📜CookieUtil.java
+ ┃ ┃ ┃ ┃ ┣ 📜HeaderUtil.java
+ ┃ ┃ ┃ ┃ ┣ 📜KafkaConsumerUtil.java
+ ┃ ┃ ┃ ┃ ┣ 📜KafkaProducerUtil.java
+ ┃ ┃ ┃ ┃ ┣ 📜ReceiverEventListener.java
+ ┃ ┃ ┃ ┃ ┣ 📜RedisUtil.java
+ ┃ ┃ ┃ ┃ ┗ 📜VirtualAccountResponseHandler.java
+ ┃ ┃ ┃ ┣ 📜BaseTimeEntity.java
+ ┃ ┃ ┃ ┗ 📜SinbiAccountApplication.java
+ ┗ 📂resources
+ ┃ ┗ 📜application.yml
+```
+
+ ### 📗filter
+---
+```
+ 📦main
+ ┣ 📂java
+ ┃ ┗ 📂c104
+ ┃ ┃ ┗ 📂sinbisecurity
+ ┃ ┃ ┃ ┣ 📂config
+ ┃ ┃ ┃ ┃ ┗ 📜SecurityConfig.java
+ ┃ ┃ ┃ ┣ 📂constant
+ ┃ ┃ ┃ ┃ ┗ 📜ErrorCode.java
+ ┃ ┃ ┃ ┣ 📂exception
+ ┃ ┃ ┃ ┃ ┣ 📂global
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ApiResponse.java
+ ┃ ┃ ┃ ┃ ┗ 📜RefreshTokenNotFoundException.java
+ ┃ ┃ ┃ ┣ 📂filter
+ ┃ ┃ ┃ ┃ ┣ 📜AuthenticationFilter.java
+ ┃ ┃ ┃ ┃ ┣ 📜CustomAccessDeniedHandler.java
+ ┃ ┃ ┃ ┃ ┣ 📜CustomAuthenticationEntryPoint.java
+ ┃ ┃ ┃ ┃ ┣ 📜JwtExceptionFilter.java
+ ┃ ┃ ┃ ┃ ┗ 📜TokenProvider.java
+ ┃ ┃ ┃ ┣ 📂util
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TokenDto.java
+ ┃ ┃ ┃ ┃ ┗ 📜CookieUtil.java
+ ┃ ┃ ┃ ┗ 📜SinbiSecurityApplication.java
+ ┗ 📂resources
+ ┃ ┗ 📜application.yml
+```
+
+### 📘user
+---
+```
+ 📦main
+ ┣ 📂java
+ ┃ ┗ 📂c104
+ ┃ ┃ ┗ 📂sinbicommon
+ ┃ ┃ ┃ ┣ 📂config
+ ┃ ┃ ┃ ┃ ┣ 📂s3
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜S3Config.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜S3Uploader.java
+ ┃ ┃ ┃ ┃ ┣ 📜RedisConfig.java
+ ┃ ┃ ┃ ┃ ┗ 📜SecurityConfig.java
+ ┃ ┃ ┃ ┣ 📂constant
+ ┃ ┃ ┃ ┃ ┣ 📜BankTypeEnum.java
+ ┃ ┃ ┃ ┃ ┗ 📜ErrorCode.java
+ ┃ ┃ ┃ ┣ 📂exception
+ ┃ ┃ ┃ ┃ ┣ 📂global
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ApiResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ControllerExceptionAdvice.java
+ ┃ ┃ ┃ ┃ ┣ 📜AccountNotFoundException.java
+ ┃ ┃ ┃ ┃ ┣ 📜FaceAuthenticationException.java
+ ┃ ┃ ┃ ┃ ┣ 📜IllgalArgumentException.java
+ ┃ ┃ ┃ ┃ ┣ 📜JsonFormatException.java
+ ┃ ┃ ┃ ┃ ┣ 📜ReceiverAlreadyExistsException.java
+ ┃ ┃ ┃ ┃ ┣ 📜ReceiverSaveFailedException.java
+ ┃ ┃ ┃ ┃ ┣ 📜RefreshTokenNotFoundException.java
+ ┃ ┃ ┃ ┃ ┣ 📜S3Exception.java
+ ┃ ┃ ┃ ┃ ┣ 📜UserAlreadyExistsException.java
+ ┃ ┃ ┃ ┃ ┗ 📜UserNotFoundException.java
+ ┃ ┃ ┃ ┣ 📂jwt
+ ┃ ┃ ┃ ┃ ┣ 📜FaceIdAuthenticationProvider.java
+ ┃ ┃ ┃ ┃ ┗ 📜TokenProvider.java
+ ┃ ┃ ┃ ┣ 📂sms
+ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜SmsController.java
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CoolSmsRequestDto.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜SmsVerifyDto.java
+ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜SmsRepository.java
+ ┃ ┃ ┃ ┃ ┗ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CoolSmsService.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜SmsCertificationUtil.java
+ ┃ ┃ ┃ ┣ 📂user
+ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserController.java
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜LoginDto.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜SignUpDto.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜TokenDto.java
+ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserRepository.java
+ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜UserDetailsServiceImpl.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserService.java
+ ┃ ┃ ┃ ┃ ┗ 📜User.java
+ ┃ ┃ ┃ ┣ 📂util
+ ┃ ┃ ┃ ┃ ┣ 📜CookieUtil.java
+ ┃ ┃ ┃ ┃ ┣ 📜KakaoFaceAuthenticationUtil.java
+ ┃ ┃ ┃ ┃ ┗ 📜RedisUtil.java
+ ┃ ┃ ┃ ┣ 📜BaseTimeEntity.java
+ ┃ ┃ ┃ ┗ 📜SinbiCommonApplication.java
+ ┗ 📂resources
+ ┃ ┗ 📜application.yml
+```
+
+### 📙virtualaccount
+---
+```
+ 📦main
+ ┣ 📂java
+ ┃ ┗ 📂c104
+ ┃ ┃ ┗ 📂sinbireceiver
+ ┃ ┃ ┃ ┣ 📂config
+ ┃ ┃ ┃ ┃ ┣ 📜KafkaConfig.java
+ ┃ ┃ ┃ ┃ ┗ 📜RedisConfig.java
+ ┃ ┃ ┃ ┣ 📂constant
+ ┃ ┃ ┃ ┃ ┣ 📜BankTypeEnum.java
+ ┃ ┃ ┃ ┃ ┗ 📜ErrorCode.java
+ ┃ ┃ ┃ ┣ 📂exception
+ ┃ ┃ ┃ ┃ ┣ 📂global
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ApiResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ControllerExceptionAdvice.java
+ ┃ ┃ ┃ ┃ ┣ 📜AccountNotFoundException.java
+ ┃ ┃ ┃ ┃ ┣ 📜DepositFailedException.java
+ ┃ ┃ ┃ ┃ ┣ 📜IllgalArgumentException.java
+ ┃ ┃ ┃ ┃ ┣ 📜ReceiverAlreadyExistsException.java
+ ┃ ┃ ┃ ┃ ┣ 📜ReceiverSaveFailedException.java
+ ┃ ┃ ┃ ┃ ┣ 📜UserAlreadyExistsException.java
+ ┃ ┃ ┃ ┃ ┗ 📜UserNotFoundException.java
+ ┃ ┃ ┃ ┣ 📂util
+ ┃ ┃ ┃ ┃ ┣ 📜KafkaConsumerUtil.java
+ ┃ ┃ ┃ ┃ ┣ 📜KafkaProducerUtil.java
+ ┃ ┃ ┃ ┃ ┗ 📜RedisUtil.java
+ ┃ ┃ ┃ ┣ 📂virtualaccount
+ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜VirtualAccountController.java
+ ┃ ┃ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AccountCreateRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜DepositRequestDto.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜VirtualAccountCheckRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜VirtualAccountDto.java
+ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜VirtualAccountRepository.java
+ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜VirtualAccountService.java
+ ┃ ┃ ┃ ┃ ┗ 📜VirtualAccount.java
+ ┃ ┃ ┃ ┗ 📜SinbiReceiverApplication.java
+ ┗ 📂resources
+ ┃ ┗ 📜application.yml
 ```
