@@ -1,7 +1,6 @@
 package c104.sinbiaccount.util;
 
 import c104.sinbiaccount.exception.global.ApiResponse;
-import c104.sinbiaccount.util.dto.TokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -11,9 +11,9 @@ public class ReceiverQueryService {
     private final ReceiverQueryRepository receiverQueryRepository;
     private final ReceiverService receiverService;
 
-    public ReceiverAccountListView getReceiverList(String userPhone){
+    public ReceiverAccountListView getReceiverList(String userPhone) {
         ReceiverAccountListView cachedReceiverList = receiverQueryRepository.getReceiverList(userPhone);
-        if(cachedReceiverList != null){
+        if (cachedReceiverList != null) {
             return cachedReceiverList;
         }
 

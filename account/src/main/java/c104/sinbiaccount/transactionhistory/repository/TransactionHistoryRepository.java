@@ -1,6 +1,5 @@
 package c104.sinbiaccount.transactionhistory.repository;
 
-
 import c104.sinbiaccount.transactionhistory.TransactionHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 

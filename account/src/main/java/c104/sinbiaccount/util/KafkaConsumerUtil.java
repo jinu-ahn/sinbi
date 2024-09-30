@@ -7,11 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -19,12 +17,13 @@ import java.util.LinkedHashMap;
 public class KafkaConsumerUtil {
     private final ObjectMapper objectMapper;
     private final VirtualAccountResponseHandler virtualAccountResponseHandler;
+
     /**
      * 가상계좌에 대한 값을 가져오는 토픽에 대한 리스너.
      */
     @KafkaListener(topics = "${spring.kafka.topics.second-find-virtual-account}", groupId = "${spring.kafka.consumer.group-id}")
     public void listenFindVirtualAccount(ApiResponse<?> response) {
-        if(response.getStatus().equals("SUCCESS")){
+        if (response.getStatus().equals("SUCCESS")) {
             try {
                 JsonNode jsonNode = objectMapper.readTree(response.toJson());  // JSON 문자열을 JsonNode로 변환
 
@@ -39,7 +38,7 @@ public class KafkaConsumerUtil {
                         .build();
 
                 virtualAccountResponseHandler.complete(commandVirtualAccountDto);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 log.info(e.getMessage());
             }
         } else {

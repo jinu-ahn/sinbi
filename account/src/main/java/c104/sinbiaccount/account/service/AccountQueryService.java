@@ -1,7 +1,6 @@
 package c104.sinbiaccount.account.service;
 
 import c104.sinbiaccount.account.dto.AccountDetailView;
-import c104.sinbiaccount.account.dto.AccountListView;
 import c104.sinbiaccount.account.repository.AccountQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,9 +11,9 @@ public class AccountQueryService {
     private final AccountQueryRepository accountQueryRepository;
     private final AccountService accountService;
 
-    public AccountDetailView getAccountDetail(Long accountId){
+    public AccountDetailView getAccountDetail(Long accountId) {
         AccountDetailView cachedAccountDetail = accountQueryRepository.getAccountDetail(accountId);
-        if(cachedAccountDetail != null){
+        if (cachedAccountDetail != null) {
             return cachedAccountDetail;
         }
 

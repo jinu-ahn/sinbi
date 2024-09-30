@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/queries/accounts")
+@RequestMapping("/account")
 public class AccountQueryController {
     private final AccountQueryService accountQueryService;
 

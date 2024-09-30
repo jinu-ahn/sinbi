@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/queries/receivers")
+@RequestMapping("/receiverAccount")
 public class ReceiverQueryController {
     private final ReceiverQueryService receiverQueryService;
-    private HeaderUtil headerUtil;
+    private final HeaderUtil headerUtil;
 
-    @GetMapping
+    @GetMapping("/list")
     @Operation(summary = "Receiver 계좌 목록 조회", description = "사용자의 Receiver 계좌 목록을 조회하는 API입니다.")
     public ResponseEntity<ReceiverAccountListView> getReceiverList(HttpServletRequest request) {
         String userPhone = headerUtil.getUserPhone(request);

@@ -3,21 +3,15 @@ package c104.sinbiaccount.config;
 import c104.sinbiaccount.filter.*;
 import c104.sinbiaccount.util.CookieUtil;
 import c104.sinbiaccount.util.KafkaProducerUtil;
-import c104.sinbiaccount.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -43,11 +37,11 @@ public class SecurityConfig {
     private final KafkaProducerUtil kafkaProducerUtil;
 
     private final String[] PERMIT_ALL_ARRAY = { // 허용할 API
-            "/user/signup", "/user/login","/**"
+            "/user/signup", "/user/login", "/**"
     };
 
     private final String[] CORS_API_METHOD = { // 허용할 Method
-            "GET", "POST", "PUT","PATCH", "DELETE"
+            "GET", "POST", "PUT", "PATCH", "DELETE"
     };
 
     private final String[] CORS_ALLOW_URL = { // 허용할 URL
@@ -73,7 +67,7 @@ public class SecurityConfig {
                         // PERMIT_ALL_ARRAY에 정의된 모든 경로는 인증 없이 접근 허용
                         .requestMatchers(Arrays.stream(PERMIT_ALL_ARRAY)
                                 .map(AntPathRequestMatcher::antMatcher)
-                                .toArray(AntPathRequestMatcher[] :: new))
+                                .toArray(AntPathRequestMatcher[]::new))
                         .permitAll()
                         // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated()
@@ -81,7 +75,7 @@ public class SecurityConfig {
                 // UsernamePasswordAuthenticationFilter 전에 AuthenticationFilter 추가
                 .addFilterBefore(new AuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 // AuthenticationFilter 전에 JwtExceptionFilter 추가
-                .addFilterBefore(new JwtExceptionFilter(tokenProvider,cookieUtil,kafkaProducerUtil), AuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionFilter(tokenProvider, cookieUtil, kafkaProducerUtil), AuthenticationFilter.class)
                 // 예외 처리 설정
                 .exceptionHandling(e -> {
                     // 인증 실패 시 CustomAuthenticationEntryPoint 사용
@@ -96,6 +90,7 @@ public class SecurityConfig {
 
     /**
      * Swagger 사용
+     *
      * @return WebSecurityCustomizer
      */
     @Bean
@@ -106,6 +101,7 @@ public class SecurityConfig {
 
     /**
      * cors 설정
+     *
      * @return
      */
     @Bean

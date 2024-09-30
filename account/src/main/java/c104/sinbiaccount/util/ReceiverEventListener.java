@@ -21,15 +21,15 @@ public class ReceiverEventListener {
 
     @KafkaListener(topics = "${spring.kafka.topics.receiver-events}", groupId = "${spring.kafka.consumer.group-id}")
     public void handleReceiverEvent(ReceiverEvent event) {
-        try{
+        try {
             switch (event.getEventType()) {
                 case "RECEIVER_REGISTERED":
                     ReceiverAccountListResponse newReceiver = objectMapper.convertValue(event.getData(), ReceiverAccountListResponse.class);
                     ReceiverAccountListView receiverAccountListView = receiverQueryRepository.getReceiverList(event.getUserPhone());
-                    if(receiverAccountListView != null) {
+                    if (receiverAccountListView != null) {
                         receiverAccountListView.getReceivers().add(newReceiver);
                         receiverQueryRepository.saveReceiverList(event.getUserPhone(), receiverAccountListView);
-                    }else{
+                    } else {
                         // 캐시에 없으면 새로 저장
                         receiverAccountListView = new ReceiverAccountListView(event.getUserPhone(), List.of(newReceiver));
                         receiverQueryRepository.saveReceiverList(event.getUserPhone(), receiverAccountListView);
@@ -39,7 +39,7 @@ public class ReceiverEventListener {
                     Long deletedReceiverId = objectMapper.convertValue(event.getData(), Long.class);
                     //기존 캐시된 Receiver 목록에서 제거
                     ReceiverAccountListView listView = receiverQueryRepository.getReceiverList(event.getUserPhone());
-                    if(listView != null) {
+                    if (listView != null) {
                         listView.getReceivers().removeIf(receiver -> receiver.getId().equals(deletedReceiverId));
                         receiverQueryRepository.saveReceiverList(event.getUserPhone(), listView);
                     }
@@ -47,7 +47,7 @@ public class ReceiverEventListener {
                 default:
                     log.warn("Unknown event type: {}", event.getEventType());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
     }

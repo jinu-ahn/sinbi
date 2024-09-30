@@ -21,7 +21,8 @@ public class AccountEventListener {
     private final AccountQueryRepository accountQueryRepository;
 
     // TypeReference를 상수로 재사용
-    private static final TypeReference<Map<String, Object>> MAP_TYPE_REF = new TypeReference<Map<String, Object>>() {};
+    private static final TypeReference<Map<String, Object>> MAP_TYPE_REF = new TypeReference<Map<String, Object>>() {
+    };
 
     @KafkaListener(topics = "${spring.kafka.topics.account-events}", groupId = "${spring.kafka.consumer.group-id}")
     public void handleAccountEvent(ApiResponse<?> apiResponse) {

@@ -9,10 +9,11 @@ import java.util.concurrent.TimeUnit;
 @Repository
 @RequiredArgsConstructor
 public class RedisUtil {
-    private final RedisTemplate<String,Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 키, 값, TTL 시간 설정하여 삽입
+     *
      * @param key
      * @param value
      * @param expiredTime
@@ -24,6 +25,7 @@ public class RedisUtil {
 
     /**
      * 키에대한 값 가져오기
+     *
      * @param key
      * @return
      */
@@ -34,6 +36,7 @@ public class RedisUtil {
 
     /**
      * 키 삭제
+     *
      * @param key
      */
     public void deleteData(String key) {
@@ -42,6 +45,7 @@ public class RedisUtil {
 
     /**
      * 현재 생성되어있는 키에 값 추가하기
+     *
      * @param key
      * @param value
      */

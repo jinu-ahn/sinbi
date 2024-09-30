@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,18 +36,10 @@ public class ReceiverService {
     //자주 사용할 계좌 등록
     @Transactional
     public void ReceiverAccountRegistration(ReceiverRegistrationRequest receiverRegistrationRequest) {
-//        // Receiver 계좌 중복 체크
-//        Optional<Receiver> existingReceiver = receiverRepository.findByRecvAccountNumAndBankTypeEnum(
-//                receiverRegistrationRequest.getAccountNum(),
-//                receiverRegistrationRequest.getBankTypeEnum()
-//        );
-//        if (existingReceiver.isPresent()) {
-//            throw new ReceiverAlreadyExistsException("이미 등록된 Receiver 계좌입니다.");
-//        }
-        Map<String,Object> accountNumAndBankTypeMap = new HashMap<>();
-        accountNumAndBankTypeMap.put("accountNum",receiverRegistrationRequest.getAccountNum());
-        accountNumAndBankTypeMap.put("bankType",receiverRegistrationRequest.getBankTypeEnum());
-        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap,"SUCCESS"));
+        Map<String, Object> accountNumAndBankTypeMap = new HashMap<>();
+        accountNumAndBankTypeMap.put("accountNum", receiverRegistrationRequest.getAccountNum());
+        accountNumAndBankTypeMap.put("bankType", receiverRegistrationRequest.getBankTypeEnum());
+        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap, "SUCCESS"));
         try {
             if (virtualAccountResponseHandler.getCompletableFuture().get() instanceof CommandVirtualAccountDto) {
                 Optional<Receiver> existingReceiver = receiverRepository.findByRecvAccountNumAndBankTypeEnum(
@@ -75,11 +68,11 @@ public class ReceiverService {
                         receiver.getRecvAlias()
                 );
                 ReceiverEvent event = new ReceiverEvent("RECEIVER_REGISTERED", receiver.getUserPhone(), receiverResponse);
-                kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event,"SUCCESS"));
+                kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event, "SUCCESS"));
             } else {
                 throw new AccountNotFoundException();
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             log.info(e.getMessage());
             throw new AccountNotFoundException();
         } finally {
@@ -96,7 +89,7 @@ public class ReceiverService {
 
         // 이벤트 발행: Receiver 삭제 후 Redis 갱신을 위해 이벤트 전송
         ReceiverEvent event = new ReceiverEvent("RECEIVER_DELETED", receiver.getUserPhone(), receiverId);
-        kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event,"SUCCESS"));
+        kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event, "SUCCESS"));
     }
 
     // 명령(Command) 사이드의 DB 전용 조회 메서드 (Query Side에서 사용)
