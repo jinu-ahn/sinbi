@@ -11,7 +11,7 @@
 ## 1️⃣ 프로젝트 개요
 
 ⏳ **개발 기간**
-2024.08.13 ~ 2024.10.11 (8주)
+2024.08.26 ~ 2024.10.11 (7주)
 ---
 
 👨‍👨‍👦‍👦 **팀원 소개**
@@ -153,6 +153,7 @@
 - MongoDB
 - Server API(Ingress Controller)
 - pytorch
+- flask
 
 ## 🌝 사용된 기술
 
@@ -165,11 +166,12 @@
 
 <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> 
 <img src="https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> 
+<img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white">
 <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"> 
-<img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white">
-<img src="https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=java&logoColor=white"> 
-<img src="https://img.shields.io/badge/Spring%20Cloud%20Config-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> 
+<img src="https://img.shields.io/badge/Java-17-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> 
+<img src="https://img.shields.io/badge/Spring%20Cloud%20Config-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> 
+<img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white">
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> 
 <img src="https://img.shields.io/badge/Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"> 
 <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white">
@@ -200,6 +202,7 @@
 - **MySQL** : 회원 정보, 금융 기록 등 주요 데이터를 저장하는 데 사용.
 - **Redis** : 비정형 데이터를 저장하기 위해 NoSQL 데이터베이스로 사용.
 - **Pytorch** : 머신러닝 모델 구현과 학습을 위해 사용.
+- **Flask** : 간단한 RESTful API 서버나 머신러닝 모델의 서빙을 위해 Python 기반의 마이크로 웹 프레임워크로 사용.
 
 **[ FRONT END ]**
 
@@ -235,7 +238,7 @@
 
 ## 🌝 ERD
 
-![SSAFY_공통_C106_ERD (5).png](README_asset/erd.png)
+![SSAFY_공통_C104_ERD.png](README_asset/ERD.png)
 
 ---
 
