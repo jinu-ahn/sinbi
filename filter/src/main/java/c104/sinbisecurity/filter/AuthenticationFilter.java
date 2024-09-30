@@ -22,14 +22,15 @@ import java.io.IOException;
 @Slf4j
 public class AuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
+
     /**
+     * @param request     헤더에서 토큰을 가져오기위한 servlet
+     * @param response    토큰을 헤더에 추가하기 위한 servlet
+     * @param filterChain filter
+     * @return
      * @ 작성자   : 안진우
      * @ 작성일   : 2024-09-08
      * @ 설명     : 토큰이 사용가능한지, 블랙리스트에 있는 토큰인지 검증 후 ContextHolder에 저장
-     * @param request 헤더에서 토큰을 가져오기위한 servlet
-     * @param response 토큰을 헤더에 추가하기 위한 servlet
-     * @param filterChain filter
-     * @return
      * @status 실패 : 401, 403
      */
     @Override
@@ -40,12 +41,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
+     * @param response  토큰을 헤더에 추가하기 위한 servlet
+     * @param errorCode 커스텀 에러 코드
+     * @return
      * @ 작성자   : 안진우
      * @ 작성일   : 2024-09-08
      * @ 설명     : JWT 토큰 에러 핸들링
-     * @param response 토큰을 헤더에 추가하기 위한 servlet
-     * @param errorCode 커스텀 에러 코드
-     * @return
      * @status 실패 : 401, 403
      */
     public void jwtExceptionHandler(HttpServletResponse response, ErrorCode errorCode) {

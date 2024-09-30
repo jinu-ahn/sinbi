@@ -19,13 +19,13 @@ import java.io.IOException;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     /**
+     * @param request               헤더에서 토큰을 가져오기위한 servlet
+     * @param response              토큰을 헤더에 추가하기 위한 servlet
+     * @param accessDeniedException exception
+     * @return
      * @ 작성자   : 안진우
      * @ 작성일   : 2024-09-08
      * @ 설명     : 접근할 수 있는 권한을 가지고 있는지 검증
-     * @param request 헤더에서 토큰을 가져오기위한 servlet
-     * @param response 토큰을 헤더에 추가하기 위한 servlet
-     * @param accessDeniedException exception
-     * @return
      * @status 실패 : 403
      */
     @Override

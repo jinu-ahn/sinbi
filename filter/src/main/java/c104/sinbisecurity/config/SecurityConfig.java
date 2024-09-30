@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -35,11 +34,11 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final CookieUtil cookieUtil;
     private final String[] PERMIT_ALL_ARRAY = { // 허용할 API
-            "/user/signup", "/user/login","/**"
+            "/user/signup", "/user/login", "/**"
     };
 
     private final String[] CORS_API_METHOD = { // 허용할 Method
-            "GET", "POST", "PUT","PATCH", "DELETE"
+            "GET", "POST", "PUT", "PATCH", "DELETE"
     };
 
     private final String[] CORS_ALLOW_URL = { // 허용할 URL
@@ -65,7 +64,7 @@ public class SecurityConfig {
                         // PERMIT_ALL_ARRAY에 정의된 모든 경로는 인증 없이 접근 허용
                         .requestMatchers(Arrays.stream(PERMIT_ALL_ARRAY)
                                 .map(AntPathRequestMatcher::antMatcher)
-                                .toArray(AntPathRequestMatcher[] :: new))
+                                .toArray(AntPathRequestMatcher[]::new))
                         .permitAll()
                         // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated()
@@ -88,6 +87,7 @@ public class SecurityConfig {
 
     /**
      * Swagger 사용
+     *
      * @return WebSecurityCustomizer
      */
     @Bean
@@ -98,6 +98,7 @@ public class SecurityConfig {
 
     /**
      * cors 설정
+     *
      * @return
      */
     @Bean

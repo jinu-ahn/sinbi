@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SinbiSecurityApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SinbiSecurityApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SinbiSecurityApplication.class, args);
+    }
 
 }

@@ -30,23 +30,25 @@ public class TokenProvider {
     /**
      * AccessToken 복호화
      * ParseClaimsJws 메서드가 JWT 토큰의 검증과 파싱을 모두 수행
+     *
      * @param accessToken
      * @return Claims
      */
     public Claims parseClaims(String accessToken) {
-        try{
+        try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(accessToken)
                     .getBody();
-        }catch (JwtException e) {
+        } catch (JwtException e) {
             throw new JwtException(ErrorCode.EXPIRED_TOKEN.getMessage());
         }
     }
 
     /**
      * 주어진 토큰을 검증하여 유효성 검사
+     *
      * @param token
      * @return boolean
      */
