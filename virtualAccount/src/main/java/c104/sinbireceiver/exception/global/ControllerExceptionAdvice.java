@@ -1,6 +1,5 @@
 package c104.sinbireceiver.exception.global;
 
-
 import c104.sinbireceiver.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

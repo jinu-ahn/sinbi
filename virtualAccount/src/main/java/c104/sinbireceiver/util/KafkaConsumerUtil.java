@@ -2,14 +2,12 @@ package c104.sinbireceiver.util;
 
 import c104.sinbireceiver.exception.global.ApiResponse;
 import c104.sinbireceiver.virtualaccount.dto.DepositRequestDto;
-import c104.sinbireceiver.virtualaccount.repository.VirtualAccountRepository;
 import c104.sinbireceiver.virtualaccount.service.VirtualAccountService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,5 @@
 package c104.sinbireceiver.util;
 
-
 import c104.sinbireceiver.exception.global.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,7 @@ public class KafkaProducerUtil<K, T> {
     /**
      * 가상계좌에 대한 값을 가져오는 토픽에 메시지를 전송합니다.
      *
-     * @param value   메시지 값
+     * @param value 메시지 값
      */
     public void sendFindVirtualAccount(ApiResponse<?> value) {
         kafkaTemplate.send(secondFindVirtualAccountTopic, value);
@@ -30,7 +29,7 @@ public class KafkaProducerUtil<K, T> {
     /**
      * 가상계좌에 대한 값을 가져오는 토픽에 메시지를 전송합니다.
      *
-     * @param value   메시지 값
+     * @param value 메시지 값
      */
     public void sendCompletDeposit(ApiResponse<?> value) {
         kafkaTemplate.send(depositTopic, value);

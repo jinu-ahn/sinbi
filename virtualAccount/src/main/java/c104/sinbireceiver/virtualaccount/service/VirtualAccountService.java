@@ -4,10 +4,8 @@ import c104.sinbireceiver.constant.BankTypeEnum;
 import c104.sinbireceiver.constant.ErrorCode;
 import c104.sinbireceiver.exception.AccountNotFoundException;
 import c104.sinbireceiver.exception.DepositFailedException;
-import c104.sinbireceiver.exception.IllgalArgumentException;
 import c104.sinbireceiver.exception.global.ApiResponse;
 import c104.sinbireceiver.util.KafkaProducerUtil;
-import c104.sinbireceiver.virtualaccount.VirtualAccount;
 import c104.sinbireceiver.virtualaccount.dto.AccountCreateRequest;
 import c104.sinbireceiver.virtualaccount.dto.DepositRequestDto;
 import c104.sinbireceiver.virtualaccount.dto.VirtualAccountCheckRequest;
@@ -67,7 +65,7 @@ public class VirtualAccountService {
 
         return virtualAccount;
     }
-    
+
 
     //계좌 이체
     @Transactional

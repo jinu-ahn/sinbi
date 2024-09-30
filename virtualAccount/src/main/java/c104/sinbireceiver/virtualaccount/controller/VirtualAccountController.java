@@ -2,7 +2,6 @@ package c104.sinbireceiver.virtualaccount.controller;
 
 import c104.sinbireceiver.constant.BankTypeEnum;
 import c104.sinbireceiver.exception.global.ApiResponse;
-import c104.sinbireceiver.virtualaccount.VirtualAccount;
 import c104.sinbireceiver.virtualaccount.dto.VirtualAccountCheckRequest;
 import c104.sinbireceiver.virtualaccount.dto.VirtualAccountDto;
 import c104.sinbireceiver.virtualaccount.service.VirtualAccountService;
