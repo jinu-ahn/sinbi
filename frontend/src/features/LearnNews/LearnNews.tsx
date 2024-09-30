@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import BlackText from "../../components/BlackText";
 import YellowButton from "../../components/YellowButton";
 import { useLearnNewsStore } from "./useLearnNewsStore";
 // import { NewsItem } from "./LearnNews.types";
 import Avatar from "../../assets/avatar.png";
+import Learn from "./Learn";
 // 홈 아이콘 컴포넌트
 const HomeIcon: React.FC = () => (
   <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-yellow-400">
@@ -20,9 +21,7 @@ const HomeIcon: React.FC = () => (
 const REFRESH_INTERVAL = 2 * 60 * 60 * 1000; 
 
 const LearnNews: React.FC = () => {
-  // const [currentView, setCurrentView] = useState<"main" | "learn" | "news">(
-  // "main",
-  // );
+
   const {
     newsData,
     currentIndex,
@@ -35,16 +34,12 @@ const LearnNews: React.FC = () => {
     setCurrentView,
   } = useLearnNewsStore();
 
-  // React.useEffect(() => {
-  //   fetchNews();
-  // }, [fetchNews]);
   useEffect(() => {
     fetchNews(); // 컴포넌트 마운트 시 뉴스 데이터 가져오기
     const intervalId = setInterval(fetchNews, REFRESH_INTERVAL); // 주기적으로 뉴스 데이터 새로고침
     return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 인터벌 제거
   }, [fetchNews]);
 
-  // const currentNews: NewsItem | undefined = newsData[currentIndex];
   const currentNews = newsData[currentIndex];
 
   // 추가된 부분: 현재 뉴스 데이터를 콘솔에 출력
@@ -89,17 +84,18 @@ const LearnNews: React.FC = () => {
         );
       case "learn":
         return (
-          <div className="flex flex-col items-center justify-center">
-            <BlackText text="금융 배우기" boldChars={["금융"]} />
-            {/* 여기에 금융 배우기 컨텐츠를 추가하세요 */}
-            <YellowButton
-              height={50}
-              width={100}
-              onClick={() => setCurrentView("main")}
-            >
-              뒤로
-            </YellowButton>
-          </div>
+          <Learn />
+          // <div className="flex flex-col items-center justify-center">
+          //   <BlackText text="금융 배우기" boldChars={["금융"]} />
+          //   {/* 여기에 금융 배우기 컨텐츠를 추가하세요 */}
+          //   <YellowButton
+          //     height={50}
+          //     width={100}
+          //     onClick={() => setCurrentView("main")}
+          //   >
+          //     뒤로
+          //   </YellowButton>
+          // </div>
         );
       case "news":
         return (
