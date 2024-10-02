@@ -79,10 +79,11 @@ public class AccountService {
         // Kafka 메시지 전송
         kafkaProducerUtil.sendVirtualAccountAuthenticate(ApiResponse.success(virtualAccountAuthenticateRequest, "SUCCESS").withRequestId(requestId));
         try {
+            virtualAccountResponseHandler.createCompletableFuture(requestId);
             // Kafka 리스너로부터 결과를 기다림 (timeout 5초)
-            Boolean isAuthenticationSuccessful = (Boolean) virtualAccountResponseHandler.getCompletableFuture("AUTHENTICATE_ACCOUNT")
+            Boolean isAuthenticationSuccessful = (Boolean) virtualAccountResponseHandler.getCompletableFuture(requestId)
                     .get(5, TimeUnit.SECONDS);
-
+            virtualAccountResponseHandler.cleanupCompleted();
             if (Boolean.TRUE.equals(isAuthenticationSuccessful)) {
                 log.info("계좌 인증 성공");
             } else {

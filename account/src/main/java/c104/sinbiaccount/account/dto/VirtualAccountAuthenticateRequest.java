@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class VirtualAccountAuthenticateRequest {
     private String accountNum;
     private BankTypeEnum bankTypeEnum;
-    private String virtualAccountPassword;
+    private int virtualAccountPassword;
 }

@@ -47,10 +47,10 @@ public class KafkaConsumerUtil {
 
         log.info("BankTypeEnum : {}",BankTypeEnum.valueOf(node.get("data").get("bankTypeEnum").asText()));
         VirtualAccountAuthenticateDto virtualAccountAuthenticateDto = new VirtualAccountAuthenticateDto(
-                node.get("data").get("requestId").asText(),
+                requestId,
                 node.get("data").get("accountNum").asText(),
                 BankTypeEnum.valueOf(node.get("data").get("bankTypeEnum").asText()),
-                node.get("data").get("password").asInt()
+                node.get("data").get("virtualAccountPassword").asInt()
         );
         if (virtualAccountAuthenticateDto != null) {
             virtualAccountService.authenticate(virtualAccountAuthenticateDto);

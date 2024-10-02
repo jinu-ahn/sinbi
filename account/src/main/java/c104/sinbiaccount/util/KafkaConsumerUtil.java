@@ -19,7 +19,6 @@ public class KafkaConsumerUtil {
 
     @KafkaListener(topics = "${spring.kafka.topics.second-find-virtual-account}", groupId = "${spring.kafka.consumer.group-id}")
     public void listenFindVirtualAccount(ApiResponse<?> response) {
-        log.info("listenFindVirtualAccount: {}", response);
         String requestId = response.getRequestId();  // 요청 ID를 포함하도록 수정 필요
         if (response.getStatus().equals("SUCCESS")) {
             try {
@@ -55,8 +54,10 @@ public class KafkaConsumerUtil {
 
     @KafkaListener(topics = "${spring.kafka.topics.second-virtual-account-authenticate}", groupId = "${spring.kafka.consumer.group-id}")
     public void listenAuthenticate(ApiResponse<?> response) {
+        log.info("listenAuthenticate: {}", response.getRequestId());
         String requestId = response.getRequestId();  // 요청 ID를 포함하도록 수정 필요
         boolean isSuccess = response.getStatus().equals("SUCCESS");
         virtualAccountResponseHandler.complete(requestId, isSuccess);
+        log.info("hadler : {}",virtualAccountResponseHandler.getCompletableFuture(requestId));
     }
 }
