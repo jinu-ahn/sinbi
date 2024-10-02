@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
+import defaultBankLogo from "../../assets/defaultBankLogo.png";
+
+import accountDone from "../../assets/audio/17_통장_등록이_끝났어요_첫_화면으로_갈게요.mp3";
 
 const AccountConfirm: React.FC = () => {
-  const { bankType, accountNum } = useConnectAccountStore();
+  const { bankType, accountNum, setAccountNum, setBankType, setError, setPhoneNum, setVerificationCode } = useConnectAccountStore();
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
-    { id: "KOOKMIN", name: "국민은행", logo: bankLogos["KB국민은행"] },
+    { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
     { id: "KDB", name: "KDB산업은행", logo: bankLogos["KDB산업은행"] },
     { id: "KEB", name: "KEB외환은행", logo: bankLogos["KEB외환은행"] },
     { id: "NH", name: "NH농협은행", logo: bankLogos["NH농협은행"] },
@@ -34,7 +38,44 @@ const AccountConfirm: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const selectedBank = banks.find((bank) => bank.id === bankType);
+  const selectedBank = banks.find((bank) => bank.id === bankType) || {
+    id: "BASIC",
+    name: "기본은행",
+    logo: defaultBankLogo,
+  };
+
+  const navigate = useNavigate()
+
+    // 오디오말하기
+    const audio = new Audio(accountDone);
+
+    // 오디오 플레이 (component가 mount될때만)
+    useEffect(() => {
+      // 플레이시켜
+      audio.play();
+  
+      // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+      return () => {
+        if (!audio.paused) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+      };
+    }, []);
+
+  useEffect(() => {
+    // 3초 뒤에 홈으로 간다
+    const timer = setTimeout(() => {
+      navigate("/");
+      setAccountNum("")
+      setBankType("")
+      setError("")
+      setPhoneNum("")
+      setVerificationCode("")
+    }, 3000);
+    // component가 unmount되면 timeout function 중지
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <div>

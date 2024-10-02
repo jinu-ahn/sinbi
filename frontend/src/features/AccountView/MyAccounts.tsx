@@ -5,6 +5,8 @@ import SpecificAccount from "./SpecificAccount";
 import bankLogos from "../../assets/bankLogos";
 import { useAccountViewStore } from "./AccountViewStore";
 
+import thisIsAccountList from "../../assets/audio/38_현재_가지고_계신_통장_목록이에요.mp3";
+
 const banks = [
   { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
   { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -85,18 +87,35 @@ const MyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
     return bank ? bank.logo : undefined;
   };
 
+  // 오디오말하기
+  const audio = new Audio(thisIsAccountList);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
+
   return (
     <div>
       <header>
         {/* 선택된 상세 계좌 있으면 상세 계좌 이름 보여줌 | 없으면 모든 통장 리스트 */}
         {!selectedAccount ? (
-          <h1 className="text-[40px] text-center font-bold">모든 통장</h1>
+          <h1 className="text-center text-[40px] font-bold">모든 통장</h1>
         ) : (
           <div className="m-1 p-1">
             {/* 은행로고랑 통장이름 div */}
-            <div className="flex items-center text-left mt-4 ml-5">
+            <div className="ml-5 mt-4 flex items-center text-left">
               <img
-                className="w-[40px] h-[40px] mr-2"
+                className="mr-2 h-[40px] w-[40px]"
                 src={getBankLogo(selectedAccount.bankType)}
                 alt={selectedAccount.bankType}
               />
@@ -113,7 +132,7 @@ const MyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
             </div>
 
             {/* 계좌 잔액은 왼쪽으로 */}
-            <p className="text-right text-[35px] font-bold mt-2 mr-5">
+            <p className="mr-5 mt-2 text-right text-[35px] font-bold">
               {selectedAccount.amount} 원
             </p>
           </div>
@@ -121,27 +140,29 @@ const MyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
       </header>
 
       {/* 선택된 상세 계좌 있으면 상세 계좌 이름 보여줌 | 없으면 모든 통장 리스트 */}
-      <div className="flex justify-center mt-4 w-[350px]">
+      <div className="mt-4 flex w-[350px] justify-center">
         <YellowBox>
           {!selectedAccount ? (
             <ul className="h-[250px] overflow-y-auto">
               {/* div 크기 고정 안에서 scroll */}
               {accounts.length > 0 ? (
                 accounts.map((account) => (
-                  <div key={account.id} className="bg-white m-1 p-1">
+                  <div key={account.id} className="m-1 bg-white p-1">
                     <li
-                      className="text-[30px] rounded-md flex items-center"
+                      className="flex items-center rounded-md text-[30px]"
                       onClick={() => handleAccountClick(account)}
                     >
                       <img
                         src={getBankLogo(account.bankType)}
                         alt={account.bankType}
-                        className="w-8 h-8 mr-2"
+                        className="mr-2 h-8 w-8"
                       />
                       {account.productName}
                     </li>
                     <p className="text-left">&nbsp;{account.accountNum}</p>
-                    <p className="text-[35px] text-right font-bold">{account.amount} 원</p>
+                    <p className="text-right text-[35px] font-bold">
+                      {account.amount} 원
+                    </p>
                   </div>
                 ))
               ) : (

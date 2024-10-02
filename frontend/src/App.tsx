@@ -7,6 +7,8 @@ import ConnectAccountPage from "./features/ConnectAccount/ConnectAccountPage";
 import AccountsViewPage from "./features/AccountView/AccountsViewPage";
 import TitlePage from "./titlepage";
 import WelcomePage from "./features/User/WelcomPage";
+import TransferPage from "./features/Transfer/TransferPage";
+import LearnNews from "./features/LearnNews/LearnNews";
 
 // function App() {
 const App: React.FC = () => {
@@ -21,6 +23,8 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/connect-account" element={<ConnectAccountPage />} />
           <Route path="/account-view" element={<AccountsViewPage />}/>
+          <Route path="/transfer" element={<TransferPage />}/>
+          <Route path="/learn-news" element={<LearnNews />}/>
         </Routes>
       </div>
     </BrowserRouter>

@@ -10,6 +10,10 @@ import {
   verificationCodeCheck,
 } from "../../services/api";
 
+// 목소리
+// import sayAccountNumber from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
+import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3"
+
 const ConnectAccountVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +39,12 @@ const ConnectAccountVoiceCommand: React.FC = () => {
   const [PreviousVerificationCode, setPreviousVerificationCode] =
     useState(phoneNum);
 
+  // 오디오말하기
+  const playAudio = (audioFile: string) => {
+    const audio = new Audio(audioFile);
+    audio.play();
+  };
+
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
@@ -55,6 +65,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
     const lowerCaseTranscript = transcript.toLowerCase();
 
     // step 0 : 계좌번호 받기
+
     // step 1 : 은행 종류 받기
     // step 2 : 제대로 받았는지 체크
     // step 3 : 전화번호 받기
@@ -73,6 +84,14 @@ const ConnectAccountVoiceCommand: React.FC = () => {
       if (lowerCaseTranscript.includes("하나 지워")) {
         setPreviousAccountNum(accountNum.slice(0, -1));
         setAccountNum(accountNum.slice(0, -1));
+        resetTranscript();
+      }
+
+      if (
+        lowerCaseTranscript.includes("신비야") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sayNext);
         resetTranscript();
       }
 
@@ -104,7 +123,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("케이비") ||
         lowerCaseTranscript.includes("국민")
       ) {
-        setBankType("KOOKMIN");
+        setBankType("KB");
       } else if (
         lowerCaseTranscript.includes("케이디비") ||
         lowerCaseTranscript.includes("산업")
@@ -185,6 +204,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("뒤로가") ||
         lowerCaseTranscript.includes("이전")
       ) {
+        setError(null)
         setStep(step - 1);
         resetTranscript();
       }
@@ -311,6 +331,12 @@ const ConnectAccountVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("시작 화면") ||
       lowerCaseTranscript.includes("처음")
     ) {
+      setAccountNum("")
+      setBankType("")
+      setError("")
+      setPhoneNum("")
+      setVerificationCode("")
+      setStep(0)
       navigate("/");
       resetTranscript();
     }

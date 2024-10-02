@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
+
+import sayPhoneNum from "../../assets/audio/50_전화번호를_말하거나_입력해주세요.mp3";
 
 const PhoneNumAsk: React.FC = () => {
   const { phoneNum, setPhoneNum, error } = useConnectAccountStore();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNum(e.target.value);
   };
+
+  // 오디오말하기
+  const audio = new Audio(sayPhoneNum);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
 
   return (
     <div>
