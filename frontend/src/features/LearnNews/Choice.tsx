@@ -3,6 +3,7 @@ import YellowButton from "../../components/YellowButton";
 import { useLearnNewsStore } from "./useLearnNewsStore";
 import { useNavigate } from "react-router-dom";
 import Avatar from "../../assets/avatar.png";
+import sayChooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3"
 
 // HomeIcon 컴포넌트
 const HomeIcon: React.FC = () => {
@@ -10,7 +11,7 @@ const HomeIcon: React.FC = () => {
 
   return (
     <button 
-      onClick={() => navigate('/main')}
+      onClick={() => navigate('/')}
       className="flex h-20 w-20 items-center justify-center rounded-lg bg-yellow-400 hover:bg-yellow-500 transition-colors duration-200"
     >
       <div className="text-2xl font-bold">
@@ -37,6 +38,23 @@ const Choice: React.FC = () => {
   };
 
   const [buttonSize, setButtonSize] = useState(getButtonSize());
+
+    // 오디오말하기
+  const sayChooseFunctionAudio = new Audio(sayChooseFunction);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    sayChooseFunctionAudio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!sayChooseFunctionAudio.paused) {
+        sayChooseFunctionAudio.pause();
+        sayChooseFunctionAudio.currentTime = 0;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {

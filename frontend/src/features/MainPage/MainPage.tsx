@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import YellowButton from "../../components/YellowButton";
 import avatar from "../../assets/avatar.png";
 import MainVoiceCommand from "./MainVoiceCommand";
-// import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
+import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
 
 interface ButtonConfig {
   text: string[];

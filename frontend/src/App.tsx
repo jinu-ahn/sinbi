@@ -5,7 +5,7 @@ import User from "./features/User/User";
 import ConnectAccountPage from "./features/ConnectAccount/ConnectAccountPage";
 import AccountsViewPage from "./features/AccountView/AccountsViewPage";
 import TransferPage from "./features/Transfer/TransferPage";
-import LearnNews from "./features/LearnNews/LearnNews";
+import LearnNews from "./features/LearnNews/LearnNewsPage";
 
 // function App() {
 const App: React.FC = () => {

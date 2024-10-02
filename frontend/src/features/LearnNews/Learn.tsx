@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import YellowButton from "../../components/YellowButton";
 import BlackText from "../../components/BlackText";
-// import SpeechBubble from "../../components/SpeechBubble";
 import { useLearnNewsStore } from "./useLearnNewsStore";
 import YouTube from "react-youtube";
 import YellowBox from "../../components/YellowBox";
 import CustomButton from "./CustomButton";
 import { VideoTitles } from "./LearnNews.types";
+import chooseLearnField from "../../assets/audio/62_배우고_싶은_분야를_말하거나_눌러주세요.mp3"
+import chooseCaterotyTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3"
+import sayMovieTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3"
 
 type LearnViewType = "main" | "category" | "video";
 type CategoryType = "financial" | "voice" | "fraud";
@@ -18,11 +20,8 @@ interface ButtonConfig {
 
 const Learn: React.FC = () => {
   const { setCurrentView } = useLearnNewsStore();
-  const [currentLearnView, setCurrentLearnView] =
-    useState<LearnViewType>("main");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
-    null,
-  );
+  const [currentLearnView, setCurrentLearnView] = useState<LearnViewType>("main");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   const buttons: ButtonConfig[] = [
@@ -35,15 +34,13 @@ const Learn: React.FC = () => {
     voice: ["보이스피싱 예방"],
     fraud: ["금융 사기 예방"],
   };
-  // 각 카테고리별 비디오 ID 목록
+  
   const videoIds = {
-    // 슬기로운 금융생활, 보이스피싱 예방, 금융사기 예방
-    financial: ["NNzNCT2mz_w", "TugQTgWTGis", "QM2XuplX1qQ"], //모바일뱅킹 고령자모드, 시니어 모바일뱅킹 활용법, 시니어 간편결제
-    voice: ["3QKvI5Og0nI", "0X9bOe9xttk", "CT2DXUFni2s"], // 시니어 보이스피싱 예방, 대면편취형 보이스피싱, 기관사칭
-    fraud: ["ck4bsyH-HMw", "nSbaIgCC2WA", "AXxqPQYPmhg"], //시니어 디지털금융사기 예방, 금융투자사기 예방, 인터넷 물품사기 예방
+    financial: ["NNzNCT2mz_w", "TugQTgWTGis", "QM2XuplX1qQ"],
+    voice: ["3QKvI5Og0nI", "0X9bOe9xttk", "CT2DXUFni2s"],
+    fraud: ["ck4bsyH-HMw", "nSbaIgCC2WA", "AXxqPQYPmhg"],
   };
 
-  // 각 카테고리별 비디오 제목 목록
   const videoTitles: VideoTitles = {
     financial: [
       ["모바일뱅킹", "고령자모드"],
@@ -62,6 +59,39 @@ const Learn: React.FC = () => {
     ],
   };
 
+  if(currentLearnView === 'main'){
+    const chooseLearnFieldAudio = new Audio(chooseLearnField);
+    chooseLearnFieldAudio.play();
+
+    return () => {
+      if (!chooseLearnFieldAudio.paused) {
+        chooseLearnFieldAudio.pause();
+        chooseLearnFieldAudio.currentTime = 0;
+      }
+    }
+  }
+  else if(currentLearnView === 'category'){
+    const chooseCaterotyTitleAudio = new Audio(chooseCaterotyTitle);
+    chooseCaterotyTitleAudio.play();
+
+    return () => {
+      if (!chooseCaterotyTitleAudio.paused) {
+        chooseCaterotyTitleAudio.pause();
+        chooseCaterotyTitleAudio.currentTime = 0;
+      }
+    }
+  } else if(currentLearnView === 'video') {
+    const sayMovieTitleAudio = new Audio(sayMovieTitle);
+    sayMovieTitleAudio.play();
+
+    return () => {
+      if (!sayMovieTitleAudio.paused) {
+        sayMovieTitleAudio.pause();
+        sayMovieTitleAudio.currentTime = 0;
+      }
+    }
+  }
+
   const getButtonSize = () => {
     if (window.innerWidth >= 425) {
       return { height: 140, width: 240 };
@@ -78,7 +108,7 @@ const Learn: React.FC = () => {
     const handleResize = () => {
       setButtonSize(getButtonSize());
     };
-
+    
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -122,7 +152,7 @@ const Learn: React.FC = () => {
 
   const renderCategoryView = () => (
     <div className="flex w-full flex-col items-center justify-center space-y-8">
-      {selectedCategory && ( // selectedCategory가 null이 아닐 때만 BlackText를 렌더링
+      {selectedCategory && (
         <BlackText
           text={categoryTitles[selectedCategory].join(" ")}
           boldChars={categoryTitles[selectedCategory]}
@@ -130,26 +160,22 @@ const Learn: React.FC = () => {
       )}
       <YellowBox>
         <div className="grid w-full grid-cols-1 gap-6 p-2 mobile-medium:gap-8 mobile-large:gap-10">
-          {videoIds[selectedCategory!].map((_, index) => {
-            // console.log(videoTitles[selectedCategory!][index]);
-            return (
-              <div
-                key={index}
-                className="flex w-full items-center justify-center"
-              >
-                <CustomButton
-                  height={buttonSize.height}
-                  width={buttonSize.width}
-                  // width="{buttonSize.width}"
-                  onClick={() => {
-                    setCurrentLearnView("video");
-                    setCurrentVideoIndex(index);
-                  }}
-                  text={videoTitles[selectedCategory!][index]}
-                />
-              </div>
-            );
-          })}
+          {videoIds[selectedCategory!].map((_, index) => (
+            <div
+              key={index}
+              className="flex w-full items-center justify-center"
+            >
+              <CustomButton
+                height={buttonSize.height}
+                width={buttonSize.width}
+                onClick={() => {
+                  setCurrentLearnView("video");
+                  setCurrentVideoIndex(index);
+                }}
+                text={videoTitles[selectedCategory!][index]}
+              />
+            </div>
+          ))}
         </div>
       </YellowBox>
       <YellowButton
@@ -164,7 +190,7 @@ const Learn: React.FC = () => {
 
   const renderVideoView = () => (
     <div className="flex w-full flex-col items-center justify-center space-y-8">
-      {selectedCategory && ( // selectedCategory가 null이 아닐 때만 BlackText를 렌더링
+      {selectedCategory && (
         <BlackText
           text={categoryTitles[selectedCategory].join(" ")}
           boldChars={categoryTitles[selectedCategory]}
@@ -215,6 +241,8 @@ const Learn: React.FC = () => {
         return renderCategoryView();
       case "video":
         return renderVideoView();
+      default:
+        return null;
     }
   };
 
