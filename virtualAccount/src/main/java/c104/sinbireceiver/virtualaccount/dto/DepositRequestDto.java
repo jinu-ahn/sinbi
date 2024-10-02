@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DepositRequestDto {
+    @JsonProperty("requestId")
+    private String requestId;        // 요청을 구분할 수 있는 requestId 추가
     @JsonProperty("id")
-    private Long Id;
+    private Long id;
     @JsonProperty("transferAmount")
     private Long transferAmount;
 }
