@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -18,14 +17,13 @@ public class KafkaConsumerUtil {
     private final ObjectMapper objectMapper;
     private final VirtualAccountResponseHandler virtualAccountResponseHandler;
 
-    /**
-     * 가상계좌에 대한 값을 가져오는 토픽에 대한 리스너.
-     */
     @KafkaListener(topics = "${spring.kafka.topics.second-find-virtual-account}", groupId = "${spring.kafka.consumer.group-id}")
     public void listenFindVirtualAccount(ApiResponse<?> response) {
+        log.info("listenFindVirtualAccount: {}", response);
+        String requestId = response.getRequestId();  // 요청 ID를 포함하도록 수정 필요
         if (response.getStatus().equals("SUCCESS")) {
             try {
-                JsonNode jsonNode = objectMapper.readTree(response.toJson());  // JSON 문자열을 JsonNode로 변환
+                JsonNode jsonNode = objectMapper.readTree(response.toJson());
 
                 CommandVirtualAccountDto commandVirtualAccountDto = CommandVirtualAccountDto.builder()
                         .id(jsonNode.get("data").get("id").asLong())
@@ -37,23 +35,28 @@ public class KafkaConsumerUtil {
                         .userPhone(jsonNode.get("data").get("userPhone").textValue())
                         .build();
 
-                virtualAccountResponseHandler.complete(commandVirtualAccountDto);
+                log.info("commandVirtualAccountDto: {}", commandVirtualAccountDto.getAccountNum());
+
+                virtualAccountResponseHandler.complete(requestId, commandVirtualAccountDto);
             } catch (Exception e) {
-                log.info(e.getMessage());
+                log.info("Error parsing response: {}", e.getMessage());
             }
         } else {
-            virtualAccountResponseHandler.complete(response.getStatus());
+            virtualAccountResponseHandler.complete(requestId, response.getStatus());
         }
     }
 
-
-    /**
-     * 입금에 대한 값을 가져오는 토픽에 대한 리스너.
-     *
-     * @param response 수신된 메시지
-     */
     @KafkaListener(topics = "${spring.kafka.topics.second-deposit}", groupId = "${spring.kafka.consumer.group-id}")
-    public boolean listenDeposit(ApiResponse<String> response) {
-        return response.getStatus().equals("SUCCESS");
+    public void listenDeposit(ApiResponse<?> response) {
+        String requestId = response.getRequestId();  // 요청 ID를 포함하도록 수정 필요
+        boolean isSuccess = response.getStatus().equals("SUCCESS");
+        virtualAccountResponseHandler.complete(requestId, isSuccess);
+    }
+
+    @KafkaListener(topics = "${spring.kafka.topics.second-virtual-account-authenticate}", groupId = "${spring.kafka.consumer.group-id}")
+    public void listenAuthenticate(ApiResponse<?> response) {
+        String requestId = response.getRequestId();  // 요청 ID를 포함하도록 수정 필요
+        boolean isSuccess = response.getStatus().equals("SUCCESS");
+        virtualAccountResponseHandler.complete(requestId, isSuccess);
     }
 }

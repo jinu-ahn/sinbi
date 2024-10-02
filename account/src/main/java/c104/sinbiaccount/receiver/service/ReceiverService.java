@@ -1,6 +1,5 @@
 package c104.sinbiaccount.receiver.service;
 
-import c104.sinbiaccount.account.dto.CommandVirtualAccountDto;
 import c104.sinbiaccount.exception.AccountNotFoundException;
 import c104.sinbiaccount.exception.ReceiverAlreadyExistsException;
 import c104.sinbiaccount.exception.global.ApiResponse;
@@ -21,6 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,54 +36,55 @@ public class ReceiverService {
     private final VirtualAccountResponseHandler virtualAccountResponseHandler;
     private final HeaderUtil headerUtil;
 
-    //자주 사용할 계좌 등록
+    // 자주 사용할 계좌 등록
     @Transactional
     public void ReceiverAccountRegistration(ReceiverRegistrationRequest receiverRegistrationRequest) {
+        String requestId = UUID.randomUUID().toString();  // 요청마다 고유한 ID 생성
         Map<String, Object> accountNumAndBankTypeMap = new HashMap<>();
         accountNumAndBankTypeMap.put("accountNum", receiverRegistrationRequest.getAccountNum());
         accountNumAndBankTypeMap.put("bankType", receiverRegistrationRequest.getBankTypeEnum());
-        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap, "SUCCESS"));
+
+        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap, "SUCCESS", requestId));
+        virtualAccountResponseHandler.createCompletableFuture(requestId);  // CompletableFuture 생성
+
         try {
-            if (virtualAccountResponseHandler.getCompletableFuture().get() instanceof CommandVirtualAccountDto) {
-                Optional<Receiver> existingReceiver = receiverRepository.findByRecvAccountNumAndBankTypeEnum(
-                        receiverRegistrationRequest.getAccountNum(),
-                        receiverRegistrationRequest.getBankTypeEnum()
-                );
-                // 이미 등록된 계좌이면 ReceiverAlreadyExistsException 예외 발생
-                if (existingReceiver.isPresent()) {
-                    throw new ReceiverAlreadyExistsException();
-                }
+            virtualAccountResponseHandler.getCompletableFuture(requestId).get(5, TimeUnit.SECONDS);
 
-                Receiver receiver = new Receiver(
-                        receiverRegistrationRequest.getRecvName(),
-                        receiverRegistrationRequest.getBankTypeEnum(),
-                        receiverRegistrationRequest.getAccountNum(),
-                        receiverRegistrationRequest.getRecvAlias()
-                );
-                receiverRepository.save(receiver);
+            Optional<Receiver> existingReceiver = receiverRepository.findByRecvAccountNumAndBankTypeEnum(
+                    receiverRegistrationRequest.getAccountNum(),
+                    receiverRegistrationRequest.getBankTypeEnum()
+            );
 
-                // 이벤트 발행: Receiver 등록 후 Redis 갱신을 위해 이벤트 전송
-                ReceiverAccountListResponse receiverResponse = new ReceiverAccountListResponse(
-                        receiver.getId(),
-                        receiver.getRecvName(),
-                        receiver.getRecvAccountNum(),
-                        receiver.getBankTypeEnum(),
-                        receiver.getRecvAlias()
-                );
-                ReceiverEvent event = new ReceiverEvent("RECEIVER_REGISTERED", receiver.getUserPhone(), receiverResponse);
-                kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event, "SUCCESS"));
-            } else {
-                throw new AccountNotFoundException();
+            // 이미 등록된 계좌이면 ReceiverAlreadyExistsException 예외 발생
+            if (existingReceiver.isPresent()) {
+                throw new ReceiverAlreadyExistsException();
             }
-        } catch (Exception e) {
+
+            Receiver receiver = new Receiver(
+                    receiverRegistrationRequest.getRecvName(),
+                    receiverRegistrationRequest.getBankTypeEnum(),
+                    receiverRegistrationRequest.getAccountNum(),
+                    receiverRegistrationRequest.getRecvAlias()
+            );
+            receiverRepository.save(receiver);
+
+            // 이벤트 발행: Receiver 등록 후 Redis 갱신을 위해 이벤트 전송
+            ReceiverAccountListResponse receiverResponse = new ReceiverAccountListResponse(
+                    receiver.getId(),
+                    receiver.getRecvName(),
+                    receiver.getRecvAccountNum(),
+                    receiver.getBankTypeEnum(),
+                    receiver.getRecvAlias()
+            );
+            ReceiverEvent event = new ReceiverEvent("RECEIVER_REGISTERED", receiver.getUserPhone(), receiverResponse);
+            kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event, "SUCCESS"));
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             log.info(e.getMessage());
             throw new AccountNotFoundException();
-        } finally {
-            virtualAccountResponseHandler.reset();
         }
     }
 
-    //자주 사용할 계좌 삭제
+    // 자주 사용할 계좌 삭제
     @Transactional
     public void deleteReceiverAccount(Long receiverId) {
         Receiver receiver = receiverRepository.findById(receiverId)
