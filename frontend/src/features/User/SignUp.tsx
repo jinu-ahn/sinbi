@@ -16,6 +16,7 @@ import avatar from "../../assets/avatar.png";
 import "./User.css";
 import NumberPad from "./NumberPad";
 import { getCookie, setCookie } from "../../utils/cookieUtils";
+import FaceRecognitionStep from "./FaceRecognitionStep";
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -182,6 +183,7 @@ const SignUp: React.FC = () => {
     switch (currentStep) {
       case SignUpStep.Welcome:
         return (
+          // <FaceRecognitionStep onComplete={handleSignUp}/>
           <>
             <GreenText text="안녕하세요!" boldChars={["안녕하세요"]} />
             <GreenText text="저는 신비예요." boldChars={["신비"]} />
@@ -302,22 +304,7 @@ const SignUp: React.FC = () => {
         );
       case SignUpStep.FaceRecognitionInProgress:
         return (
-          <>
-            <GreenText text="얼굴 인식" boldChars={["얼굴 인식"]} />
-            <GreenText text="눈, 코, 입을" boldChars={["눈, 코, 입"]} />
-            <GreenText text="화면에 맞춰주세요" boldChars={["화면"]} />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) =>
-                e.target.files && setFaceImage(e.target.files[0])
-              }
-              className="file-input"
-            />
-            <YellowButton height={50} width={200} onClick={handleSignUp}>
-              회원가입 완료
-            </YellowButton>
-          </>
+          <FaceRecognitionStep onComplete={handleSignUp}/>
         );
       case SignUpStep.FaceRecognitionComplete:
         return (

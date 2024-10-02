@@ -1,6 +1,6 @@
 import axios from "axios";
 import { LoginDto, SignUpDto, TokenDto } from "../features/User/User.types";
-import { tokenStorage } from "../features/User/tokenUtils";
+// import { tokenStorage } from "../features/User/tokenUtils";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -341,7 +341,7 @@ export const favoriteAccounts = async (userId: number) => {
   try {
     const response = await api.get('/receiverAccount/list', {
       params: {
-        accountId,
+        userId,
       }
     });
     return response.data;
