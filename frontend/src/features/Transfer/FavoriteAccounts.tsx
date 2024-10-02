@@ -3,6 +3,7 @@ import { favoriteAccounts } from "../../services/api";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
 import { useTransferStore } from "./TransferStore";
+import sendToWho from "../../assets/audio/31_누구에게_보낼지_말하거나_눌러주세요_없으면_새로운_계좌라고_말하세요.mp3";
 
 const banks = [
   { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
@@ -41,9 +42,11 @@ interface FavAccount {
   recvName: string;
 }
 
+// 즐겨찾기통장 중에서 골랐으면 이따 보내주기 위해 저장해둬야 할것
+// 상대방 계좌번호, 은행 종류, 보낼 금액
+
 const FavoriteAccounts: React.FC<{ userId: number }> = ({ userId }) => {
   // 즐겨찾는 계좌 목록 저장할것 가져오기
-
   const {
     step,
     setStep,
@@ -76,11 +79,25 @@ const FavoriteAccounts: React.FC<{ userId: number }> = ({ userId }) => {
     fetchAccounts();
   }, [userId]);
 
-  // 즐겨찾기통장 중에서 골랐으면 이따 보내주기 위해 저장해둬야 할것
-  // 상대방 계좌번호, 은행 종류, 보낼 금액
+  // 오디오말하기
+  const audio = new Audio(sendToWho);
+  
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
 
   const handleAccountClick = (account: FavAccount) => {
-    setFavAccountId(account.id)
+    setFavAccountId(account.id);
     setSendAccountNum(account.recvAccountNum);
     setSendBankType(account.bankType);
     setFormalName(account.recvName);

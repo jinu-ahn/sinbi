@@ -3,6 +3,7 @@ import { myAccounts } from "../../services/api";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
 import { useTransferStore } from "./TransferStore";
+import pickMyBankAccount from "../../assets/audio/22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3";
 
 const banks = [
   { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
@@ -65,6 +66,23 @@ const MyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
     };
     fetchAccounts();
   }, [userId]);
+
+  // 오디오말하기
+  const audio = new Audio(pickMyBankAccount);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
 
   // 클릭하면 내가 무슨 통장에서 보내는지 통장 id 저장 + 다음 페이지로 이동
   const handleAccountClick = (account: Account) => {

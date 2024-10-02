@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTransferStore } from "./TransferStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
-import defaultBankLogo from "../../assets/defaultBankLogo.png"
+import defaultBankLogo from "../../assets/defaultBankLogo.png";
+import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
 
 const AddToFavorite: React.FC = () => {
   const banks = [
@@ -35,12 +36,13 @@ const AddToFavorite: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const { nickName, setNickName, formalName, sendBankType, sendAccountNum } = useTransferStore();
+  const { nickName, setNickName, formalName, sendBankType, sendAccountNum } =
+    useTransferStore();
 
   const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
-    id: 'BASIC',
-    name: '기본은행',
-    logo: defaultBankLogo
+    id: "BASIC",
+    name: "기본은행",
+    logo: defaultBankLogo,
   };
 
   const boldChars = [`${formalName}`];
@@ -49,6 +51,23 @@ const AddToFavorite: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickName(e.target.value);
   };
+
+  // 오디오말하기
+  const audio = new Audio(whatNickname);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
 
   return (
     <div className="mt-[30px]">
@@ -62,15 +81,15 @@ const AddToFavorite: React.FC = () => {
 
       <div className="mt-[40px] flex items-center justify-center">
         <YellowBox>
-        <input
-              type="text"
-              value={nickName}
-              onChange={handleInputChange}
-              className="w-full rounded-lg border border-gray-300 p-2 text-[35px]"
-            />
+          <input
+            type="text"
+            value={nickName}
+            onChange={handleInputChange}
+            className="w-full rounded-lg border border-gray-300 p-2 text-[35px]"
+          />
 
           <p className="text-[30px] font-bold">{formalName}</p>
-          <div className="flex m-2">
+          <div className="m-2 flex">
             <img
               src={selectedBank.logo}
               alt={selectedBank.name}

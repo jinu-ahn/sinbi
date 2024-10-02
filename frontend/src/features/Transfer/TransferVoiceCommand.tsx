@@ -10,7 +10,16 @@ import {
   addFavorite,
 } from "../../services/api";
 
-import howCanIHelp from "../../assets/audio/01_네_무엇을_도와드릴까요.mp3";
+// 목소리 오디오
+import pickMyBankAccount from "../../assets/audio/22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3";
+import sendToWho from "../../assets/audio/31_누구에게_보낼지_말하거나_눌러주세요_없으면_새로운_계좌라고_말하세요.mp3";
+import sayAccountNum from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
+import sayBankType from "../../assets/audio/13_은행을_말하거나_찾아서_눌러주세요.mp3";
+import continueOrNot from "../../assets/audio/59_계속하고_싶으면_'알았어'_뒤로_가고_싶으면_'이전'이라고_말해주세요.mp3";
+import sendHowMuch from "../../assets/audio/25_얼마를_보낼지_말해주세요.mp3";
+import sayYesOrNo from "../../assets/audio/08_좋으면_응_싫으면_아니_라고_말해주세요.mp3";
+import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
+import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
 
 const TransferVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
@@ -76,6 +85,7 @@ const TransferVoiceCommand: React.FC = () => {
     // step 7 : 보냈어요 페이지
     // step 8 : 다음에 또 보낼거냐고 묻기 (아니오 하면 메인페이지 응 하면 다음페이지)
     // step 9 : 즐겨찾기 계좌에 뭐라고 등록하는지 묻기 (이름 들으면 저장해서 즐겨찾는 계좌에 등록)
+
     if (step === 0) {
       if (
         lowerCaseTranscript.includes("응") ||
@@ -89,6 +99,13 @@ const TransferVoiceCommand: React.FC = () => {
         }
         resetTranscript();
       }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(pickMyBankAccount);
+        resetTranscript();
+      }
     } else if (step === 1) {
       setError(null);
       if (
@@ -97,6 +114,13 @@ const TransferVoiceCommand: React.FC = () => {
       ) {
         setError(null);
         setStep(step + 1);
+        resetTranscript();
+      }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sendToWho);
         resetTranscript();
       }
 
@@ -112,8 +136,8 @@ const TransferVoiceCommand: React.FC = () => {
         setSendAccountNum(matchedAccount.recvAccountNum);
         setSendBankType(matchedAccount.bankType);
         setFormalName(matchedAccount.recvName);
-        setStep(step + 3);
         resetTranscript();
+        setStep(step + 3);
       }
 
       if (
@@ -157,6 +181,13 @@ const TransferVoiceCommand: React.FC = () => {
       ) {
         setError(null);
         setStep(step - 1);
+        resetTranscript();
+      }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sayAccountNum);
         resetTranscript();
       }
     } else if (step === 3) {
@@ -264,6 +295,13 @@ const TransferVoiceCommand: React.FC = () => {
         setStep(step - 1);
         resetTranscript();
       }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sayBankType);
+        resetTranscript();
+      }
     } else if (step === 4) {
       // "다 지워" 하면 싹다 지워
       const moneyMatch = transcript.match(/\d+/g);
@@ -292,19 +330,26 @@ const TransferVoiceCommand: React.FC = () => {
           setStep(step + 1);
         }
         resetTranscript();
-
-        if (lowerCaseTranscript.includes("이전")) {
-          setError(null);
-          if (favAccountId !== 0) {
-            setFavAccountId(0);
-            setFormalName("");
-            setSendAccountNum("");
-            setSendAccountNum("");
-            setStep(step - 3);
-          } else {
-            setStep(step - 1);
-          }
+      }
+      if (lowerCaseTranscript.includes("이전")) {
+        setError(null);
+        resetTranscript();
+        if (favAccountId !== 0) {
+          setFavAccountId(0);
+          setFormalName("");
+          setSendAccountNum("");
+          setSendAccountNum("");
+          setStep(step - 3);
+        } else {
+          setStep(step - 1);
         }
+      }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sendHowMuch);
+        resetTranscript();
       }
     } else if (step === 5) {
       if (
@@ -312,7 +357,23 @@ const TransferVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("다음")
       ) {
+        resetTranscript();
         setStep(step + 1);
+      }
+      if (
+        lowerCaseTranscript.includes("이전") ||
+        lowerCaseTranscript.includes("돌아갈래") ||
+        lowerCaseTranscript.includes("안 보낼래")
+      ) {
+        resetTranscript();
+        setStep(step - 1);
+      }
+
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(continueOrNot);
         resetTranscript();
       }
     } else if (step === 6) {
@@ -325,15 +386,29 @@ const TransferVoiceCommand: React.FC = () => {
         sendMoney(myAccountId, sendAccountNum, sendBankType, Number(money))
           .then((response) => {
             console.log("이체에 성공: ", response);
+            resetTranscript();
             setStep(step + 1);
           })
           .catch((error) => {
+            resetTranscript();
             console.error("계좌이체 못함: ", error);
           });
-      } else if (lowerCaseTranscript.includes("아니")) {
+      }
+      if (lowerCaseTranscript.includes("아니")) {
+        setFormalName("");
+        setSendAccountNum("");
+        setSendBankType("");
+        setSendMoney("");
+        resetTranscript();
         setStep(1);
       }
-      resetTranscript();
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sayYesOrNo);
+        resetTranscript();
+      }
     } else if (step === 7) {
       if (
         lowerCaseTranscript.includes("알겠어") ||
@@ -341,12 +416,26 @@ const TransferVoiceCommand: React.FC = () => {
       ) {
         setStep(step + 1);
       }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sayNext);
+        resetTranscript();
+      }
     } else if (step === 8) {
       if (
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("네")
       ) {
         setStep(step + 1);
+        resetTranscript();
+      }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(sayYesOrNo);
         resetTranscript();
       }
     } else if (step === 9) {
@@ -368,6 +457,13 @@ const TransferVoiceCommand: React.FC = () => {
             console.error("즐겨찾기 추가 못함: ", error);
           });
       }
+      if (
+        lowerCaseTranscript.includes("신비") ||
+        lowerCaseTranscript.includes("도와줘")
+      ) {
+        playAudio(whatNickname);
+        resetTranscript();
+      }
     } else if (step === 10) {
       if (lowerCaseTranscript.includes("응")) {
         setNickName("");
@@ -378,17 +474,12 @@ const TransferVoiceCommand: React.FC = () => {
 
     if (
       lowerCaseTranscript.includes("집") ||
+      lowerCaseTranscript.includes("첫 화면") ||
+      lowerCaseTranscript.includes("시작 화면") ||
       lowerCaseTranscript.includes("처음")
     ) {
+      setStep(0);
       navigate("/");
-      resetTranscript();
-    }
-
-    if (
-      lowerCaseTranscript.includes("신비야") ||
-      lowerCaseTranscript.includes("도와줘")
-    ) {
-      playAudio(howCanIHelp);
       resetTranscript();
     }
   };

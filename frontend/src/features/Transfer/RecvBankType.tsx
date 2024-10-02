@@ -3,6 +3,8 @@ import YellowBox from "../../components/YellowBox";
 import { useTransferStore } from "./TransferStore";
 import bankLogos from "../../assets/bankLogos";
 
+import sayBankType from "../../assets/audio/13_은행을_말하거나_찾아서_눌러주세요.mp3";
+
 const banks = [
   { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
   { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -40,6 +42,23 @@ const RecvBankType: React.FC = () => {
     setError(null);
   }, [sendBankType]);
 
+  // 오디오말하기
+  const audio = new Audio(sayBankType);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
+
   return (
     <div>
       <header>
@@ -66,7 +85,9 @@ const RecvBankType: React.FC = () => {
                 key={bank.id}
                 onClick={() => setSendBankType(bank.id)}
                 className={`flex cursor-pointer flex-col items-center rounded-lg border p-2 ${
-                  sendBankType === bank.id ? "border-blue-500" : "border-gray-300"
+                  sendBankType === bank.id
+                    ? "border-blue-500"
+                    : "border-gray-300"
                 }`}
               >
                 <img src={bank.logo} alt={bank.name} className="h-16 w-16" />

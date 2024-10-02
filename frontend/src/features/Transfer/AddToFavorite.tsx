@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTransferStore } from "./TransferStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
-import defaultBankLogo from "../../assets/defaultBankLogo.png"
+import defaultBankLogo from "../../assets/defaultBankLogo.png";
+import addToFavorite from "../../assets/audio/61_앞으로도_이분께_자주_보내실_건가요.mp3";
+import sayYesOrNo from "../../assets/audio/08_좋으면_응_싫으면_아니_라고_말해주세요.mp3";
 
 const AddToFavorite: React.FC = () => {
   const banks = [
@@ -38,13 +40,37 @@ const AddToFavorite: React.FC = () => {
   const { formalName, sendAccountNum, sendBankType } = useTransferStore();
 
   const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
-    id: 'BASIC',
-    name: '기본은행',
-    logo: defaultBankLogo
+    id: "BASIC",
+    name: "기본은행",
+    logo: defaultBankLogo,
   };
 
   const boldChars = ["또"];
   const text = `다음에도 또 보낼래요?`;
+
+  // 오디오말하기
+  const addToFavoriteAudio = new Audio(addToFavorite);
+  const yesOrNoAudio = new Audio(sayYesOrNo);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // addToFavoriteAudio 먼저 플레이해
+    addToFavoriteAudio.play();
+
+    // 돈 보낼까요 메시지 먼저 말하고 끝나면 그 다음거 해
+    addToFavoriteAudio.addEventListener("ended", () => {
+      yesOrNoAudio.play();
+    });
+
+    // component unmount되면 중지시키고 둘다 0으로 되돌려
+    return () => {
+      addToFavoriteAudio.pause();
+      addToFavoriteAudio.currentTime = 0;
+
+      yesOrNoAudio.pause();
+      yesOrNoAudio.currentTime = 0;
+    };
+  }, []);
 
   return (
     <div className="mt-[30px]">
@@ -58,7 +84,7 @@ const AddToFavorite: React.FC = () => {
       <div className="mt-[40px] flex items-center justify-center">
         <YellowBox>
           <p className="text-[30px] font-bold">{formalName}</p>
-          <div className="flex m-2">
+          <div className="m-2 flex">
             <img
               src={selectedBank.logo}
               alt={selectedBank.name}

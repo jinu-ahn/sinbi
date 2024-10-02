@@ -4,10 +4,10 @@ import avatar from "./assets/avatar.png";
 const TitlePage: React.FC = () => {
   return (
     <div className="relative flex h-screen flex-col items-center">
-      <div className="mt-[100px]">
+      <div className="mt-[40px]">
         {/* 제일 윗부분 */}
         <div className="mt-4 text-center">
-          <h1 className="mb-5 mt-5 text-3xl">
+          <h1 className="mb-5 mt-5 text-3xl leading-loose">
             은행을 안가도 <br /> 말로 편하게
           </h1>
 
@@ -44,7 +44,7 @@ const TitlePage: React.FC = () => {
 
       {/* 아바타 들어갈 부분 */}
       <div className="absolute bottom-1 mt-6 flex flex-col items-center">
-        <div className="h-40 w-40 overflow-hidden">
+        <div className="h-[180px] w-[180px] overflow-hidden">
           <img
             src={avatar}
             alt="Avatar"

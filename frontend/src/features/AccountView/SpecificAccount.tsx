@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { specificAccount } from "../../services/api"; // Assuming this API fetches transactions for the specific account
 import YellowBox from "../../components/YellowBox";
+import thisIsSpecificAccount from "../../assets/audio/40_이_통장의_모든_거래_내역이에요.mp3";
 
 interface Transaction {
   bankType: string;
@@ -23,7 +24,7 @@ const groupByDate = (transactions: Transaction[]) => {
       groups[date].push(transaction);
       return groups;
     },
-    {}
+    {},
   );
 };
 
@@ -43,13 +44,30 @@ const SpecificAccount: React.FC<{ accountId: string }> = ({ accountId }) => {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching account data: ", err);
-        setError("Failed to fetch transaction history.");
+        setError("오류가 발생했습니다.");
         setLoading(false);
       }
     };
 
     fetchTransactions();
   }, [accountId]);
+
+  // 오디오말하기
+  const audio = new Audio(thisIsSpecificAccount);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
 
   if (loading) {
     return <div>Loading transaction history...</div>;
@@ -67,48 +85,51 @@ const SpecificAccount: React.FC<{ accountId: string }> = ({ accountId }) => {
       <div className="h-[150px] overflow-y-auto">
         {Object.keys(groupedTransactions).length > 0 ? (
           Object.keys(groupedTransactions)
-          // 날짜 제일 최신순으로 정렬
-          .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
-          .map((date) => (
-            <div key={date} className="mb-4 w-[250px]">
-              {/* 날짜 */}
-              <h2 className="text-lg text-left font-bold mb-2">{date}</h2>
+            // 날짜 제일 최신순으로 정렬
+            .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+            .map((date) => (
+              <div key={date} className="mb-4 w-[250px]">
+                {/* 날짜 */}
+                <h2 className="mb-2 text-left text-lg font-bold">{date}</h2>
 
-              {/* 그날의 내역 */}
-              {groupedTransactions[date].map((transaction) => {
-                const time = transaction.historyDate.split(" ")[1]; // Extract just the time (HH:MM:SS)
-                const isDeposit = transaction.transactionHistoryType === "입금"; // Check if it's a deposit
-                const amountSign = isDeposit ? "+" : "-";
+                {/* 그날의 내역 */}
+                {groupedTransactions[date].map((transaction) => {
+                  const time = transaction.historyDate.split(" ")[1]; // Extract just the time (HH:MM:SS)
+                  const isDeposit =
+                    transaction.transactionHistoryType === "입금"; // Check if it's a deposit
+                  const amountSign = isDeposit ? "+" : "-";
 
-                return (
-                  <div
-                    key={transaction.id}
-                    className="bg-white p-3 rounded-md mb-2 flex justify-between"
-                  >
-                    {/* 왼쪽 : 시간 그리고 이름 */}
-                    <div>
-                      <p className="text-sm font-semibold">{time}</p>
-                      <p className="text-sm">{transaction.recvAccountName}</p>
+                  return (
+                    <div
+                      key={transaction.id}
+                      className="mb-2 flex justify-between rounded-md bg-white p-3"
+                    >
+                      {/* 왼쪽 : 시간 그리고 이름 */}
+                      <div>
+                        <p className="text-sm font-semibold">{time}</p>
+                        <p className="text-sm">{transaction.recvAccountName}</p>
+                      </div>
+
+                      {/* 오른쪽 : 내역 (돈) */}
+                      <div className="text-right">
+                        <p
+                          className={`text-lg font-bold ${
+                            isDeposit ? "text-green-500" : "text-red-500"
+                          }`}
+                        >
+                          {amountSign}
+                          {transaction.transferAmount} 원
+                        </p>
+                      </div>
                     </div>
-
-                    {/* 오른쪽 : 내역 (돈) */}
-                    <div className="text-right">
-                      <p
-                        className={`text-lg font-bold ${
-                          isDeposit ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {amountSign}
-                        {transaction.transferAmount} 원
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ))
+                  );
+                })}
+              </div>
+            ))
         ) : (
-          <p className="text-center text-[20px] text-gray-500">내역이 없습니다.</p>
+          <p className="text-center text-[20px] text-gray-500">
+            거래 내역이 없습니다.
+          </p>
         )}
       </div>
     </YellowBox>

@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
+import warningVoice from "../../assets/audio/35_모르는_사람에게_돈_보내면_위험해요.mp3";
+import continueOrNot from "../../assets/audio/59_계속하고_싶으면_'알았어'_뒤로_가고_싶으면_'이전'이라고_말해주세요.mp3"
 
 const Warning: React.FC = () => {
   const boldChars = ["모르는 사람", "위험"];
@@ -31,8 +33,32 @@ const Warning: React.FC = () => {
     });
   };
 
+  // 오디오말하기
+  const warningAudio = new Audio(warningVoice);
+  const continueAudio = new Audio(continueOrNot)
+
+ // 오디오 플레이 (component가 mount될때만)
+ useEffect(() => {
+  // warningaudio 먼저 플레이해
+  warningAudio.play();
+
+  // 경고 메시지 먼저 말하고 끝나면 그 다음거 해
+  warningAudio.addEventListener("ended", () => {
+    continueAudio.play();
+  });
+
+  // component unmount되면 중지시키고 둘다 0으로 되돌려
+  return () => {
+    warningAudio.pause();
+    warningAudio.currentTime = 0;
+
+    continueAudio.pause();
+    continueAudio.currentTime = 0;
+  };
+}, []);
+
   return (
-    <div className="flex h-1/4 w-4/5 items-center justify-center border-2 border-[#ff0f0f] mt-[100px]">
+    <div className="mt-[100px] flex h-1/4 w-4/5 items-center justify-center border-2 border-[#ff0f0f]">
       <div className={`text-center text-[36px] leading-relaxed`}>
         {renderTextWithBold()}
       </div>

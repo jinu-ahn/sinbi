@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
-import defaultBankLogo from "../../assets/defaultBankLogo.png"
+import defaultBankLogo from "../../assets/defaultBankLogo.png";
+
+import isThisAccountRight from "../../assets/audio/15_이_계좌가_맞나요.mp3";
+import anErrorOccurred from "../../assets/audio/14_해당하는_계좌가_없어요_다시_한번_확인해주세요.mp3";
+import goBack from "../../assets/audio/05_뒤로_가려면_이전이라고_말해주세요.mp3";
 
 const AccountCheck: React.FC = () => {
   const { bankType, accountNum, error } = useConnectAccountStore();
@@ -36,10 +40,59 @@ const AccountCheck: React.FC = () => {
   ];
 
   const selectedBank = banks.find((bank) => bank.id === bankType) || {
-    id: 'BASIC',
-    name: '기본은행',
-    logo: defaultBankLogo
+    id: "BASIC",
+    name: "기본은행",
+    logo: defaultBankLogo,
   };
+
+  // 오디오말하기
+  const isThisAccountRightaudio = new Audio(isThisAccountRight);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    if (!error) {
+      // 플레이시켜
+      isThisAccountRightaudio.play();
+    }
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!isThisAccountRightaudio.paused) {
+        isThisAccountRightaudio.pause();
+        isThisAccountRightaudio.currentTime = 0;
+      }
+    };
+  }, [error]);
+
+  // 에러났으면 플레이할 오디오
+  useEffect(() => {
+    if (error) {
+      const errorAudio = new Audio(anErrorOccurred);
+      const backAudio = new Audio(goBack);
+
+      errorAudio.play();
+
+      errorAudio.addEventListener("ended", handleErrorAudioEnded);
+
+      function handleErrorAudioEnded() {
+        backAudio.play();
+      }
+
+      // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+      return () => {
+        errorAudio.removeEventListener("ended", handleErrorAudioEnded);
+
+        if (!errorAudio.paused) {
+          errorAudio.pause();
+          errorAudio.currentTime = 0;
+        }
+        if (!backAudio.paused) {
+          backAudio.pause();
+          backAudio.currentTime = 0;
+        }
+      };
+    }
+  }, [error]);
 
   return (
     <div>

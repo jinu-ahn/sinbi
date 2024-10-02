@@ -119,10 +119,10 @@ export const myAccounts = async (userId: number) => {
 // 내 특정 계좌 조회
 export const specificAccount = async (accountId: string) => {
   try {
-    const response = await api.get(`/account/${accountId}`, {
-      params: {
-        accountId,
-      },
+    const response = await api.get(`/account/${accountId}/details`, {
+      // params: {
+      //   accountId,
+      // },
     });
     return response.data;
   } catch (error) {
