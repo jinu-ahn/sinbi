@@ -19,7 +19,7 @@ export interface LearnNewsStore {
 }
 
 // 새로 추가된 타입
-export type ViewType = "main" | "learn" | "news";
+export type ViewType = "choice" | "learn" | "news";
 
 // videoTitles의 타입을 정의합니다.
 export interface VideoTitles {
