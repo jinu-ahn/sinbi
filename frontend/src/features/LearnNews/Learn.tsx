@@ -113,7 +113,7 @@ const Learn: React.FC = () => {
       <YellowButton
         height={50}
         width={100}
-        onClick={() => setCurrentView("main")}
+        onClick={() => setCurrentView("choice")}
       >
         뒤로
       </YellowButton>

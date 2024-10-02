@@ -9,7 +9,7 @@ const API_URL = 'http://127.0.0.1:5002/news';
 export const useLearnNewsStore = create<LearnNewsStore>((set, get) => ({
   newsData: [],
   currentIndex: 0,
-  currentView: 'main' as ViewType,// 초기 뷰를 'main'으로 설정
+  currentView: 'choice' as ViewType,// 초기 뷰 설정
   isLoading: false, // 초기 로딩 상태는 false
   error: null, // 초기 에러 상태는 null
   
