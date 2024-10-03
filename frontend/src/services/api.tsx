@@ -3,6 +3,7 @@ import { LoginDto, SignUpDto } from "../features/User/User.types";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// 백엔드로 보낼때
 const api = axios.create({
   baseURL: BASE_URL, // 일단 임시로 baseURL 설정
   timeout: 5000, // 5초안에 응답없으면 cancel
@@ -171,15 +172,15 @@ export const addFavorite = async (
     console.error("이체할 수 없습니다: ", error);
     throw error;
   }
-}
+};
 
 // 즐겨찾는 계좌 목록 보기
 export const favoriteAccounts = async (userId: number) => {
   try {
-    const response = await api.get('/receiverAccount/list', {
+    const response = await api.get("/receiverAccount/list", {
       params: {
         userId,
-      }
+      },
     });
     return response.data;
   } catch (error) {
