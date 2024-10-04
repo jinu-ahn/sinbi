@@ -1,10 +1,11 @@
 // FaceRecognitionStep.tsx
-import React, { useRef, useState } from "react";
-import GreenText from "../../components/GreenText";
-import YellowButton from "../../components/YellowButton";
-import useUserStore from "./useUserStore";
+import React, { useEffect, useRef, useState } from "react";
+import GreenText from "../../../components/GreenText";
+import YellowButton from "../../../components/YellowButton";
+import useUserStore from "../useUserStore";
 // import { tokenStorage } from "./tokenUtils"; // 토큰 저장소 import
-import { signup, login } from "../../services/api"; // API 함수 import
+// import { signup, login } from "../../../services/api"; // API 함수 import
+import FaceRecAudio from "../../../assets/audio/53_얼굴을_인식할게요_눈_코_입을_화면에_맞춰주세요.mp3"
 
 interface FaceRecognitionStepProps {
   onComplete: () => void;
@@ -81,6 +82,22 @@ const FaceRecognitionStep: React.FC<FaceRecognitionStepProps> = ({
   //     console.error("Signup or login failed:", error);
   //   }
   // };
+// 오디오말하기
+const audio = new Audio(FaceRecAudio);
+
+// 오디오 플레이 (component가 mount될때만)
+useEffect(() => {
+  // 플레이시켜
+  audio.play();
+
+  // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+  return () => {
+    if (!audio.paused) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  };
+}, []);
 
   return (
     <>
