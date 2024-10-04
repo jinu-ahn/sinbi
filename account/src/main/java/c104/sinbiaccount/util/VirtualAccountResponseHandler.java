@@ -1,28 +1,34 @@
 package c104.sinbiaccount.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@Slf4j
 public class VirtualAccountResponseHandler<T> {
+    private final Map<String, CompletableFuture<T>> responseMap = new ConcurrentHashMap<>();
 
-    // CompletableFuture를 통한 비동기 처리
-    private CompletableFuture<T> completableFuture = new CompletableFuture<>();
-
-    // CompletableFuture를 가져오는 메서드
-    public CompletableFuture<T> getCompletableFuture() {
+    public CompletableFuture<T> createCompletableFuture(String requestId) {
+        CompletableFuture<T> completableFuture = new CompletableFuture<>();
+        responseMap.put(requestId, completableFuture);
         return completableFuture;
     }
 
-    // CompletableFuture에 데이터를 완료하는 메서드
-    public void complete(T response) {
-        completableFuture.complete(response);
+    public CompletableFuture<T> getCompletableFuture(String requestId) {
+        return responseMap.get(requestId);
     }
 
-    public void reset() {
-        completableFuture = new CompletableFuture<>();
+    public void complete(String requestId, T response) {
+        CompletableFuture<T> completableFuture = responseMap.get(requestId);
+        if (completableFuture != null) {
+            completableFuture.complete(response);
+        } else {
+        }
+    }
+
+    public void cleanupCompleted() {
+        responseMap.entrySet().removeIf(entry -> entry.getValue().isDone());
     }
 }

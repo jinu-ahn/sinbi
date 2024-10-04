@@ -3,6 +3,7 @@ package c104.sinbiaccount.account.controller;
 import c104.sinbiaccount.account.dto.AccountCreateRequest;
 import c104.sinbiaccount.account.dto.GetAccountListResponse;
 import c104.sinbiaccount.account.dto.TransferAccountRequest;
+import c104.sinbiaccount.account.dto.VirtualAccountAuthenticateRequest;
 import c104.sinbiaccount.account.service.AccountService;
 import c104.sinbiaccount.exception.global.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,14 @@ public class AccountController {
     public ResponseEntity<ApiResponse<?>> createAccount(@RequestBody AccountCreateRequest accountCreateRequest) {
         accountService.create(accountCreateRequest);
         return ResponseEntity.ok(ApiResponse.success("계좌가 성공적으로 등록되었습니다."));
+    }
+
+    //계좌 비밀번호 인증
+    @PostMapping("/authenticate")
+    @Operation(summary = "계좌 비밀번호 인증", description = "사용자의 계좌 비밀번호 인증")
+    public ResponseEntity<ApiResponse<?>> authenticateAccount(@RequestBody VirtualAccountAuthenticateRequest virtualAccountAuthenticateRequest) {
+        accountService.authenticate(virtualAccountAuthenticateRequest);
+        return ResponseEntity.ok(ApiResponse.success("계좌 인증이 성공적으로 되었습니다."));
     }
 
     //계좌 목록 조회

@@ -6,7 +6,6 @@ import c104.sinbiaccount.receiver.dto.ReceiverEvent;
 import c104.sinbiaccount.receiver.repository.ReceiverQueryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ReceiverEventListener {
     private final ReceiverQueryRepository receiverQueryRepository;
     private final ObjectMapper objectMapper;
@@ -45,10 +43,8 @@ public class ReceiverEventListener {
                     }
                     break;
                 default:
-                    log.warn("Unknown event type: {}", event.getEventType());
             }
         } catch (Exception e) {
-            log.error(e.getMessage());
         }
     }
 }

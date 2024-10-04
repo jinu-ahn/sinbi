@@ -6,7 +6,6 @@ import c104.sinbiaccount.receiver.service.ReceiverService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/receiverAccount")
 @Tag(name = "자주 사용하는 계좌", description = "자주 사용하는 계좌 관련 API")
-@Slf4j
 public class ReceiverController {
 
     private final ReceiverService receiverService;
