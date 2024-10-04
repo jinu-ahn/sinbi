@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import GreenText from "../../components/GreenText";
 import YellowButton from "../../components/YellowButton";
 import useUserStore from "./useUserStore";
-import { tokenStorage } from "./tokenUtils"; // 토큰 저장소 import
+// import { tokenStorage } from "./tokenUtils"; // 토큰 저장소 import
 import { signup, login } from "../../services/api"; // API 함수 import
 
 interface FaceRecognitionStepProps {
@@ -13,7 +13,7 @@ interface FaceRecognitionStepProps {
 const FaceRecognitionStep: React.FC<FaceRecognitionStepProps> = ({
   onComplete,
 }) => {
-  const { setFaceImage, name, phone, password } = useUserStore();
+  const { setFaceImage, name, phone, password, faceImage } = useUserStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,38 +39,48 @@ const FaceRecognitionStep: React.FC<FaceRecognitionStepProps> = ({
     }
   };
 
-  // What: 회원가입 및 로그인 처리
-  // Why: 얼굴 인식 정보를 포함하여 회원가입을 완료하고 자동 로그인
-  const handleSignUpAndLogin = async () => {
-    try {
-      const signUpData = {
-        userName: name,
-        userPhone: phone,
-        userPassword: password,
-      };
+  // // What: 회원가입 및 로그인 처리
+  // // Why: 얼굴 인식 정보를 포함하여 회원가입을 완료하고 자동 로그인
+  // const handleSignUpAndLogin = async () => {
+  //   try {
+  //     const signUpData = {
+  //       userName: name,
+  //       userPhone: phone,
+  //       userPassword: password,
+  //     };
 
-      // 회원가입 요청
-      await signup(signUpData, imagePreview);
+  //     console.log("SignUp Data:", signUpData);
+  //     console.log("Face Image:", faceImage);
 
-      // 자동 로그인 요청
-      const loginResponse = await login({ phone, faceId: imagePreview });
+  //     // if (!name || !phone || !password) {
+  //     //   console.error("필수 정보가 누락되었습니다.");
+  //     //   return;
+  //     // }
+  //     // 회원가입 요청
+  //     // await signup(signUpData, imagePreview);
+  //     const signupResponse = await signup(signUpData, faceImage);
 
-      if (loginResponse.status === "SUCCESS") {
-        // 토큰 저장
-        if (loginResponse.accessToken) {
-          tokenStorage.setAccessToken(loginResponse.accessToken);
-        }
-        if (loginResponse.refreshToken) {
-          tokenStorage.setRefreshToken(loginResponse.refreshToken);
-        }
-        onComplete(); // 회원가입 완료 처리
-      } else {
-        console.error("Login failed after signup");
-      }
-    } catch (error) {
-      console.error("Signup or login failed:", error);
-    }
-  };
+  //     if (signupResponse.status === "SUCCESS") {
+  //       console.log("회원가입 성공");
+
+  //       // 자동 로그인 요청
+  //       const loginResponse = await login({ phone, password });
+  //       // const loginResponse = await login({ phone, faceId: imagePreview });
+  //       console.log('faceRecStep 자동로그인: ',loginResponse);
+
+  //       if (loginResponse.status === "SUCCESS") {
+  //         // 토큰 저장은 login 함수 내에서 처리
+  //         onComplete(); // 회원가입 완료 처리
+  //       } else {
+  //         console.error("자동 로그인 실패");
+  //       }
+  //     } else {
+  //       console.error("signup failed");
+  //     }
+  //   } catch (error) {
+  //     console.error("Signup or login failed:", error);
+  //   }
+  // };
 
   return (
     <>
@@ -93,8 +103,8 @@ const FaceRecognitionStep: React.FC<FaceRecognitionStepProps> = ({
         사진 찍기
       </YellowButton>
       {/* <YellowButton height={50} width={200} onClick={onComplete}> */}
-      <YellowButton height={50} width={200} onClick={handleSignUpAndLogin}>
-        회원가입 완료
+      <YellowButton height={50} width={200} onClick={onComplete}>
+        다음
       </YellowButton>
     </>
   );

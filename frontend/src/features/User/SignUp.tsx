@@ -59,11 +59,11 @@ const SignUp: React.FC = () => {
 
   const handleAutoLogin = async () => {
     try {
-      // 리프레시 토큰을 사용하여 자동 로그인 시도
-      // 이 부분은 백엔드 API에 따라 구현이 달라질 수 있습니다.
+       // What: 자동 로그인 시도
+      // Why: 사용자 경험 개선을 위해 저장된 정보로 자동 로그인
       const response = await login({ phone });
-      if (response.data === "SUCCESS") {
-        navigate("/"); // 메인 페이지로 이동
+      if (response.status === "SUCCESS") {
+        navigate("/main"); // 메인 페이지로 이동
       } else {
         setStep(SignUpStep.Login);
       }
@@ -83,7 +83,7 @@ const SignUp: React.FC = () => {
         userPhone: phone,
         userPassword: password,
       };
-      await signup(signUpData, faceImage || undefined);
+      await signup(signUpData, faceImage);
       setCookie("userPhone", phone, 300); // 30일 동안 쿠키 저장
       // setStep(SignUpStep.SignUpComplete);
       console.log("Signup successful, attempting auto-login");
@@ -94,8 +94,8 @@ const SignUp: React.FC = () => {
       // }, 3000); // Wait for 3 seconds before auto-login
       // What: 회원가입 후 자동 로그인
     // Why: 사용자 경험 향상
-    const loginResponse = await login({ phone, password:password });
-    console.log("오토로그인 response:", loginResponse); // 디버깅 로그 추가
+    const loginResponse = await login({ phone, password });
+    console.log("오토로그인 response:", loginResponse); 
 
     if (loginResponse.status === "SUCCESS") {
       navigate("/main");
@@ -304,7 +304,7 @@ const SignUp: React.FC = () => {
         );
       case SignUpStep.FaceRecognitionInProgress:
         return (
-          <FaceRecognitionStep onComplete={handleSignUp}/>
+          <FaceRecognitionStep onComplete={()=>nextStep()}/>
         );
       case SignUpStep.FaceRecognitionComplete:
         return (

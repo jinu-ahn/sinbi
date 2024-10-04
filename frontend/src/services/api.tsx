@@ -1,3 +1,4 @@
+// src/services/api.tsx
 import axios from "axios";
 import { LoginDto, SignUpDto, TokenDto } from "../features/User/User.types";
 // import { tokenStorage } from "../features/User/tokenUtils";
@@ -91,7 +92,7 @@ export const signup = async (signUpDto: SignUpDto, image?: File) => {
 api.interceptors.request.use(
   (config) => {
     // const token = tokenStorage.getAccessToken();
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -125,7 +126,7 @@ api.interceptors.response.use(
         // What: 토큰 제거 및 로그인 페이지로 리다이렉트
         // Why: 리프레시 토큰도 만료된 경우 사용자를 로그아웃 시키고 재로그인을 유도하기 위함
         // tokenStorage.clearTokens();
-        localStorage.removeItem('accessToken');
+        localStorage.removeItem("accessToken");
         window.location.href = "/login";
         return Promise.reject(retryError);
 
@@ -227,41 +228,53 @@ export const login = async (
   if (image) {
     formData.append("image", image);
   }
+  try {
+    // What: 로그인 요청을 보내고 응답을 받습니다.
+    // Why: 서버에 인증을 요청하고 인증 토큰을 받아오기 위함입니다.
+    const response = await api.post("/user/login", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-  // What: 로그인 요청을 보내고 응답을 받습니다.
-  // Why: 서버에 인증을 요청하고 인증 토큰을 받아오기 위함입니다.
-  const response = await api.post("/user/login", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+    console.log("로그인 response: ", response);
+    // 토큰은 응답 헤더에서 가져와야 함
+    // const refreshToken = response.headers['refreshtoken'];
 
-  console.log("로그인 response: ", response);
-  // 토큰은 응답 헤더에서 가져와야 함
-  // const accessToken = response.headers['authorization'];
-  // const refreshToken = response.headers['refreshtoken'];
+    // What: 받아온 토큰을 저장합니다.
+    // Why: 향후 API 요청에 사용하기 위해 토큰을 로컬에 저장합니다.
+    // if (accessToken && refreshToken) {
+    //   tokenStorage.setAccessToken(accessToken);
+    //   tokenStorage.setRefreshToken(refreshToken);
+    // }
 
-  // What: 받아온 토큰을 저장합니다.
-  // Why: 향후 API 요청에 사용하기 위해 토큰을 로컬에 저장합니다.
-  // if (accessToken && refreshToken) {
-  //   tokenStorage.setAccessToken(accessToken);
-  //   tokenStorage.setRefreshToken(refreshToken);
-  // }
-
-  // What: 토큰을 로컬 스토리지에 저장
-  // Why: 자동 로그인 및 인증 상태 유지
-  // What: 응답 헤더에서 토큰 추출 및 저장
-  // Why: 로그인 성공 시 발급받은 토큰을 저장하여 인증 상태를 유지하기 위함
-  const accessToken = response.headers["authorization"];
-  const refreshToken = response.headers["refreshtoken"];
-
-  if (accessToken && refreshToken) {
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
-    console.log("Tokens stored in localStorage");
-  } else {
-    console.error("Tokens not found in response headers");
+    // What: 토큰을 로컬 스토리지에 저장
+    // Why: 자동 로그인 및 인증 상태 유지
+    // What: 응답 헤더에서 토큰 추출 및 저장
+    // Why: 로그인 성공 시 발급받은 토큰을 저장하여 인증 상태를 유지하기 위함
+    const accessToken = response.headers["authorization"];
+    // const refreshToken = response.headers["refreshtoken"];
+    // console.log('리프레시토큰: ',refreshToken)
+    console.log("access 토큰: ", accessToken);
+    // if (accessToken && refreshToken) {
+    //   localStorage.setItem("accessToken", accessToken);
+    //   localStorage.setItem("refreshToken", refreshToken);
+    //   console.log("Tokens stored in localStorage");
+    // } else {
+    //   console.error("Tokens not found in response headers");
+    // }
+    if (accessToken) {
+      // 액세스 토큰을 로컬 스토리지나 상태에 저장
+      localStorage.setItem("accessToken", accessToken);
+      // 또는 tokenStorage.setAccessToken(accessToken);
+    } else {
+      console.error("Access token not found in response headers");
+    }
+    return response.data;
+  } catch (error) {
+    // What: 로그인 실패 시 에러를 로깅하고 다시 throw합니다.
+    // Why: 디버깅을 용이하게 하고, 호출자에게 오류를 전파하기 위함입니다.
+    console.error("Login failed: ", error);
+    throw error;
   }
-
-  return response.data;
 };
 
 // 내 계좌들 조회
@@ -334,19 +347,19 @@ export const addFavorite = async (
     console.error("이체할 수 없습니다: ", error);
     throw error;
   }
-}
+};
 
 // 즐겨찾는 계좌 목록 보기
 export const favoriteAccounts = async (userId: number) => {
   try {
-    const response = await api.get('/receiverAccount/list', {
+    const response = await api.get("/receiverAccount/list", {
       params: {
         userId,
-      }
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('해당 계좌 없음', error);
+    console.error("해당 계좌 없음", error);
     throw error;
   }
 };

@@ -19,7 +19,7 @@ export interface UserState {
   phone: string;
   password: string;
   confirmPassword: string;
-  faceImage: File | null;
+  faceImage: File | undefined;
   smsCode: string;
 }
 

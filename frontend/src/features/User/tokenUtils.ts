@@ -1,3 +1,4 @@
+// src/features/User/tokenUtils.ts
 // What: 토큰 저장소 인터페이스 정의
 // Why: 토큰 저장 방식을 추상화하여 쉽게 변경할 수 있도록
 export interface TokenStorage {
@@ -37,24 +38,29 @@ import { getCookie, setCookie, deleteCookie } from "../../utils/cookieUtils";
 
 class CookieTokenStorage implements TokenStorage {
   getAccessToken() {
-    return getCookie("accessToken");
+    // return getCookie("accessToken");
+    return localStorage.getItem("accessToken");
   }
 
   setAccessToken(token: string) {
-    setCookie("accessToken", token, 1); // 1일 유효
+    // setCookie("accessToken", token, 1); // 1일 유효
+    localStorage.setItem("accessToken", token);
   }
 
   getRefreshToken() {
-    return getCookie("refreshToken");
+    // return getCookie("refreshToken");
+    return null // 리프레시 토큰은 HTTP-only 쿠키로 저장되므로 프론트엔드에서 접근할 수 없음
   }
 
   setRefreshToken(token: string) {
-    setCookie("refreshToken", token, 30); // 30일 유효
+    // setCookie("refreshToken", token, 30); // 30일 유효
+    // 리프레시 토큰은 서버에서 자동으로 쿠키에 설정되므로 여기서는 아무 작업도 하지 않음
   }
 
   clearTokens() {
-    deleteCookie("accessToken");
-    deleteCookie("refreshToken");
+    localStorage.removeItem("accessToken");
+    // deleteCookie("accessToken");
+    // deleteCookie("refreshToken");
   }
 }
 
