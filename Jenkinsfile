@@ -87,7 +87,7 @@ pipeline {
                         }
                         if (service != 'frontend') {
                             sh 'chmod +x ./gradlew'
-                            sh './gradlew clean build
+                            sh './gradlew clean build'
                         }
 
                         // Docker 이미지 빌드
