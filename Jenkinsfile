@@ -85,6 +85,10 @@ pipeline {
                             imageName = VIRTUAL_ACCOUNT_IMAGE
                             dirPath = 'virtualAccount'
                         }
+                        if (service != 'frontend') {
+                            sh 'chmod +x ./gradlew'
+                            sh './gradlew clean build
+                        }
 
                         // Docker 이미지 빌드
                         dir(dirPath) {
