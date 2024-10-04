@@ -85,13 +85,13 @@ pipeline {
                             imageName = VIRTUAL_ACCOUNT_IMAGE
                             dirPath = 'virtualAccount'
                         }
-                        if (service != 'frontend') {
-                            sh 'chmod +x ./gradlew'
-                            sh './gradlew clean build'
-                        }
 
                         // Docker 이미지 빌드
                         dir(dirPath) {
+                            if (service != 'frontend') {
+                                sh 'chmod +x ./gradlew'
+                                sh './gradlew clean build'
+                            }
                             sh "docker build --no-cache -t ${imageName}:${env.BUILD_NUMBER} ."
                         }
 
