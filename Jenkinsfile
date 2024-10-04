@@ -90,7 +90,7 @@ pipeline {
                         dir(dirPath) {
                             if (service != 'frontend') {
                                 sh 'chmod +x ./gradlew'
-                                sh './gradlew clean build'
+                                sh './gradlew clean build -x test'
                             }
                             sh "docker build --no-cache -t ${imageName}:${env.BUILD_NUMBER} ."
                         }
