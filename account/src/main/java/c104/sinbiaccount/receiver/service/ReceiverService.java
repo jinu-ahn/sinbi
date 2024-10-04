@@ -12,7 +12,6 @@ import c104.sinbiaccount.util.HeaderUtil;
 import c104.sinbiaccount.util.KafkaProducerUtil;
 import c104.sinbiaccount.util.VirtualAccountResponseHandler;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class ReceiverService {
     private final ReceiverRepository receiverRepository;
     private final KafkaProducerUtil kafkaProducerUtil;
@@ -44,8 +42,7 @@ public class ReceiverService {
         accountNumAndBankTypeMap.put("accountNum", receiverRegistrationRequest.getAccountNum());
         accountNumAndBankTypeMap.put("bankType", receiverRegistrationRequest.getBankTypeEnum());
 
-        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap, "SUCCESS", requestId));
-        virtualAccountResponseHandler.createCompletableFuture(requestId);  // CompletableFuture 생성
+        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap, "SUCCESS").withRequestId(requestId));
 
         try {
             virtualAccountResponseHandler.getCompletableFuture(requestId).get(5, TimeUnit.SECONDS);
@@ -77,9 +74,9 @@ public class ReceiverService {
                     receiver.getRecvAlias()
             );
             ReceiverEvent event = new ReceiverEvent("RECEIVER_REGISTERED", receiver.getUserPhone(), receiverResponse);
-            kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event, "SUCCESS"));
+            kafkaProducerUtil.sendReceiverEvent(ApiResponse.success(event, "SUCCESS").withRequestId(requestId));
+            virtualAccountResponseHandler.cleanupCompleted();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            log.info(e.getMessage());
             throw new AccountNotFoundException();
         }
     }

@@ -2,14 +2,12 @@ package c104.sinbiaccount.util;
 
 import c104.sinbiaccount.exception.global.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class KafkaProducerUtil<K, V> {
     @Value("${spring.kafka.topics.first-find-virtual-account}")
     private String firstFindVirtualAccountTopic;
@@ -34,7 +32,6 @@ public class KafkaProducerUtil<K, V> {
      * @param value 메시지 값
      */
     public void sendAccountNumAndBankType(ApiResponse<?> value) {
-        log.info("Sending Kafka message: {}", value); // 메시지 확인
         kafkaTemplate.send(firstFindVirtualAccountTopic, value);
     }
 
@@ -44,7 +41,6 @@ public class KafkaProducerUtil<K, V> {
      * @param value 메시지 값
      */
     public void sendVirtualAccountAuthenticate(ApiResponse<?> value) {
-        log.info("Sending Kafka message: {}", value); // 메시지 확인
         kafkaTemplate.send(firstVirtualAccountAuthenticate, value);
     }
 
