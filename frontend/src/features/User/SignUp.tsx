@@ -59,7 +59,7 @@ const SignUp: React.FC = () => {
 
   const handleAutoLogin = async () => {
     try {
-       // What: 자동 로그인 시도
+      // What: 자동 로그인 시도
       // Why: 사용자 경험 개선을 위해 저장된 정보로 자동 로그인
       const response = await login({ phone });
       if (response.status === "SUCCESS") {
@@ -73,8 +73,6 @@ const SignUp: React.FC = () => {
     }
   };
 
-
-
   // 변경: handleSignUp 함수 추가
   const handleSignUp = async () => {
     try {
@@ -84,7 +82,7 @@ const SignUp: React.FC = () => {
         userPassword: password,
       };
       const response = await signup(signUpData, faceImage);
-      console.log('signup 전체 response:',response)
+      console.log("signup 전체 response:", response);
       setCookie("userPhone", phone, 300); // 30일 동안 쿠키 저장
       // setStep(SignUpStep.SignUpComplete);
       console.log("Signup successful, attempting auto-login");
@@ -94,16 +92,16 @@ const SignUp: React.FC = () => {
       //   navigate("/"); // Navigate to the start page
       // }, 3000); // Wait for 3 seconds before auto-login
       // What: 회원가입 후 자동 로그인
-    // Why: 사용자 경험 향상
-    const loginResponse = await login({ phone, password });
-    console.log("오토로그인 response:", loginResponse); 
+      // Why: 사용자 경험 향상
+      const loginResponse = await login({ phone, password });
+      console.log("오토로그인 response:", loginResponse);
 
-    if (loginResponse.status === "SUCCESS") {
-      navigate("/sim");
-    } else {
-      setError("자동 로그인에 실패했습니다. 다시 로그인해주세요.");
-      navigate("/login");
-    }
+      if (loginResponse.status === "SUCCESS") {
+        navigate("/sim");
+      } else {
+        setError("자동 로그인에 실패했습니다. 다시 로그인해주세요.");
+        navigate("/login");
+      }
     } catch (error) {
       console.error("Signup failed:", error);
       setError("회원가입에 실패했습니다. 다시 시도해주세요.");
@@ -161,7 +159,7 @@ const SignUp: React.FC = () => {
       // 토큰 저장은 login 함수 내에서 처리됨
       // 로그인 성공 처리
       // 로그인 성공 확인
-      console.log("response", response)
+      console.log("response", response);
       if (response.status === "SUCCESS") {
         console.log("로그인 성공");
         // 토큰은 이미 login 함수 내에서 저장되었으므로 여기서는 추가 처리가 필요 없음
@@ -173,7 +171,6 @@ const SignUp: React.FC = () => {
       }
       // 필요한 경우 사용자 정보를 상태나 스토어에 저장
       // 예: setUserInfo(response.userInfo);
-
     } catch (error) {
       console.error("Login failed:", error);
       setError("로그인에 실패했습니다. 다시 시도해주세요.");
@@ -304,9 +301,7 @@ const SignUp: React.FC = () => {
           </>
         );
       case SignUpStep.FaceRecognitionInProgress:
-        return (
-          <FaceRecognitionStep onComplete={()=>nextStep()}/>
-        );
+        return <FaceRecognitionStep onComplete={() => nextStep()} />;
       case SignUpStep.FaceRecognitionComplete:
         return (
           <>
