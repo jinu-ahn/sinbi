@@ -19,7 +19,7 @@ export interface UserState {
   phone: string;
   password: string;
   confirmPassword: string;
-  faceImage: File | null;
+  faceImage: File | undefined;
   smsCode: string;
 }
 
@@ -47,8 +47,6 @@ export interface LoginDto {
 }
 
 export interface TokenDto {
-  grantType: string;
-  accessToken: string;
-  refreshToken: string;
-  refreshTokenExpiresIn: number;
+  status: string;
+  data: string; // "SUCCESS" 문자열이 여기에 들어갑니다.
 }

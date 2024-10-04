@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import useUserStore from "./useUserStore";
-import { LoginDto, SignUpDto, SignUpStep } from "./User.types";
+import { LoginDto, SignUpDto, SignUpStep, TokenDto } from "./User.types";
 import GreenText from "../../components/GreenText";
 import YellowButton from "../../components/YellowButton";
 import VoiceCommand from "./VoiceCommand";
-import { login, sendPhoneNumber, signup, verificationCodeCheck } from "../../services/api";
+import {
+  login,
+  sendPhoneNumber,
+  signup,
+  verificationCodeCheck,
+} from "../../services/api";
 import SpeechBubble from "../../components/SpeechBubble";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/avatar.png";
 import "./User.css";
 import NumberPad from "./NumberPad";
+import { getCookie, setCookie } from "../../utils/cookieUtils";
+import FaceRecognitionStep from "./FaceRecognitionStep";
 
-const User: React.FC = () => {
+const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
@@ -34,9 +41,39 @@ const User: React.FC = () => {
   } = useUserStore();
 
   useEffect(() => {
+    // 자동 로그인 체크
+    const storedPhone = getCookie("userPhone");
+    if (storedPhone) {
+      setPhone(storedPhone);
+      handleAutoLogin();
+    } else {
+      setStep(SignUpStep.Welcome);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     // Reset error when step changes
     setError(null);
   }, [currentStep]);
+
+  const handleAutoLogin = async () => {
+    try {
+       // What: 자동 로그인 시도
+      // Why: 사용자 경험 개선을 위해 저장된 정보로 자동 로그인
+      const response = await login({ phone });
+      if (response.status === "SUCCESS") {
+        navigate("/main"); // 메인 페이지로 이동
+      } else {
+        setStep(SignUpStep.Login);
+      }
+    } catch (error) {
+      console.error("Auto login failed:", error);
+      setStep(SignUpStep.Login);
+    }
+  };
+
+
 
   // 변경: handleSignUp 함수 추가
   const handleSignUp = async () => {
@@ -46,14 +83,27 @@ const User: React.FC = () => {
         userPhone: phone,
         userPassword: password,
       };
-      await signup(signUpData, faceImage || undefined);
-      setStep(SignUpStep.SignUpComplete);
-
+      const response = await signup(signUpData, faceImage);
+      console.log('signup 전체 response:',response)
+      setCookie("userPhone", phone, 300); // 30일 동안 쿠키 저장
+      // setStep(SignUpStep.SignUpComplete);
+      console.log("Signup successful, attempting auto-login");
       // Auto-login and navigation after a delay
-      setTimeout(async () => {
-        await handleLogin();
-        navigate("/"); // Navigate to the start page
-      }, 3000); // Wait for 3 seconds before auto-login
+      // setTimeout(async () => {
+      //   await handleLogin();
+      //   navigate("/"); // Navigate to the start page
+      // }, 3000); // Wait for 3 seconds before auto-login
+      // What: 회원가입 후 자동 로그인
+    // Why: 사용자 경험 향상
+    const loginResponse = await login({ phone, password });
+    console.log("오토로그인 response:", loginResponse); 
+
+    if (loginResponse.status === "SUCCESS") {
+      navigate("/main");
+    } else {
+      setError("자동 로그인에 실패했습니다. 다시 로그인해주세요.");
+      navigate("/login");
+    }
     } catch (error) {
       console.error("Signup failed:", error);
       setError("회원가입에 실패했습니다. 다시 시도해주세요.");
@@ -106,10 +156,24 @@ const User: React.FC = () => {
         phone,
         password: faceImage ? undefined : password,
       };
-      const response = await login(loginDto, faceImage || undefined);
-      localStorage.setItem("accessToken", response.accessToken);
-      localStorage.setItem("refreshToken", response.refreshToken);
-      setStep(SignUpStep.ServiceIntro);
+      const response: TokenDto = await login(loginDto, faceImage || undefined);
+
+      // 토큰 저장은 login 함수 내에서 처리됨
+      // 로그인 성공 처리
+      // 로그인 성공 확인
+      console.log("response", response)
+      if (response.status === "SUCCESS") {
+        console.log("로그인 성공");
+        // 토큰은 이미 login 함수 내에서 저장되었으므로 여기서는 추가 처리가 필요 없음
+        setCookie("userPhone", phone, 30); // 30일 동안 쿠키 저장
+        navigate("/"); // 메인 페이지로 이동
+      } else {
+        console.error("Login failed:", error);
+        setError("로그인 처리 중 오류가 발생했습니다.");
+      }
+      // 필요한 경우 사용자 정보를 상태나 스토어에 저장
+      // 예: setUserInfo(response.userInfo);
+
     } catch (error) {
       console.error("Login failed:", error);
       setError("로그인에 실패했습니다. 다시 시도해주세요.");
@@ -120,6 +184,7 @@ const User: React.FC = () => {
     switch (currentStep) {
       case SignUpStep.Welcome:
         return (
+          // <FaceRecognitionStep onComplete={handleSignUp}/>
           <>
             <GreenText text="안녕하세요!" boldChars={["안녕하세요"]} />
             <GreenText text="저는 신비예요." boldChars={["신비"]} />
@@ -240,22 +305,7 @@ const User: React.FC = () => {
         );
       case SignUpStep.FaceRecognitionInProgress:
         return (
-          <>
-            <GreenText text="얼굴 인식" boldChars={["얼굴 인식"]} />
-            <GreenText text="눈, 코, 입을" boldChars={["눈, 코, 입"]} />
-            <GreenText text="화면에 맞춰주세요" boldChars={["화면"]} />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) =>
-                e.target.files && setFaceImage(e.target.files[0])
-              }
-              className="file-input"
-            />
-            <YellowButton height={50} width={200} onClick={handleSignUp}>
-              회원가입 완료
-            </YellowButton>
-          </>
+          <FaceRecognitionStep onComplete={()=>nextStep()}/>
         );
       case SignUpStep.FaceRecognitionComplete:
         return (
@@ -349,4 +399,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default SignUp;
