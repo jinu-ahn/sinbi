@@ -10,6 +10,7 @@ import c104.sinbicommon.user.User;
 import c104.sinbicommon.user.dto.LoginDto;
 import c104.sinbicommon.user.dto.SignUpDto;
 import c104.sinbicommon.user.dto.TokenDto;
+import c104.sinbicommon.user.dto.UserResponse;
 import c104.sinbicommon.user.repository.UserRepository;
 import c104.sinbicommon.util.CookieUtil;
 import c104.sinbicommon.util.RedisUtil;
@@ -45,7 +46,7 @@ public class UserService {
     private final CookieUtil cookieUtil;
 
     @Transactional
-    public void signup(@Valid final SignUpDto signUpDto, final MultipartFile multiPartFile) {
+    public UserResponse signup(@Valid final SignUpDto signUpDto, final MultipartFile multiPartFile) {
         if (duplicatePhoneNumber(signUpDto.getUserPhone()))
             throw new UserAlreadyExistsException();
         String encodedPassword = passwordEncoder.encode(signUpDto.getUserPassword()); // 패스워드 인코딩
@@ -55,6 +56,14 @@ public class UserService {
         User user = User.builder().signUpDto(signUpDto).encodedPassword(encodedPassword).convertImageUrl(convertImageUrl).build();
 
         userRepository.save(user);
+        log.info(user.getUserPhone());
+        return UserResponse.builder()
+                .id(user.getId())
+                .userName(user.getName())
+                .userPhone(user.getUserPhone())
+                .userFaceId(user.getUserFaceId())
+                .build();
+
     }
 
     /**
@@ -67,8 +76,8 @@ public class UserService {
      * @status 성공 : 200, 실패 : 401, 404
      */
     @Transactional
-    public void login(@Valid final LoginDto requestDto, final MultipartFile multipartFile, HttpServletResponse response) throws IOException {
-        userRepository.findByUserPhone(requestDto.getPhone()).orElseThrow(
+    public UserResponse login(@Valid final LoginDto requestDto, final MultipartFile multipartFile, HttpServletResponse response) throws IOException {
+        User user = userRepository.findByUserPhone(requestDto.getPhone()).orElseThrow(
                 () -> new UserAlreadyExistsException(ErrorCode.NOT_FOUND_PHONE_NUMBER)
         );
         Authentication authenticationToken;
@@ -85,6 +94,13 @@ public class UserService {
         response.addHeader(AUTHORIZATION, tokenDto.accessToken());
         cookieUtil.addRefreshTokenCookie(response, tokenDto);
         redisUtil.setData(requestDto.getPhone(), tokenDto.refreshToken(), tokenDto.refreshTokenExpiresIn());
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .userName(user.getName())
+                .userPhone(user.getUserPhone())
+                .userFaceId(user.getUserFaceId())
+                .build();
     }
 
     @Transactional
