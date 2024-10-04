@@ -13,7 +13,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtExceptionFilter extends OncePerRequestFilter {
@@ -73,7 +71,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
                                 };
 
                         ResponseEntity<ApiResponse<TokenDto>> responseEntity = restTemplate.exchange(
-                                "http://localhost:8082/user/reissue", // User 서비스의 URL
+                                "http://localhost:8083/api/user/reissue", // User 서비스의 URL
                                 HttpMethod.POST,
                                 requestEntity,
                                 responseType
@@ -91,8 +89,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
                             response.addHeader("Authorization", reissueToken.accessToken());
                         }
                     } catch (HttpClientErrorException | HttpServerErrorException ex) {
-                        log.error("토큰 재발급 실패: HTTP Status - {}, Response Body - {}",
-                                ex.getStatusCode(), ex.getResponseBodyAsString());
 
                         // 오류 응답 파싱
                         try {

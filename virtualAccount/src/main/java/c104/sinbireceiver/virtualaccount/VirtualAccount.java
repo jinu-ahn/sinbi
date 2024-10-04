@@ -31,4 +31,10 @@ public class VirtualAccount {
 
     @Column(name = "user_name", nullable = false)
     private String userName;
+
+    @Column(name = "user_phone", nullable = false)
+    private String userPhone;
+
+    @Column(name = "virtual_account_password", nullable = false)
+    private int virtualAccountPassword;
 }
