@@ -64,4 +64,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     public String getUsername() {
         return this.userPhone;
     }
+
+    public String getName() {
+        return this.userName;
+    }
 }
