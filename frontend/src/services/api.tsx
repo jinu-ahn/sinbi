@@ -76,14 +76,16 @@ export const signup = async (signUpDto: SignUpDto, image?: File) => {
   }
   try {
     console.log(signUpDto);
-    console.log(formData);
+    console.log('api formdata: ',formData);
+
     const response = await api.post("/user/signup", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    return response.data;
+    console.log('회원가입시:',response)
+    return response;
   } catch (error) {
     console.error("회원가입 불가: ", error);
-    throw error;
+    // throw error;
   }
 };
 

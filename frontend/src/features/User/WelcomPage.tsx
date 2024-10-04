@@ -8,7 +8,7 @@ const WelcomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <GreenText text="저희 은행 비서가" boldChars={["은행 비서"]} />
+      <GreenText text="저희 은행 비서가" boldChars={[""]} />
       <GreenText text="처음이신가요?" boldChars={["처음"]} />
       <div className="mt-8 space-y-4">
         <YellowButton height={50} width={200} onClick={() => navigate("/signup")}>

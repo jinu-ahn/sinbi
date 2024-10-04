@@ -83,7 +83,8 @@ const SignUp: React.FC = () => {
         userPhone: phone,
         userPassword: password,
       };
-      await signup(signUpData, faceImage);
+      const response = await signup(signUpData, faceImage);
+      console.log('signup 전체 response:',response)
       setCookie("userPhone", phone, 300); // 30일 동안 쿠키 저장
       // setStep(SignUpStep.SignUpComplete);
       console.log("Signup successful, attempting auto-login");
