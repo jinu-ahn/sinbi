@@ -105,44 +105,46 @@ pipeline {
         stage('Update GitOps Repo') {
             steps {
                 script {
-                    dir('gitops') {
-                        // GitOps 저장소 클론
-                        git url: GITOPS_REPO, branch: 'main', credentialsId: GITOPS_CREDENTIALS
+                    sshagent (credentials: [GITOPS_CREDENTIALS]) {
+                        dir('gitops') {
+                            // GitOps 저장소 클론
+                            git url: GITOPS_REPO, branch: 'main'
 
-                        for (service in changedServices) {
-                            def imageName = ""
-                            def deploymentFile = ""
-                            if (service == 'frontend') {
-                                imageName = FRONTEND_IMAGE
-                                deploymentFile = 'frontend-deployment.yaml'
-                            } else if (service == 'filter') {
-                                imageName = FILTER_IMAGE
-                                deploymentFile = 'filter-deployment.yaml'
-                            } else if (service == 'user') {
-                                imageName = USER_IMAGE
-                                deploymentFile = 'user-deployment.yaml'
-                            } else if (service == 'account') {
-                                imageName = ACCOUNT_IMAGE
-                                deploymentFile = 'account-deployment.yaml'
-                            } else if (service == 'virtualAccount') {
-                                imageName = VIRTUAL_ACCOUNT_IMAGE
-                                deploymentFile = 'virtual-account-deployment.yaml'
+                            for (service in changedServices) {
+                                def imageName = ""
+                                def deploymentFile = ""
+                                if (service == 'frontend') {
+                                    imageName = FRONTEND_IMAGE
+                                    deploymentFile = 'frontend-deployment.yaml'
+                                } else if (service == 'filter') {
+                                    imageName = FILTER_IMAGE
+                                    deploymentFile = 'filter-deployment.yaml'
+                                } else if (service == 'user') {
+                                    imageName = USER_IMAGE
+                                    deploymentFile = 'user-deployment.yaml'
+                                } else if (service == 'account') {
+                                    imageName = ACCOUNT_IMAGE
+                                    deploymentFile = 'account-deployment.yaml'
+                                } else if (service == 'virtualAccount') {
+                                    imageName = VIRTUAL_ACCOUNT_IMAGE
+                                    deploymentFile = 'virtual-account-deployment.yaml'
+                                }
+
+                                // deployment.yaml 파일의 이미지 태그 업데이트
+                                sh """
+                                sed -i 's#image: .*#image: ${imageName}:${env.BUILD_NUMBER}#' ${deploymentFile}
+                                """
                             }
 
-                            // deployment.yaml 파일의 이미지 태그 업데이트
+                            // 변경 사항 커밋 및 푸시
                             sh """
-                            sed -i 's#image: .*#image: ${imageName}:${env.BUILD_NUMBER}#' ${deploymentFile}
+                            git config user.name "Jenkins"
+                            git config user.email "jenkins@gitops.com"
+                            git add .
+                            git commit -m "Update images for services: ${changedServices.join(', ')}"
+                            git push origin HEAD:main
                             """
                         }
-
-                        // 변경 사항 커밋 및 푸시
-                        sh """
-                        git config user.name "Jenkins"
-                        git config user.email "jenkins@gitops.com"
-                        git add .
-                        git commit -m "Update images for services: ${changedServices.join(', ')}"
-                        git push origin HEAD:main
-                        """
                     }
                 }
             }
