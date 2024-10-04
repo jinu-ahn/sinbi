@@ -108,7 +108,7 @@ pipeline {
                     sshagent (credentials: [GITOPS_CREDENTIALS]) {
                         dir('gitops') {
                             // GitOps 저장소 클론
-                            git url: GITOPS_REPO, branch: 'main'
+                            sh 'git clone -b main git@github.com:zion0425/sinbi_gitops.git .'
 
                             for (service in changedServices) {
                                 def imageName = ""
@@ -142,7 +142,7 @@ pipeline {
                             git config user.email "jenkins@gitops.com"
                             git add .
                             git commit -m "Update images for services: ${changedServices.join(', ')}"
-                            git push origin HEAD:main
+                            git push origin main
                             """
                         }
                     }
