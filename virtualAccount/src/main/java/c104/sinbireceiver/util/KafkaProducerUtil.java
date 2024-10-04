@@ -9,31 +9,30 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class KafkaProducerUtil<K, T> {
+
     @Value("${spring.kafka.topics.second-find-virtual-account}")
     private String secondFindVirtualAccountTopic;
+
+    @Value("${spring.kafka.topics.second-virtual-account-authenticate}")
+    private String secondVirtualAccountAuthenticate;
 
     @Value("${spring.kafka.topics.second-deposit}")
     private String depositTopic;
 
     private final KafkaTemplate<K, ApiResponse<?>> kafkaTemplate;
 
-    /**
-     * 가상계좌에 대한 값을 가져오는 토픽에 메시지를 전송합니다.
-     *
-     * @param value 메시지 값
-     */
-    public void sendFindVirtualAccount(ApiResponse<?> value) {
+    public void sendFindVirtualAccount(String requestId, ApiResponse<?> value) {
+        value.setRequestId(requestId);  // requestId 설정
         kafkaTemplate.send(secondFindVirtualAccountTopic, value);
     }
 
-    /**
-     * 가상계좌에 대한 값을 가져오는 토픽에 메시지를 전송합니다.
-     *
-     * @param value 메시지 값
-     */
-    public void sendCompletDeposit(ApiResponse<?> value) {
+    public void sendCompletDeposit(String requestId, ApiResponse<?> value) {
+        value.setRequestId(requestId);  // requestId 설정
         kafkaTemplate.send(depositTopic, value);
     }
 
+    public void sendCheckAccount(String requestId, ApiResponse<?> value) {
+        value.setRequestId(requestId);  // requestId 설정
+        kafkaTemplate.send(secondVirtualAccountAuthenticate, value);
+    }
 }
-
