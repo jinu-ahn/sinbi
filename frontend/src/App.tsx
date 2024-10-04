@@ -8,7 +8,7 @@ import AccountsViewPage from "./features/AccountView/AccountsViewPage";
 import WelcomePage from "./features/User/WelcomPage";
 import TransferPage from "./features/Transfer/TransferPage";
 import LearnNews from "./features/LearnNews/LearnNews";
-import AppInitializer from "./components/AppInitializer";
+import AppInitializer from "./features/User/AppInitializer";
 import TitlePage from "./titlepage";
 // import { useEffect } from "react";
 
