@@ -2,11 +2,12 @@ package c104.sinbiaccount.util;
 
 import c104.sinbiaccount.account.repository.AccountQueryRepository;
 import c104.sinbiaccount.account.service.AccountQueryService;
+import c104.sinbiaccount.exception.IllgalArgumentException;
+import c104.sinbiaccount.exception.KafkaConsumerException;
 import c104.sinbiaccount.exception.global.ApiResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.errors.ApiException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -51,9 +52,9 @@ public class AccountEventListener {
                 default:
             }
         } catch (IllegalArgumentException e) {
-            throw new ApiException(e.getMessage());
+            throw new IllgalArgumentException();
         } catch (Exception e) {
-            throw new ApiException(e.getMessage());
+            throw new KafkaConsumerException(e.getMessage());
         }
     }
 }

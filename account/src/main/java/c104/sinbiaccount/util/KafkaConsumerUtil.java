@@ -2,11 +2,11 @@ package c104.sinbiaccount.util;
 
 import c104.sinbiaccount.account.dto.CommandVirtualAccountDto;
 import c104.sinbiaccount.constant.BankTypeEnum;
+import c104.sinbiaccount.exception.KafkaConsumerException;
 import c104.sinbiaccount.exception.global.ApiResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.errors.ApiException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ public class KafkaConsumerUtil {
 
                 virtualAccountResponseHandler.complete(requestId, commandVirtualAccountDto);
             } catch (Exception e) {
-                throw new ApiException(e.getMessage());
+                throw new KafkaConsumerException(response.getStatus());
             }
         } else {
             virtualAccountResponseHandler.complete(requestId, response.getStatus());
