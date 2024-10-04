@@ -24,7 +24,7 @@ const SimGoBackHome: React.FC = () => {
     audio.addEventListener("ended", () => {
       setTimeout(() => {
         setNickName("");
-        navigate("/");
+        navigate("/main");
       }, 1000);
     });
 

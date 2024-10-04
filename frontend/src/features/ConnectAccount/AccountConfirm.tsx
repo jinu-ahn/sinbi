@@ -90,7 +90,7 @@ const AccountConfirm: React.FC = () => {
   useEffect(() => {
     // 3초 뒤에 홈으로 간다
     const timer = setTimeout(() => {
-      navigate("/");
+      navigate("/main");
       setAccountNum("");
       setBankType("");
       setError("");

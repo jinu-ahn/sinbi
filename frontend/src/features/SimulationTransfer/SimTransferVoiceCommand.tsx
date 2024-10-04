@@ -505,7 +505,7 @@ const SimTransferVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("처음")
     ) {
       setStep(0);
-      navigate("/");
+      navigate("/main");
       resetTranscript();
     }
     // } else {

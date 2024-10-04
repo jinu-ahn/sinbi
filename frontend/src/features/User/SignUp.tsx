@@ -35,7 +35,7 @@ const SignUp: React.FC = () => {
     setSmsCode,
     setPassword,
     setConfirmPassword,
-    setFaceImage,
+    // setFaceImage,
     nextStep,
     setStep,
   } = useUserStore();
@@ -99,7 +99,7 @@ const SignUp: React.FC = () => {
     console.log("오토로그인 response:", loginResponse); 
 
     if (loginResponse.status === "SUCCESS") {
-      navigate("/main");
+      navigate("/sim");
     } else {
       setError("자동 로그인에 실패했습니다. 다시 로그인해주세요.");
       navigate("/login");
@@ -166,7 +166,7 @@ const SignUp: React.FC = () => {
         console.log("로그인 성공");
         // 토큰은 이미 login 함수 내에서 저장되었으므로 여기서는 추가 처리가 필요 없음
         setCookie("userPhone", phone, 30); // 30일 동안 쿠키 저장
-        navigate("/"); // 메인 페이지로 이동
+        navigate("/main"); // 메인 페이지로 이동
       } else {
         console.error("Login failed:", error);
         setError("로그인 처리 중 오류가 발생했습니다.");

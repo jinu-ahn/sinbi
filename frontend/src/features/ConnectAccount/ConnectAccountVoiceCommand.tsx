@@ -339,7 +339,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
       setPhoneNum("");
       setVerificationCode("");
       setStep(0);
-      navigate("/");
+      navigate("/main");
       resetTranscript();
     } else {
       sendToNLP(transcript)
