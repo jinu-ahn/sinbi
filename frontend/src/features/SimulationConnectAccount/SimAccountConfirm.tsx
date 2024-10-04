@@ -1,23 +1,26 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import YellowBox from "../../components/YellowBox";
-import { useConnectAccountStore } from "./ConnectAccountStore";
+import { useSimConnectAccountStore } from "./SimConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
+import SpeechBubble from "../../components/SpeechBubble";
 import { registerAccount } from "../../services/api";
 
-import accountDone from "../../assets/audio/17_통장_등록이_끝났어요_첫_화면으로_갈게요.mp3";
+import { useSimMainStore } from "../SimulationMainPage/SimMainStore";
 
-const AccountConfirm: React.FC = () => {
+import accountDone from "../../assets/audio/65_통장_등록이_끝났어요_'집'_또는_'시작_화면'이라고_얘기해_보세요.mp3";
+
+const SimAccountConfirm: React.FC = () => {
   const {
     bankType,
     accountNum,
-    setAccountNum,
-    setBankType,
-    setError,
-    setPhoneNum,
-    setVerificationCode,
-  } = useConnectAccountStore();
+    // setAccountNum,
+    // setBankType,
+    // setError,
+    // setPhoneNum,
+    // setVerificationCode,
+  } = useSimConnectAccountStore();
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -47,30 +50,18 @@ const AccountConfirm: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
+  const { setMainStep } = useSimMainStore();
+
   const selectedBank = banks.find((bank) => bank.id === bankType) || {
     id: "BASIC",
     name: "기본은행",
     logo: defaultBankLogo,
   };
 
-  const navigate = useNavigate();
+  const text = '통장 등록 끝!\n"집" 또는\n"시작 화면"을\n말해주세요.';
+  const boldChars = ["끝", "시작 화면", "집", "말"];
 
-  // 오디오말하기
-  const audio = new Audio(accountDone);
-
-  // 오디오 플레이 (component가 mount될때만)
-  useEffect(() => {
-    // 플레이시켜
-    audio.play();
-
-    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
-    return () => {
-      if (!audio.paused) {
-        audio.pause();
-        audio.currentTime = 0;
-      }
-    };
-  }, []);
+  // const navigate = useNavigate();
 
   // 통장 등록
   useEffect(() => {
@@ -87,19 +78,37 @@ const AccountConfirm: React.FC = () => {
     registerAccounts();
   }, []);
 
+  // 오디오말하기
+  const audio = new Audio(accountDone);
+
+  // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
-    // 3초 뒤에 홈으로 간다
-    const timer = setTimeout(() => {
-      navigate("/");
-      setAccountNum("");
-      setBankType("");
-      setError("");
-      setPhoneNum("");
-      setVerificationCode("");
-    }, 3000);
-    // component가 unmount되면 timeout function 중지
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    // 플레이시켜
+    audio.play();
+    setMainStep(2);
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   // 3초 뒤에 홈으로 간다
+  //   const timer = setTimeout(() => {
+  //     navigate("/sim");
+  //     setAccountNum("");
+  //     setBankType("");
+  //     setError("");
+  //     setPhoneNum("");
+  //     setVerificationCode("");
+  //   }, 3000);
+  //   // component가 unmount되면 timeout function 중지
+  //   return () => clearTimeout(timer);
+  // }, [navigate]);
 
   return (
     <div>
@@ -129,8 +138,12 @@ const AccountConfirm: React.FC = () => {
           </div>
         </YellowBox>
       </div>
+
+      <div className="mt-8 flex w-full justify-center">
+        <SpeechBubble text={text} boldChars={boldChars} />
+      </div>
     </div>
   );
 };
 
-export default AccountConfirm;
+export default SimAccountConfirm;

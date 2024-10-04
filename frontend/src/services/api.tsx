@@ -10,6 +10,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // 이제 밑에다가 필요한 api function 만들면 된다
@@ -149,6 +150,21 @@ export const sendMoney = async (
     return response.data;
   } catch (error) {
     console.error("이체할 수 없습니다: ", error);
+    throw error;
+  }
+};
+
+// 계좌 등록
+export const registerAccount = async (accountNum: string, bankType: string) => {
+  try {
+    const response = await api.post("/account/create", {
+      accountNum,
+      bankType,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(accountNum, bankType)
+    console.error("통장 등록이 안됨: ", error);
     throw error;
   }
 };
