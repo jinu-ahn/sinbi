@@ -5,6 +5,7 @@ import { LoginDto, SignUpDto, TokenDto } from "../features/User/User.types";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// 백엔드로 보낼때
 const api = axios.create({
   baseURL: BASE_URL, // 일단 임시로 baseURL 설정
   timeout: 5000, // 5초안에 응답없으면 cancel
