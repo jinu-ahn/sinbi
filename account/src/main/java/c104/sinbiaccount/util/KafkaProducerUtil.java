@@ -2,17 +2,18 @@ package c104.sinbiaccount.util;
 
 import c104.sinbiaccount.exception.global.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class KafkaProducerUtil<K, V> {
     @Value("${spring.kafka.topics.first-find-virtual-account}")
     private String firstFindVirtualAccountTopic;
+
+    @Value("${spring.kafka.topics.first-virtual-account-authenticate}")
+    private String firstVirtualAccountAuthenticate;
 
     @Value("${spring.kafka.topics.first-deposit}")
     private String firstDepositTopic;
@@ -31,10 +32,17 @@ public class KafkaProducerUtil<K, V> {
      * @param value 메시지 값
      */
     public void sendAccountNumAndBankType(ApiResponse<?> value) {
-        log.info("Sending Kafka message: {}", value); // 메시지 확인
         kafkaTemplate.send(firstFindVirtualAccountTopic, value);
     }
 
+    /**
+     * 가상계좌에 계좌 비밀번호 인증을 보냅니다.
+     *
+     * @param value 메시지 값
+     */
+    public void sendVirtualAccountAuthenticate(ApiResponse<?> value) {
+        kafkaTemplate.send(firstVirtualAccountAuthenticate, value);
+    }
 
     /**
      * 입금에 대한 토픽에 메시지를 전송합니다.

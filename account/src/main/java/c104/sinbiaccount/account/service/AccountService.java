@@ -16,20 +16,21 @@ import c104.sinbiaccount.util.RedisUtil;
 import c104.sinbiaccount.util.VirtualAccountResponseHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class AccountService {
 
     private final AccountRepository accountRepository;
@@ -39,13 +40,16 @@ public class AccountService {
     private final RedisUtil redisUtil;
     private final HeaderUtil headerUtil;
 
-    //계좌 등록
+    // 계좌 등록
     @Transactional
     public void create(AccountCreateRequest accountCreateRequest) {
-        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountCreateRequest, "SUCCESS"));
+        String requestId = UUID.randomUUID().toString();
+        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountCreateRequest, "SUCCESS").withRequestId(requestId));
         try {
-            CommandVirtualAccountDto virtualAccount = (CommandVirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture().get();
-
+            virtualAccountResponseHandler.createCompletableFuture(requestId);
+            CommandVirtualAccountDto virtualAccount = (CommandVirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture(requestId)
+                    .get(5, TimeUnit.SECONDS);
+            virtualAccountResponseHandler.cleanupCompleted();
             // 계좌 등록 시 중복 체크 로직
             Optional<Account> existingAccount = accountRepository.findByAccountNum(virtualAccount.getAccountNum());
             if (existingAccount.isPresent()) {
@@ -61,13 +65,33 @@ public class AccountService {
                     virtualAccount.getUserPhone()
             );
             accountRepository.save(account);
-        } catch (InterruptedException | ExecutionException e) {
-            log.error("가상 계좌 조회 실패: {}", e.getMessage());
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new AccountNotFoundException();
         }
     }
 
-    //계좌 목록 불러오기
+    // 계좌 비밀번호 조회
+    @Transactional
+    public void authenticate(VirtualAccountAuthenticateRequest virtualAccountAuthenticateRequest) {
+        String requestId = UUID.randomUUID().toString();
+        // Kafka 메시지 전송
+        kafkaProducerUtil.sendVirtualAccountAuthenticate(ApiResponse.success(virtualAccountAuthenticateRequest, "SUCCESS").withRequestId(requestId));
+        try {
+            virtualAccountResponseHandler.createCompletableFuture(requestId);
+            // Kafka 리스너로부터 결과를 기다림 (timeout 5초)
+            Boolean isAuthenticationSuccessful = (Boolean) virtualAccountResponseHandler.getCompletableFuture(requestId)
+                    .get(5, TimeUnit.SECONDS);
+            virtualAccountResponseHandler.cleanupCompleted();
+            if (Boolean.TRUE.equals(isAuthenticationSuccessful)) {
+            } else {
+                throw new AccountNotFoundException();
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new AccountNotFoundException();
+        }
+    }
+
+    // 계좌 목록 불러오기
     public List<GetAccountListResponse> getAccountList(HttpServletRequest request) {
         List<Account> accountList = accountRepository.findAllByUserPhone(headerUtil.getUserPhone(request));
         return accountList.stream()
@@ -80,10 +104,10 @@ public class AccountService {
                 )).collect(Collectors.toList());
     }
 
-    //계좌 이체
+    // 계좌 이체
     @Transactional
     public void transferAccount(TransferAccountRequest transferAccountRequest) {
-        //비관적 락 적용 계좌 조회
+        // 비관적 락 적용 계좌 조회
         Account fromAccount = accountRepository.findByAccountIdWithLock(
                         transferAccountRequest.getAccountId())
                 .orElseThrow(() -> new AccountNotFoundException());
@@ -93,39 +117,32 @@ public class AccountService {
                 transferAccountRequest.getToBankType()
         );
 
-        //계좌 잔액 확인 및 출금 (쿼리 기반)
+        // 계좌 잔액 확인 및 출금 (쿼리 기반)
         int updateAmount = accountRepository.withdraw(transferAccountRequest.getAccountId(), transferAccountRequest.getTransferAmount());
         if (updateAmount == 0) {
             throw new IllgalArgumentException();
         }
-
-        //가상 계좌 조회
-        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountCreateRequest, "SUCCESS"));
+        String requestId = UUID.randomUUID().toString();
+        // 가상 계좌 조회
+        kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountCreateRequest, "SUCCESS").withRequestId(requestId));
         try {
-            CommandVirtualAccountDto virtualAccount = (CommandVirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture().get();
-            CommandVirtualAccountDto toVirtualAccount = new CommandVirtualAccountDto(
-                    virtualAccount.getId(),
-                    virtualAccount.getAccountNum(),
-                    virtualAccount.getBankType(),
-                    virtualAccount.getAmount(),
-                    virtualAccount.getProductName(),
-                    virtualAccount.getUserName(),
-                    virtualAccount.getUserPhone()
-            );
+            virtualAccountResponseHandler.createCompletableFuture(requestId);
+            CommandVirtualAccountDto virtualAccount = (CommandVirtualAccountDto) virtualAccountResponseHandler.getCompletableFuture(requestId)
+                    .get(5, TimeUnit.SECONDS);
 
-            //가상계좌에 입금
+            // 가상계좌에 입금
             DepositRequestDto depositRequestDto = new DepositRequestDto(
-                    toVirtualAccount.getId(),
+                    virtualAccount.getId(),
                     transferAccountRequest.getTransferAmount()
             );
 
-            kafkaProducerUtil.sendDeposit(ApiResponse.success(depositRequestDto, "SUCCESS"));
+            kafkaProducerUtil.sendDeposit(ApiResponse.success(depositRequestDto, "SUCCESS").withRequestId(requestId));
             try {
-                //거래 내역 저장
+                // 거래 내역 저장
                 SaveTransactionHistoryRequest saveTransactionHistoryRequest =
                         new SaveTransactionHistoryRequest(
                                 fromAccount,
-                                toVirtualAccount,
+                                virtualAccount,
                                 transferAccountRequest.getTransferAmount()
                         );
 
@@ -136,10 +153,11 @@ public class AccountService {
 
                 // Redis에 저장
                 redisUtil.setData("TRANSFER_EVENT:" + transferAccountRequest.getAccountId(), event.toString(), 3600000L); // 1시간 TTL
+
                 // Kafka로 이벤트 전송
-                kafkaProducerUtil.sendAccountEvent(ApiResponse.success(event, "SUCCESS"));
+                kafkaProducerUtil.sendAccountEvent(ApiResponse.success(event, "SUCCESS").withRequestId(requestId));
+                virtualAccountResponseHandler.cleanupCompleted();
             } catch (Exception e) {
-                log.info(e.getMessage());
                 // 입금 실패 시, 보상 로직 (출금 롤백)
                 RollBackDto rollBackDto = new RollBackDto(
                         transferAccountRequest.getAccountId(),
@@ -148,7 +166,7 @@ public class AccountService {
                 );
                 rollbackWithdraw(rollBackDto);
             }
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new AccountNotFoundException();
         }
     }
@@ -166,14 +184,12 @@ public class AccountService {
 
         // 먼저 저장
         transactionHistoryRepository.save(transactionHistory);
-
-        // 저장 후 createdAt을 사용할 수 있음
-        log.info("거래 내역 저장 완료: 생성 시각 = {}", transactionHistory.getCreatedAt());
     }
 
     // 출금 롤백 (보상 로직)
     @Transactional
     public void rollbackWithdraw(RollBackDto rollbackDto) {
+        String requestId = UUID.randomUUID().toString();
         // 출금 롤백: 출금 금액 복구
         accountRepository.credit(rollbackDto.getAccountId(), rollbackDto.getTransferAmount());
 
@@ -187,9 +203,6 @@ public class AccountService {
                 rollbackDto.getFromAccount()
         );
         transactionHistoryRepository.save(rollbackHistory);
-
-        log.info("출금이 롤백되었습니다. 계좌 번호: {}, 금액: {}", rollbackDto.getFromAccount().getAccountNum(), rollbackDto.getTransferAmount());
-
         // 이벤트 발행: 출금 롤백 후 Redis 갱신을 위해 이벤트 전송
         AccountEvent event = new AccountEvent("ACCOUNT_WITHDRAW_ROLLED_BACK", rollbackDto.getFromAccount().getUserPhone(), rollbackDto.getAccountId());
 
@@ -197,10 +210,12 @@ public class AccountService {
         redisUtil.setData("WITHDRAW_ROLLBACK_EVENT:" + rollbackDto.getAccountId(), event.toString(), 3600000L); // 1시간 TTL
 
         // Kafka로 이벤트 전송
+        virtualAccountResponseHandler.createCompletableFuture(requestId);
         kafkaProducerUtil.sendAccountEvent(ApiResponse.success(event, "SUCCESS"));
+        virtualAccountResponseHandler.cleanupCompleted();
     }
 
-    //계좌 삭제
+    // 계좌 삭제
     @Transactional
     public void deleteAccount(Long accountId) {
         Account account = accountRepository.findById(accountId)
@@ -208,6 +223,7 @@ public class AccountService {
         accountRepository.delete(account);
     }
 
+    // 거래 내역 상세 조회
     public List<TransactionHistoryResponse> getDetailAccountFromDB(Long accountId) {
         accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException());

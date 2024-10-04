@@ -1,12 +1,9 @@
 package c104.sinbireceiver.virtualaccount.dto;
 
 import c104.sinbireceiver.constant.BankTypeEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,4 +14,17 @@ public class VirtualAccountDto {
     private Long amount;
     private String productName;
     private String userName;
+    private String userPhone;
+    private int virtualPassword;
+
+    public VirtualAccountDto(Long id, String accountNum, Long amount, String userName, BankTypeEnum bankType, String productName, String userPhone, int virtualPassword) {
+        this.id = id;
+        this.accountNum = accountNum;
+        this.amount = amount;
+        this.userName = userName;
+        this.bankType = bankType;
+        this.productName = productName;
+        this.userPhone = userPhone;
+        this.virtualPassword = virtualPassword;
+    }
 }
