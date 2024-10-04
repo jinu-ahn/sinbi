@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class VirtualAccountService {
     private final ObjectMapper objectMapper;
     private final VirtualAccountRepository virtualAccountRepository;
@@ -33,15 +31,11 @@ public class VirtualAccountService {
     public void VirtualAccountCheckKafka(ApiResponse<AccountCreateRequest> response) throws JsonProcessingException {
         String requestId = response.getRequestId(); // requestId 추출
         JsonNode jsonNode = objectMapper.readTree(response.toJson());
-        log.info("{}",BankTypeEnum.valueOf(jsonNode.get("data").get("bankType").textValue()));
         Optional<VirtualAccountDto> virtualAccount = virtualAccountRepository.findByAccountNumAndBankType(
                 jsonNode.get("data").get("accountNum").textValue(),
                 BankTypeEnum.valueOf(jsonNode.get("data").get("bankType").textValue()));
 
-        log.info("data {}", virtualAccount);
-
         if (virtualAccount.isPresent()) {
-            log.info("in");
             kafkaProducerUtil.sendFindVirtualAccount(
                     requestId,
                     ApiResponse.success(
@@ -114,7 +108,6 @@ public class VirtualAccountService {
                 throw new DepositFailedException(errorMessage);
             }
         } catch (Exception e) {
-            log.error("입금 실패: {}", e.getMessage());
             kafkaProducerUtil.sendCompletDeposit(requestId, ApiResponse.error("입금 실패: " + e.getMessage()));
             throw new DepositFailedException();
         }
