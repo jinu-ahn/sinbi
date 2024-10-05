@@ -3,11 +3,11 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAccountViewStore } from "./AccountViewStore";
+import { useSimAccountViewStore } from "./SimAccountViewStore";
 import { sendToNLP } from "../../services/nlpApi";
+import { useSimMainStore } from "../SimulationMainPage/SimMainStore";
 
-
-const AccountViewVoiceCommand: React.FC = () => {
+const SimAccountViewVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -15,7 +15,9 @@ const AccountViewVoiceCommand: React.FC = () => {
 
   const { transcript, resetTranscript } = useSpeechRecognition();
 
-  const {setSelectedAccount} = useAccountViewStore();
+  const { setSelectedAccount } = useSimAccountViewStore();
+
+  const { setMainStep } = useSimMainStore();
 
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
@@ -41,8 +43,8 @@ const AccountViewVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("이전") ||
       lowerCaseTranscript.includes("뒤로")
     ) {
-      navigate("/account-view")
-      setSelectedAccount(null)
+      navigate("/sim-account-view");
+      setSelectedAccount(null);
       resetTranscript();
     }
     if (
@@ -50,27 +52,27 @@ const AccountViewVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("시작 화면") ||
       lowerCaseTranscript.includes("처음")
     ) {
-      navigate("/main");
+      setMainStep(3);
+      navigate("/sim");
       resetTranscript();
-    }
-    else {
+    } else {
       sendToNLP(transcript)
-      .then((response) => {
-        console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text)
-        handleVoiceCommands(response.text)
-        // resetTranscript();
-      })
-      .catch((error) => {
-        console.error("nlp 보내는데 문제생김: ", error)
-        // resetTranscript();
-      })
-      .finally(() => {
-        resetTranscript();
-      })
+        .then((response) => {
+          console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+          handleVoiceCommands(response.text);
+          // resetTranscript();
+        })
+        .catch((error) => {
+          console.error("nlp 보내는데 문제생김: ", error);
+          // resetTranscript();
+        })
+        .finally(() => {
+          resetTranscript();
+        });
     }
   };
 
   return <div />;
 };
 
-export default AccountViewVoiceCommand;
+export default SimAccountViewVoiceCommand;

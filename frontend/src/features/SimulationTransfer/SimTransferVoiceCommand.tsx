@@ -2,29 +2,21 @@ import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useTransferStore } from "./TransferStore";
-import {
-  checkVirtualAccount,
-  sendMoney,
-  addFavorite,
-} from "../../services/api";
-import { sendToNLP } from "../../services/nlpApi";
+import { useNavigate } from "react-router-dom";
+import { useSimTransferStore } from "./SimTransferStore";
 
 // 목소리 오디오
 import pickMyBankAccount from "../../assets/audio/22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3";
 import sendToWho from "../../assets/audio/31_누구에게_보낼지_말하거나_눌러주세요_없으면_새로운_계좌라고_말하세요.mp3";
 import sayAccountNum from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
-import sayBankType from "../../assets/audio/13_은행을_말하거나_찾아서_눌러주세요.mp3";
 import continueOrNot from "../../assets/audio/59_계속하고_싶으면_'알았어'_뒤로_가고_싶으면_'이전'이라고_말해주세요.mp3";
 import sendHowMuch from "../../assets/audio/25_얼마를_보낼지_말해주세요.mp3";
 import sayYesOrNo from "../../assets/audio/08_좋으면_응_싫으면_아니_라고_말해주세요.mp3";
 import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
 
-const TransferVoiceCommand: React.FC = () => {
+const SimTransferVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // 오디오말하기
   const playAudio = (audioFile: string) => {
@@ -36,7 +28,6 @@ const TransferVoiceCommand: React.FC = () => {
   const {
     step,
     setStep,
-    nickName,
     setNickName,
     setError,
     myAccountId,
@@ -47,11 +38,10 @@ const TransferVoiceCommand: React.FC = () => {
     money,
     setSendMoney,
     favAccounts,
-    formalName,
     setFormalName,
     favAccountId,
     setFavAccountId,
-  } = useTransferStore();
+  } = useSimTransferStore();
 
   const { transcript, resetTranscript } = useSpeechRecognition();
   const [previousAccountNum, setPreviousAccountNum] = useState(sendAccountNum);
@@ -63,7 +53,7 @@ const TransferVoiceCommand: React.FC = () => {
     return () => {
       SpeechRecognition.stopListening();
     };
-  }, [location]);
+  }, []);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)
@@ -73,21 +63,32 @@ const TransferVoiceCommand: React.FC = () => {
   }, [transcript]);
 
   // transcript 전부 lowercase로 바꿔 (include로 키워드 찾을때 안걸리는 애들이 없도록 - 근데 사실 우린 한국어라 필요없긴해...)
-  const handleVoiceCommands = (text: string) => {
-    const lowerCaseTranscript = text.toLowerCase();
+  const handleVoiceCommands = (transcript: string) => {
+    const lowerCaseTranscript = transcript.toLowerCase();
 
-    // step 0 : 내 통장 목록 띄우기
-    // step 1 : 즐겨찾는 계좌 목록 띄우기
-    // step 2 : 받을 사람 계좌번호 입력
-    // step 3 : 받을 사람 은행 입력 (여기서 그 사람이 존재하는지 체크 sendVirtualAccount)
-    // step 4 : 얼마 보낼건지 입력
-    // step 5 : 경고창 띄워주기
-    // step 6 : 진짜 보낼거냐고 묻기 (응 / 예 들으면 여기서 이체)
-    // step 7 : 보냈어요 페이지
-    // step 8 : 다음에 또 보낼거냐고 묻기 (아니오 하면 메인페이지 응 하면 다음페이지)
-    // step 9 : 즐겨찾기 계좌에 뭐라고 등록하는지 묻기 (이름 들으면 저장해서 즐겨찾는 계좌에 등록)
+  // 함수같은건 필요없어.. 걍 가짜로 만들어서 버튼만 누르게 만들면 됨
+  // step 0 : 지금부터 돈 보내기를 같이 연습해요. 걱정 마세요! 가짜 돈이에요.
+  // step 1 : 처음 = 내 통장 목록 띄우기 (가짜통장 1개)
+  // step 1 : 회귀 = 지금부터 자주 보내는 계좌로 돈 보내기를 같이 연습해요.
+  // step 2 : 처음 = 즐겨찾는 계좌 목록 띄우기 (아직 아무것도 없음)
+  // step 2 : 회귀 = 즐겨찾는 계좌 목록 띄우기 (이제 생김)
+  // step 3 : 받을 사람 계좌번호 입력 (내가 알려줘)
+  // step 4 : 받을 사람 은행 입력 (여기서 그 사람이 존재하는지 체크 sendVirtualAccount) (내가 알려줘)
+  // step 5 : 얼마 보낼건지 입력 (내가 알려줘)
+  // step 6 : 경고창 띄워주기
+  // step 7 : 진짜 보낼거냐고 묻기 (응 / 예 들으면 여기서 이체)
+  // step 8 : 보냈어요 페이지
+  // step 9 : 다음에 또 보낼거냐고 묻기 ( 무조건 예 하게 만들어 )
+  // step 10 : 즐겨찾기 계좌에 뭐라고 등록하는지 묻기 (뭐라고 등록할지 내가 알려줘)
+  // step 11 : 즐겨찾기 계좌에 은행 비서 (신비) 를 추가했어요. (자동으로 넘어감)
+  // step 12 : 즐겨찾기 계좌로 돈을 보내봐요 소개페이지 (자동으로 넘어감)
+  // step 13 : 즐겨찾기 계좌 목록이에요. '은행 비서'를 선택하세요.
+  // step 14 : 얼마 보낼까요?
+  // step 15 : 진짜 보내요?
+  // step 16 : 보냈어요.
+  // step 17 : 집에 갑시다
 
-    if (step === 0) {
+    if (step === 1) {
       if (
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("다음")
@@ -107,7 +108,7 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(pickMyBankAccount);
         resetTranscript();
       }
-    } else if (step === 1) {
+    } else if (step === 2) {
       setError(null);
       if (
         lowerCaseTranscript.includes("새로운") ||
@@ -148,7 +149,7 @@ const TransferVoiceCommand: React.FC = () => {
         setStep(step - 1);
         resetTranscript();
       }
-    } else if (step === 2) {
+    } else if (step === 3) {
       // "다 지워" 하면 accountNum 싹다 지워
       const accountNumberMatch = transcript.match(/\d+/g);
       if (accountNumberMatch) {
@@ -191,12 +192,14 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(sayAccountNum);
         resetTranscript();
       }
-    } else if (step === 3) {
+    } else if (step === 4) {
       if (
         lowerCaseTranscript.includes("아이비케이") ||
         lowerCaseTranscript.includes("기업")
       ) {
         setSendBankType("IBK");
+      } else if (lowerCaseTranscript.includes("신비")) {
+        setSendBankType("SINBI");
       } else if (
         lowerCaseTranscript.includes("케이비") ||
         lowerCaseTranscript.includes("국민")
@@ -274,20 +277,11 @@ const TransferVoiceCommand: React.FC = () => {
         if (!sendBankType) {
           setError("은행을 고르세요.");
         } else {
-          checkVirtualAccount(sendAccountNum, sendBankType)
-            .then((response) => {
-              console.log("계좌가 존재합니다: ", response);
-              setFormalName(response.data.userName);
-              setError(null);
-              setStep(step + 1);
-              resetTranscript();
-            })
-            .catch((error) => {
-              setError("계좌가 없어요.");
-              console.log("계좌 못 찾음: ", error);
-            });
+          setFormalName("신비");
+          setError(null);
+          setStep(step + 1);
+          resetTranscript();
         }
-        resetTranscript();
       } else if (
         lowerCaseTranscript.includes("뒤로가") ||
         lowerCaseTranscript.includes("이전")
@@ -296,14 +290,7 @@ const TransferVoiceCommand: React.FC = () => {
         setStep(step - 1);
         resetTranscript();
       }
-      if (
-        lowerCaseTranscript.includes("신비") ||
-        lowerCaseTranscript.includes("도와줘")
-      ) {
-        playAudio(sayBankType);
-        resetTranscript();
-      }
-    } else if (step === 4) {
+    } else if (step === 5) {
       // "다 지워" 하면 싹다 지워
       const moneyMatch = transcript.match(/\d+/g);
       if (moneyMatch) {
@@ -352,9 +339,9 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(sendHowMuch);
         resetTranscript();
       }
-    } else if (step === 5) {
+    } else if (step === 6) {
       if (
-        lowerCaseTranscript.includes("알겠어") ||
+        lowerCaseTranscript.includes("알았어") ||
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("다음")
       ) {
@@ -377,25 +364,19 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(continueOrNot);
         resetTranscript();
       }
-    } else if (step === 6) {
+    } else if (step === 7) {
       if (
         lowerCaseTranscript.includes("보내") ||
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("다음")
       ) {
-        console.log("돈 보내는 로직");
-        sendMoney(myAccountId, sendAccountNum, sendBankType, Number(money))
-          .then((response) => {
-            console.log("이체에 성공: ", response);
-            resetTranscript();
-            setStep(step + 1);
-          })
-          .catch((error) => {
-            resetTranscript();
-            console.error("계좌이체 못함: ", error);
-          });
+        setStep(step + 1)
+        resetTranscript();
       }
-      if (lowerCaseTranscript.includes("아니")) {
+      if (
+        lowerCaseTranscript.includes("아니") ||
+        lowerCaseTranscript.includes("이전")
+      ) {
         setFormalName("");
         setSendAccountNum("");
         setSendBankType("");
@@ -410,7 +391,7 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(sayYesOrNo);
         resetTranscript();
       }
-    } else if (step === 7) {
+    } else if (step === 8) {
       if (
         lowerCaseTranscript.includes("알겠어") ||
         lowerCaseTranscript.includes("다음")
@@ -424,7 +405,7 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(sayNext);
         resetTranscript();
       }
-    } else if (step === 8) {
+    } else if (step === 9) {
       if (
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("네")
@@ -439,7 +420,7 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(sayYesOrNo);
         resetTranscript();
       }
-    } else if (step === 9) {
+    } else if (step === 10) {
       if (lowerCaseTranscript.includes("다 지워")) {
         setNickName("");
         resetTranscript();
@@ -447,16 +428,7 @@ const TransferVoiceCommand: React.FC = () => {
         setNickName(transcript);
       }
       if (lowerCaseTranscript.includes("다음")) {
-        // 즐겨찾기에 추가하는 로직
-        addFavorite(formalName, sendAccountNum, sendBankType, nickName)
-          .then((response) => {
-            console.log("즐겨찾기에 성공적으로 추가: ", response);
-            resetTranscript();
-            setStep(step + 1);
-          })
-          .catch((error) => {
-            console.error("즐겨찾기 추가 못함: ", error);
-          });
+        setStep(step + 1)
       }
       if (
         lowerCaseTranscript.includes("신비") ||
@@ -465,11 +437,64 @@ const TransferVoiceCommand: React.FC = () => {
         playAudio(whatNickname);
         resetTranscript();
       }
-    } else if (step === 10) {
-      if (lowerCaseTranscript.includes("응")) {
+    } else if (step === 13) {
+      if (lowerCaseTranscript.includes("은행 비서")) {
         setNickName("");
+        setSendMoney("")
         resetTranscript();
-        navigate("/main");
+        setStep(step + 1)
+      }
+    } else if (step === 14) {
+      // "다 지워" 하면 싹다 지워
+      const moneyMatch = transcript.match(/\d+/g);
+      if (moneyMatch) {
+        setSendMoney(previousMoney + moneyMatch.join(""));
+      }
+      if (lowerCaseTranscript.includes("다 지워")) {
+        setSendMoney("");
+        setpreviousMoney("");
+        resetTranscript();
+      }
+      if (lowerCaseTranscript.includes("하나 지워")) {
+        setpreviousMoney(money.slice(0, -1));
+        setSendMoney(money.slice(0, -1));
+        resetTranscript();
+      }
+
+      if (
+        lowerCaseTranscript.includes("응") ||
+        lowerCaseTranscript.includes("다음")
+      ) {
+        if (!money) {
+          setError("얼마 보낼지 알려주세요.");
+        } else {
+          setError(null);
+          setStep(step + 1);
+        }
+        resetTranscript();
+      }
+      if (lowerCaseTranscript.includes("이전")) {
+        setError(null);
+        resetTranscript();
+        if (favAccountId !== 0) {
+          setFavAccountId(0);
+          setFormalName("");
+          setSendAccountNum("");
+          setSendAccountNum("");
+          setStep(step - 3);
+        } else {
+          setStep(step - 1);
+        }
+      }
+    } else if (step === 15) {
+      if (lowerCaseTranscript.includes("응")) {
+        setStep(step + 1)
+        resetTranscript();
+      }
+    } else if (step === 16) {
+      if (lowerCaseTranscript.includes("다음")) {
+        setStep(step + 1)
+        resetTranscript();
       }
     }
 
@@ -482,24 +507,25 @@ const TransferVoiceCommand: React.FC = () => {
       setStep(0);
       navigate("/main");
       resetTranscript();
-    } else {
-      sendToNLP(transcript)
-        .then((response) => {
-          console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-          handleVoiceCommands(response.text);
-          // resetTranscript();
-        })
-        .catch((error) => {
-          console.error("nlp 보내는데 문제생김: ", error);
-          // resetTranscript();
-        })
-        .finally(() => {
-          resetTranscript();
-        });
     }
+    // } else {
+    //   sendToNLP(transcript)
+    //     .then((response) => {
+    //       console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+    //       handleVoiceCommands(response.text);
+    //       // resetTranscript();
+    //     })
+    //     .catch((error) => {
+    //       console.error("nlp 보내는데 문제생김: ", error);
+    //       // resetTranscript();
+    //     })
+    //     .finally(() => {
+    //       resetTranscript();
+    //     });
+    // }
   };
 
   return <div />;
 };
 
-export default TransferVoiceCommand;
+export default SimTransferVoiceCommand;

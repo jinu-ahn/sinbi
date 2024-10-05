@@ -8,7 +8,7 @@ const SpeechBubble: React.FC<BoldTextProps> = ({
   textSize = "text-[36px]",
 }) => {
   return (
-    <div className="flex h-1/4 w-4/5 items-center justify-center border-2 border-[#0B4B24]">
+    <div className="z-20 flex h-1/4 w-4/5 items-center justify-center border-2 border-[#0B4B24] bg-white">
       <GreenText text={text} boldChars={boldChars} textSize={textSize} />
     </div>
   );
