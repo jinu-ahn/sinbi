@@ -67,7 +67,7 @@ public class TokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName()) // 인증된 사용자의 이름을 Subject로 설정하여 JWT가 어떤 사용자에 관한 것인지 식별
                 .claim("auth", authority) // 'auth'라는 키로 authorities(권한 목록)을 클레임으로 추가, 클레임은 페이로드부분에 포함
-                .setExpiration(new Date(now.getTime() + 1000)) // 만료시간
+                .setExpiration(new Date(now.getTime() + accessTokenExpTime)) // 만료시간
                 .signWith(key, SignatureAlgorithm.HS256) // SHA-256알고리즘을 사용하여 JWT 서명 (JWT 무결성 보장)
                 .compact(); // 위에서 설정한 정보를 사용하영 JWT를 생성하고 문자열로 반환
 
