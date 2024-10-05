@@ -8,7 +8,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
   smsCode: "",
   password: "",
   confirmPassword: "",
-  faceImage: null,
+  faceImage: undefined,
 
   setName: (name) => set({ name }),
   setPhone: (phone) => set({ phone }),
