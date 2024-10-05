@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "transaction_history")
 @Getter
 @NoArgsConstructor
 @AttributeOverride(name = "createdAt", column = @Column(name = "history_date"))
