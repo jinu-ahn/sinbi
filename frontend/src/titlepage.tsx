@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import avatar from "./assets/avatar.png";
 
 const TitlePage: React.FC = () => {
+
+
   return (
     <div className="relative flex h-screen flex-col items-center">
       <div className="mt-[40px]">
