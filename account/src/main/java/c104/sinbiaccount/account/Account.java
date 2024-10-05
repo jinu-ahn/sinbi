@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "account")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {
