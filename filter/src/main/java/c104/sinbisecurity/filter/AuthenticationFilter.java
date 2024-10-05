@@ -2,6 +2,7 @@ package c104.sinbisecurity.filter;
 
 import c104.sinbisecurity.constant.ErrorCode;
 import c104.sinbisecurity.exception.global.ApiResponse;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,9 +10,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 작성자 : jingu
@@ -36,28 +45,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = tokenProvider.resolveToken(request);
-        tokenProvider.validateToken(token);
-        filterChain.doFilter(request, response);
-    }
-
-    /**
-     * @param response  토큰을 헤더에 추가하기 위한 servlet
-     * @param errorCode 커스텀 에러 코드
-     * @return
-     * @ 작성자   : 안진우
-     * @ 작성일   : 2024-09-08
-     * @ 설명     : JWT 토큰 에러 핸들링
-     * @status 실패 : 401, 403
-     */
-    public void jwtExceptionHandler(HttpServletResponse response, ErrorCode errorCode) {
-        response.setStatus(errorCode.getStatus().value());
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        try {
-            ApiResponse<String> apiResponse = ApiResponse.error(errorCode.getMessage());
-            response.getWriter().write(apiResponse.toJson());
-        } catch (Exception e) {
-            throw new JwtException(errorCode.getMessage());
+        if(token != null && tokenProvider.validateToken(token)) {
+            Claims claims = tokenProvider.parseClaims(token);
+            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(claims.get("auth", String.class)));
+            Authentication authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+        filterChain.doFilter(request, response);
     }
 }
