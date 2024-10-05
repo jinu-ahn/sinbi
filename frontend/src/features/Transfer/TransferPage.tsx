@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import avatar from "../../assets/avatar.png";
 import { useTransferStore } from "./TransferStore";
 

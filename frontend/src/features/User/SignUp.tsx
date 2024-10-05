@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useUserStore from "./useUserStore";
 import { LoginDto, SignUpDto, SignUpStep, TokenDto } from "./User.types";
-import GreenText from "../../components/GreenText";
-import YellowButton from "../../components/YellowButton";
 import VoiceCommand from "./VoiceCommand";
 import {
   login,
@@ -10,11 +8,9 @@ import {
   signup,
   verificationCodeCheck,
 } from "../../services/api";
-import SpeechBubble from "../../components/SpeechBubble";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/avatar.png";
 import "./User.css";
-import NumberPad from "./NumberPad";
 import { getCookie, setCookie } from "../../utils/cookieUtils";
 import FaceRecognitionStep from "./SignUpStep/FaceRecognitionStep";
 import WelcomeStep from "./SignUpStep/WelcomeStep";
@@ -45,7 +41,6 @@ const SignUp: React.FC = () => {
     setSmsCode,
     setPassword,
     setConfirmPassword,
-    setFaceImage,
     nextStep,
     setStep,
   } = useUserStore();

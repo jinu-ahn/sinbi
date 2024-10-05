@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getCookie } from "../../utils/cookieUtils";
 import { tokenStorage } from "./tokenUtils";
 import { refreshAccessToken } from "../../services/api";
 
 const AppInitializer: React.FC = () => {
-  const [isInitialized, setIsInitialized] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // const [isInitialized, setIsInitialized] = useState(false);
+  const setInitialized = useCallback(() => {
+    const loader = document.getElementById("loader");
+    if (loader) {
+      loader.style.display = "none";
+    }
+  }, []);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,16 +35,17 @@ const AppInitializer: React.FC = () => {
         navigate("/welcome", { replace: true });
       } finally {
         // 초기화가 완료되면 로더 제거
-        const loader = document.getElementById('loader');
+        const loader = document.getElementById("loader");
         if (loader) {
-          loader.style.display = 'none';
+          loader.style.display = "none";
         }
-        setIsInitialized(true);
+        // setIsInitialized(true);
+        setInitialized()
       }
     };
 
     initializeApp();
-  }, [navigate]);
+  }, [navigate, setInitialized]);
 
   // 초기화 중에는 아무것도 렌더링하지 않음
   return null;
