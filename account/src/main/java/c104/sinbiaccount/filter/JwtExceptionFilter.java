@@ -71,7 +71,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
                                 };
 
                         ResponseEntity<ApiResponse<TokenDto>> responseEntity = restTemplate.exchange(
-                                "http://localhost:8083/api/user/reissue", // User 서비스의 URL
+                                "https://sinbi.life/api/user/reissue", // User 서비스의 URL
                                 HttpMethod.POST,
                                 requestEntity,
                                 responseType
