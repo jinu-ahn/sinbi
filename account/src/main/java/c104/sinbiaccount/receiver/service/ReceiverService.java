@@ -45,8 +45,9 @@ public class ReceiverService {
         kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap, "SUCCESS").withRequestId(requestId));
 
         try {
+            virtualAccountResponseHandler.createCompletableFuture(requestId);
             virtualAccountResponseHandler.getCompletableFuture(requestId).get(5, TimeUnit.SECONDS);
-
+            virtualAccountResponseHandler.cleanupCompleted();;
             Optional<Receiver> existingReceiver = receiverRepository.findByRecvAccountNumAndBankTypeEnum(
                     receiverRegistrationRequest.getAccountNum(),
                     receiverRegistrationRequest.getBankTypeEnum()
