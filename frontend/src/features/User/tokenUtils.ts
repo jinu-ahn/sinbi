@@ -34,7 +34,6 @@ export interface TokenStorage {
 
 // What: 쿠키 기반 토큰 저장소 구현
 // Why: 보안을 강화하고 XSS 공격에 대한 취약성을 줄이기 위해 쿠키를 사용합니다.
-import { getCookie, setCookie, deleteCookie } from "../../utils/cookieUtils";
 
 class CookieTokenStorage implements TokenStorage {
   getAccessToken() {
@@ -52,7 +51,7 @@ class CookieTokenStorage implements TokenStorage {
     return null // 리프레시 토큰은 HTTP-only 쿠키로 저장되므로 프론트엔드에서 접근할 수 없음
   }
 
-  setRefreshToken(token: string) {
+  setRefreshToken(_token: string) {
     // setCookie("refreshToken", token, 30); // 30일 유효
     // 리프레시 토큰은 서버에서 자동으로 쿠키에 설정되므로 여기서는 아무 작업도 하지 않음
   }
