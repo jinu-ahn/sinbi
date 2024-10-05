@@ -3,20 +3,20 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useConnectAccountStore } from "./ConnectAccountStore";
+import { useSimConnectAccountStore } from "./SimConnectAccountStore";
 import {
   checkVirtualAccount,
   sendPhoneNumber,
   verificationCodeCheck,
 } from "../../services/api";
 
-import { sendToNLP } from "../../services/nlpApi";
+// import { sendToNLP } from "../../services/nlpApi";
 
 // 목소리
 // import sayAccountNumber from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
 import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 
-const ConnectAccountVoiceCommand: React.FC = () => {
+const SimConnectAccountVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,7 +33,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
     verificationCode,
     setVerificationCode,
     setError,
-  } = useConnectAccountStore();
+  } = useSimConnectAccountStore();
 
   const { transcript, resetTranscript } = useSpeechRecognition();
   const [previousAccountNum, setPreviousAccountNum] = useState(accountNum);
@@ -66,13 +66,12 @@ const ConnectAccountVoiceCommand: React.FC = () => {
   const handleVoiceCommands = (text: string) => {
     const lowerCaseTranscript = text.toLowerCase();
 
-    // step 0 : 계좌번호 받기
-
-    // step 1 : 은행 종류 받기
-    // step 2 : 제대로 받았는지 체크
-    // step 3 : 전화번호 받기
-    // step 4 : 인증번호 받기
-    if (step === 0) {
+    // step 1 : 계좌번호 받기
+    // step 2 : 은행 종류 받기
+    // step 3 : 제대로 받았는지 체크
+    // step 4 : 전화번호 받기
+    // step 5 : 인증번호 받기
+    if (step === 1) {
       // "다 지워" 하면 accountNum 싹다 지워
       const accountNumberMatch = transcript.match(/\d+/g);
       if (accountNumberMatch) {
@@ -115,7 +114,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         setStep(step - 1);
         resetTranscript();
       }
-    } else if (step === 1) {
+    } else if (step === 2) {
       if (
         lowerCaseTranscript.includes("아이비케이") ||
         lowerCaseTranscript.includes("기업")
@@ -210,7 +209,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         setStep(step - 1);
         resetTranscript();
       }
-    } else if (step === 2) {
+    } else if (step === 3) {
       if (lowerCaseTranscript.includes("맞아")) {
         // need to send axios request to BASEURL/virtualAccount/check
         checkVirtualAccount(accountNum, bankType)
@@ -232,7 +231,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         setStep(step - 1);
         resetTranscript();
       }
-    } else if (step === 3) {
+    } else if (step === 4) {
       // 이외에는 사용자가 숫자를 말할테니까 숫자면 이미 존재하는거에 추가해
       const phoneNumberMatch = transcript.match(/\d+/g);
       if (phoneNumberMatch) {
@@ -279,7 +278,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         setStep(step - 1);
         resetTranscript();
       }
-    } else if (step === 4) {
+    } else if (step === 5) {
       // 이외에는 사용자가 숫자를 말할테니까 숫자면 이미 존재하는거에 추가해
 
       const CodeMatch = transcript.match(/\d+/g); // Find numbers in the transcript
@@ -300,7 +299,8 @@ const ConnectAccountVoiceCommand: React.FC = () => {
 
       if (
         lowerCaseTranscript.includes("확인") ||
-        lowerCaseTranscript.includes("끝")
+        lowerCaseTranscript.includes("끝") ||
+        lowerCaseTranscript.includes("다음")
       ) {
         if (!verificationCode) {
           setError("인증번호를 입력하세요.");
@@ -339,26 +339,27 @@ const ConnectAccountVoiceCommand: React.FC = () => {
       setPhoneNum("");
       setVerificationCode("");
       setStep(0);
-      navigate("/main");
+      navigate("/sim");
       resetTranscript();
-    } else {
-      sendToNLP(transcript)
-        .then((response) => {
-          console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-          handleVoiceCommands(response.text);
-          // resetTranscript();
-        })
-        .catch((error) => {
-          console.error("nlp 보내는데 문제생김: ", error);
-          // resetTranscript();
-        })
-        .finally(() => {
-          resetTranscript();
-        });
     }
+    // } else {
+    //   sendToNLP(transcript)
+    //     .then((response) => {
+    //       console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+    //       handleVoiceCommands(response.text);
+    //       // resetTranscript();
+    //     })
+    //     .catch((error) => {
+    //       console.error("nlp 보내는데 문제생김: ", error);
+    //       // resetTranscript();
+    //     })
+    //     .finally(() => {
+    //       resetTranscript();
+    //     });
+    // }
   };
 
   return <div />;
 };
 
-export default ConnectAccountVoiceCommand;
+export default SimConnectAccountVoiceCommand;

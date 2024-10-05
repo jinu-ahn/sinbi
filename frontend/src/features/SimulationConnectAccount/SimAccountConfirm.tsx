@@ -1,12 +1,26 @@
 import React, { useEffect } from "react";
-import { useTransferStore } from "./TransferStore";
-import BlackText from "../../components/BlackText";
+// import { useNavigate } from "react-router-dom";
 import YellowBox from "../../components/YellowBox";
+import { useSimConnectAccountStore } from "./SimConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
-import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
+import SpeechBubble from "../../components/SpeechBubble";
+import { registerAccount } from "../../services/api";
 
-const AddNickName: React.FC = () => {
+import { useSimMainStore } from "../SimulationMainPage/SimMainStore";
+
+import accountDone from "../../assets/audio/65_통장_등록이_끝났어요_'집'_또는_'시작_화면'이라고_얘기해_보세요.mp3";
+
+const SimAccountConfirm: React.FC = () => {
+  const {
+    bankType,
+    accountNum,
+    // setAccountNum,
+    // setBankType,
+    // setError,
+    // setPhoneNum,
+    // setVerificationCode,
+  } = useSimConnectAccountStore();
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -36,29 +50,42 @@ const AddNickName: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const { nickName, setNickName, formalName, sendBankType, sendAccountNum } =
-    useTransferStore();
+  const { setMainStep } = useSimMainStore();
 
-  const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
+  const selectedBank = banks.find((bank) => bank.id === bankType) || {
     id: "BASIC",
     name: "기본은행",
     logo: defaultBankLogo,
   };
 
-  const boldChars = [`${formalName}`];
-  const text = `${formalName} 님을 어떻게 부를까요?`;
+  const text = '통장 등록 끝!\n"집" 또는\n"시작 화면"을\n말해주세요.';
+  const boldChars = ["끝", "시작 화면", "집", "말"];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickName(e.target.value);
-  };
+  // const navigate = useNavigate();
+
+  // 통장 등록
+  useEffect(() => {
+    const registerAccounts = async () => {
+      try {
+        const response = await registerAccount(accountNum, bankType);
+        console.log(accountNum, bankType);
+        console.log(response);
+      } catch (err) {
+        console.error("Error fetching account data: ", err);
+      }
+    };
+
+    registerAccounts();
+  }, []);
 
   // 오디오말하기
-  const audio = new Audio(whatNickname);
+  const audio = new Audio(accountDone);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
     // 플레이시켜
     audio.play();
+    setMainStep(2);
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
@@ -69,39 +96,54 @@ const AddNickName: React.FC = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   // 3초 뒤에 홈으로 간다
+  //   const timer = setTimeout(() => {
+  //     navigate("/sim");
+  //     setAccountNum("");
+  //     setBankType("");
+  //     setError("");
+  //     setPhoneNum("");
+  //     setVerificationCode("");
+  //   }, 3000);
+  //   // component가 unmount되면 timeout function 중지
+  //   return () => clearTimeout(timer);
+  // }, [navigate]);
+
   return (
-    <div className="mt-[30px]">
+    <div>
       <header>
-        <BlackText
-          textSize="text-[30px]"
-          text={text}
-          boldChars={boldChars}
-        ></BlackText>
+        <h1 className="text-center text-[40px]">통장 등록 완료</h1>
       </header>
 
-      <div className="mt-[40px] flex items-center justify-center">
+      <div className="mt-4 flex w-[350px] justify-center">
         <YellowBox>
-          <input
-            type="text"
-            value={nickName}
-            onChange={handleInputChange}
-            className="w-full rounded-lg border border-gray-300 p-2 text-[35px]"
-          />
-
-          <p className="text-[30px] font-bold">{formalName}</p>
-          <div className="m-2 flex">
-            <img
-              src={selectedBank.logo}
-              alt={selectedBank.name}
-              className="h-6 w-6"
-            />
-            <p>{selectedBank.name}</p>
+          {/* 은행 로고와 이름 */}
+          <div className="flex items-center space-x-4">
+            {selectedBank && (
+              <>
+                <img
+                  src={selectedBank.logo}
+                  alt={selectedBank.name}
+                  className="h-10 w-10"
+                />
+                <p className="text-[30px] font-bold">{selectedBank.name}</p>
+              </>
+            )}
           </div>
-          <p className="text-[30px]">{sendAccountNum}</p>
+
+          {/* 계좌번호 */}
+          <div>
+            <p className="text-[30px] font-bold">{accountNum}</p>
+          </div>
         </YellowBox>
+      </div>
+
+      <div className="mt-8 flex w-full justify-center">
+        <SpeechBubble text={text} boldChars={boldChars} />
       </div>
     </div>
   );
 };
 
-export default AddNickName;
+export default SimAccountConfirm;
