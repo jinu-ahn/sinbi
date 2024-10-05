@@ -1,5 +1,6 @@
 package c104.sinbiaccount.receiver.controller;
 
+import c104.sinbiaccount.exception.global.ApiResponse;
 import c104.sinbiaccount.receiver.dto.ReceiverAccountListView;
 import c104.sinbiaccount.receiver.service.ReceiverQueryService;
 import c104.sinbiaccount.util.HeaderUtil;
@@ -20,9 +21,9 @@ public class ReceiverQueryController {
 
     @GetMapping("/list")
     @Operation(summary = "Receiver 계좌 목록 조회", description = "사용자의 Receiver 계좌 목록을 조회하는 API입니다.")
-    public ResponseEntity<ReceiverAccountListView> getReceiverList(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<ReceiverAccountListView>> getReceiverList(HttpServletRequest request) {
         String userPhone = headerUtil.getUserPhone(request);
         ReceiverAccountListView receiverAccountListView = receiverQueryService.getReceiverList(userPhone);
-        return ResponseEntity.ok(receiverAccountListView);
+        return ResponseEntity.ok(ApiResponse.success(receiverAccountListView,"Receiver 계좌 목록 조회 성공"));
     }
 }
