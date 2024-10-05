@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "receiver")
+@Entity(name = "Receiver")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Receiver {

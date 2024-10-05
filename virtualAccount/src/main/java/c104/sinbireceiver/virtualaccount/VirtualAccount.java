@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity (name = "virtual_account")
+@Entity (name = "VirtualAccount")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VirtualAccount {
