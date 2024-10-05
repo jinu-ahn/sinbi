@@ -32,10 +32,11 @@ public class Receiver {
     @Column(name = "user_phone")
     private String userPhone;
 
-    public Receiver(String recvName, BankTypeEnum bankTypeEnum, String recvAccountNum, String recvAlias) {
+    public Receiver(String recvName, BankTypeEnum bankTypeEnum, String recvAccountNum, String recvAlias, String userPhone) {
         this.recvName = recvName;
         this.bankTypeEnum = bankTypeEnum;
         this.recvAccountNum = recvAccountNum;
         this.recvAlias = recvAlias;
+        this.userPhone = userPhone;
     }
 }

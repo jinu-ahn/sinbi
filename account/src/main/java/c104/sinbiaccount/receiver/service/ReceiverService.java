@@ -3,6 +3,7 @@ package c104.sinbiaccount.receiver.service;
 import c104.sinbiaccount.exception.AccountNotFoundException;
 import c104.sinbiaccount.exception.ReceiverAlreadyExistsException;
 import c104.sinbiaccount.exception.global.ApiResponse;
+import c104.sinbiaccount.filter.TokenProvider;
 import c104.sinbiaccount.receiver.Receiver;
 import c104.sinbiaccount.receiver.dto.ReceiverAccountListResponse;
 import c104.sinbiaccount.receiver.dto.ReceiverEvent;
@@ -10,7 +11,10 @@ import c104.sinbiaccount.receiver.dto.ReceiverRegistrationRequest;
 import c104.sinbiaccount.receiver.repository.ReceiverRepository;
 import c104.sinbiaccount.util.HeaderUtil;
 import c104.sinbiaccount.util.KafkaProducerUtil;
+import c104.sinbiaccount.util.RedisUtil;
 import c104.sinbiaccount.util.VirtualAccountResponseHandler;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,22 +36,23 @@ public class ReceiverService {
     private final ReceiverRepository receiverRepository;
     private final KafkaProducerUtil kafkaProducerUtil;
     private final VirtualAccountResponseHandler virtualAccountResponseHandler;
-    private final HeaderUtil headerUtil;
+    private final TokenProvider tokenProvider;
 
     // 자주 사용할 계좌 등록
     @Transactional
-    public void ReceiverAccountRegistration(ReceiverRegistrationRequest receiverRegistrationRequest) {
+    public void ReceiverAccountRegistration(ReceiverRegistrationRequest receiverRegistrationRequest,
+                                            HttpServletRequest request) {
         String requestId = UUID.randomUUID().toString();  // 요청마다 고유한 ID 생성
         Map<String, Object> accountNumAndBankTypeMap = new HashMap<>();
         accountNumAndBankTypeMap.put("accountNum", receiverRegistrationRequest.getAccountNum());
         accountNumAndBankTypeMap.put("bankType", receiverRegistrationRequest.getBankTypeEnum());
 
+        virtualAccountResponseHandler.createCompletableFuture(requestId);
         kafkaProducerUtil.sendAccountNumAndBankType(ApiResponse.success(accountNumAndBankTypeMap, "SUCCESS").withRequestId(requestId));
 
         try {
-            virtualAccountResponseHandler.createCompletableFuture(requestId);
             virtualAccountResponseHandler.getCompletableFuture(requestId).get(5, TimeUnit.SECONDS);
-            virtualAccountResponseHandler.cleanupCompleted();;
+
             Optional<Receiver> existingReceiver = receiverRepository.findByRecvAccountNumAndBankTypeEnum(
                     receiverRegistrationRequest.getAccountNum(),
                     receiverRegistrationRequest.getBankTypeEnum()
@@ -57,12 +62,13 @@ public class ReceiverService {
             if (existingReceiver.isPresent()) {
                 throw new ReceiverAlreadyExistsException();
             }
-
+            Claims claims = tokenProvider.parseClaims(tokenProvider.resolveToken(request));
             Receiver receiver = new Receiver(
                     receiverRegistrationRequest.getRecvName(),
                     receiverRegistrationRequest.getBankTypeEnum(),
                     receiverRegistrationRequest.getAccountNum(),
-                    receiverRegistrationRequest.getRecvAlias()
+                    receiverRegistrationRequest.getRecvAlias(),
+                    claims.getSubject()
             );
             receiverRepository.save(receiver);
 
