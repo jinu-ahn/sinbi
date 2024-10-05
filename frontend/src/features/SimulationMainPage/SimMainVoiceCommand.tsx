@@ -7,7 +7,7 @@ import { sendToNLP } from "../../services/nlpApi";
 
 import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3"
 
-const MainVoiceCommand: React.FC = () => {
+const SimMainVoiceCommand: React.FC = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,7 +44,7 @@ const MainVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("보낼래") ||
       lowerCaseTranscript.includes("돈 보내기")
     ) {
-      navigate("/transfer");
+      navigate("/sim-transfer");
       resetTranscript();
     } else if (
       lowerCaseTranscript.includes("계좌 조회") ||
@@ -54,7 +54,7 @@ const MainVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("모든 통장")
     ) {
       // "계좌" or "통장" refers to accounts
-      navigate("/account-view");
+      navigate("/sim-account-view");
       resetTranscript();
     } else if (
       lowerCaseTranscript.includes("통장 등록") ||
@@ -62,18 +62,13 @@ const MainVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("연결") ||
       lowerCaseTranscript.includes("등록")
     ) {
-      navigate("/connect-account");
+      navigate("/sim-connect-account");
       resetTranscript();
     } else if (
       lowerCaseTranscript.includes("뉴스") ||
       lowerCaseTranscript.includes("배우기")
     ) {
-      navigate("/learn-news");
-      resetTranscript();
-    } else if (
-      lowerCaseTranscript.includes("연습")
-    ) {
-      navigate("/sim-connect-account")
+      navigate("/sim-learn-news");
       resetTranscript();
     }
     if (
@@ -105,4 +100,4 @@ const MainVoiceCommand: React.FC = () => {
   return <div />;
 };
 
-export default MainVoiceCommand;
+export default SimMainVoiceCommand;

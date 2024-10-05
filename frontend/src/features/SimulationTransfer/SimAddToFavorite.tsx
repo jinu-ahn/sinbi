@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { useTransferStore } from "./TransferStore";
+import { useSimTransferStore } from "./SimTransferStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
-import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
+import SpeechBubble from "../../components/SpeechBubble";
 
-const AddNickName: React.FC = () => {
+import addMeToFavorite from "../../assets/audio/74_저를_자주_보낼_계좌_목록에_추가해볼까요_응_이라_말해주세요.mp3";
+
+const SimAddToFavorite: React.FC = () => {
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -36,24 +38,23 @@ const AddNickName: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const { nickName, setNickName, formalName, sendBankType, sendAccountNum } =
-    useTransferStore();
+  const { formalName, sendAccountNum, sendBankType } = useSimTransferStore();
 
   const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
     id: "BASIC",
-    name: "기본은행",
+    name: "신비은행",
     logo: defaultBankLogo,
   };
 
-  const boldChars = [`${formalName}`];
-  const text = `${formalName} 님을 어떻게 부를까요?`;
+  const boldChars = ["또"];
+  const text = `다음에도 또 보낼래요?`;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickName(e.target.value);
-  };
+  const bubbleText = '"응"이라고\n말해주세요.'
+  const bubbleBoldChars = ["응", "말"]
+
 
   // 오디오말하기
-  const audio = new Audio(whatNickname);
+  const audio = new Audio(addMeToFavorite);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
@@ -78,16 +79,8 @@ const AddNickName: React.FC = () => {
           boldChars={boldChars}
         ></BlackText>
       </header>
-
       <div className="mt-[40px] flex items-center justify-center">
         <YellowBox>
-          <input
-            type="text"
-            value={nickName}
-            onChange={handleInputChange}
-            className="w-full rounded-lg border border-gray-300 p-2 text-[35px]"
-          />
-
           <p className="text-[30px] font-bold">{formalName}</p>
           <div className="m-2 flex">
             <img
@@ -100,8 +93,12 @@ const AddNickName: React.FC = () => {
           <p className="text-[30px]">{sendAccountNum}</p>
         </YellowBox>
       </div>
+
+      <div className="mt-8 flex w-full justify-center">
+        <SpeechBubble text={bubbleText} boldChars={bubbleBoldChars} />
+      </div>
     </div>
   );
 };
 
-export default AddNickName;
+export default SimAddToFavorite;
