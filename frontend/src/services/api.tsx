@@ -4,11 +4,6 @@ import { LoginDto, SignUpDto, TokenDto } from "../features/User/User.types";
 // import { tokenStorage } from "../features/User/tokenUtils";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-//도커파일 내부에서 그떄는 우리가 CICD를 안해서 git repo 안에다가 
-jenkins가 도커이미지 만들어서 배포할떄 도커파일 ㅐㄴ부에 env 넣어서 패키징 해서 빌드하면 알아서 됨
-그러고 비트 빌드시키면 됨
--> npm run build 된 걸 import 할 수 있다고??? 
-react root에 env가 빌드할때 있어야 한다는 것. 
 
 // 백엔드로 보낼때
 const api = axios.create({
