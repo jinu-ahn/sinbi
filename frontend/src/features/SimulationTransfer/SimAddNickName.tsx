@@ -1,12 +1,16 @@
 import React, { useEffect } from "react";
-import { useTransferStore } from "./TransferStore";
+import { useSimTransferStore } from "./SimTransferStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
-import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
+import SpeechBubble from "../../components/SpeechBubble";
 
-const AddNickName: React.FC = () => {
+import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
+import sayMyName from "../../assets/audio/75_은행_비서_라고_말해주세요.mp3";
+import sayNext from "../../assets/audio/64_다_적었으면_'다음'이라고_말해주세요.mp3"
+
+const SimAddNickName: React.FC = () => {
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -36,8 +40,11 @@ const AddNickName: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
+  const bubbleText = '"은행 비서"\n라고\n말해주세요.'
+  const bubbleBoldChars = ["은행 비서", "말"]
+
   const { nickName, setNickName, formalName, sendBankType, sendAccountNum } =
-    useTransferStore();
+    useSimTransferStore();
 
   const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
     id: "BASIC",
@@ -52,25 +59,38 @@ const AddNickName: React.FC = () => {
     setNickName(e.target.value);
   };
 
-  // 오디오말하기
-  const audio = new Audio(whatNickname);
-
-  // 오디오 플레이 (component가 mount될때만)
-  useEffect(() => {
-    // 플레이시켜
-    audio.play();
-
-    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
-    return () => {
-      if (!audio.paused) {
-        audio.pause();
-        audio.currentTime = 0;
-      }
-    };
-  }, []);
+    // 오디오 플레이 (component가 mount될때만)
+    useEffect(() => {
+      const whatNicknameAudio = new Audio(whatNickname);
+      const sayMyNameAudio = new Audio(sayMyName);
+      const sayNextAudio = new Audio(sayNext);
+  
+      // whatNicknameAudio 먼저 플레이
+      whatNicknameAudio.play();
+  
+      // whatNicknameAudio 다음에 sayMyNameAudio
+      whatNicknameAudio.addEventListener("ended", () => {
+        sayMyNameAudio.play();
+      });
+  
+      // sayMyNameAudio 다음에 sayNextAudio
+      sayMyNameAudio.addEventListener("ended", () => {
+        sayNextAudio.play();
+      });
+  
+      // unmount될때 다 초기화
+      return () => {
+        whatNicknameAudio.pause();
+        whatNicknameAudio.currentTime = 0;
+        sayMyNameAudio.pause();
+        sayMyNameAudio.currentTime = 0;
+        sayNextAudio.pause();
+        sayNextAudio.currentTime = 0;
+      };
+    }, []);
 
   return (
-    <div className="mt-[30px]">
+    <div className="mt-[20px]">
       <header>
         <BlackText
           textSize="text-[30px]"
@@ -79,7 +99,7 @@ const AddNickName: React.FC = () => {
         ></BlackText>
       </header>
 
-      <div className="mt-[40px] flex items-center justify-center">
+      <div className="mt-[10px] flex items-center justify-center">
         <YellowBox>
           <input
             type="text"
@@ -100,8 +120,12 @@ const AddNickName: React.FC = () => {
           <p className="text-[30px]">{sendAccountNum}</p>
         </YellowBox>
       </div>
+
+      <div className="mt-2 flex w-full justify-center">
+        <SpeechBubble text={bubbleText} boldChars={bubbleBoldChars} />
+      </div>
     </div>
   );
 };
 
-export default AddNickName;
+export default SimAddNickName;

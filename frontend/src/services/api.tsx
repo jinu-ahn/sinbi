@@ -141,43 +141,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-// What: 응답 인터셉터를 추가하여 인증 오류(401)를 처리합니다.
-// Why: 액세스 토큰이 만료되었을 때 자동으로 리프레시 토큰을 사용하여 새 토큰을 발급받고, 원래의 요청을 재시도하기 위함입니다.
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-//     if (error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       try {
-//         // What: 리프레시 토큰을 사용하여 새 액세스 토큰을 요청합니다.
-//         // Why: 만료된 액세스 토큰을 새것으로 교체하여 사용자 세션을 유지하기 위함입니다.
-//         const refreshToken = tokenStorage.getRefreshToken();
-//         const response = await api.post<TokenDto>("/user/refresh", { refreshToken });
-//         const { accessToken, refreshToken: newRefreshToken } = response.data;
-
-//         // What: 새로 받은 토큰들을 저장합니다.
-//         // Why: 향후 API 요청에 사용하기 위해 최신 토큰을 유지합니다.
-//         tokenStorage.setAccessToken(accessToken);
-//         tokenStorage.setRefreshToken(newRefreshToken);
-
-//         // What: 새 액세스 토큰을 요청 헤더에 설정합니다.
-//         // Why: 재시도할 원래 요청에 새 토큰을 사용하기 위함입니다.
-//         api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
-//         // What: 원래의 요청을 새 토큰으로 재시도합니다.
-//         // Why: 사용자 경험을 끊김 없이 유지하기 위함입니다.
-//         return api(originalRequest);
-//       } catch (refreshError) {
-//         // What: 토큰 갱신에 실패하면 저장된 토큰을 삭제합니다.
-//         // Why: 유효하지 않은 토큰을 제거하고, 사용자를 로그아웃 상태로 만들기 위함입니다.
-//         tokenStorage.clearTokens();
-//         // 여기에 로그아웃 처리 또는 로그인 페이지로 리다이렉트 로직을 추가할 수 있습니다.
-//       }
-//     }
-//     return Promise.reject(error);
-//   }
-// );
 
 // 리프레시토큰 이용한 자동로그인 로직.. 구현중
 export const refreshAccessToken = async (): Promise<TokenDto> => {
@@ -327,6 +290,21 @@ export const sendMoney = async (
     return response.data;
   } catch (error) {
     console.error("이체할 수 없습니다: ", error);
+    throw error;
+  }
+};
+
+// 계좌 등록
+export const registerAccount = async (accountNum: string, bankType: string) => {
+  try {
+    const response = await api.post("/account/create", {
+      accountNum,
+      bankType,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(accountNum, bankType)
+    console.error("통장 등록이 안됨: ", error);
     throw error;
   }
 };
