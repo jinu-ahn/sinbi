@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useUserStore from "./useUserStore";
 import { LoginDto, SignUpDto, SignUpStep, TokenDto } from "./User.types";
-import GreenText from "../../components/GreenText";
-import YellowButton from "../../components/YellowButton";
 import VoiceCommand from "./VoiceCommand";
 import {
   login,
@@ -10,13 +8,21 @@ import {
   signup,
   verificationCodeCheck,
 } from "../../services/api";
-import SpeechBubble from "../../components/SpeechBubble";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/avatar.png";
 import "./User.css";
-import NumberPad from "./NumberPad";
 import { getCookie, setCookie } from "../../utils/cookieUtils";
-import FaceRecognitionStep from "./FaceRecognitionStep";
+import FaceRecognitionStep from "./SignUpStep/FaceRecognitionStep";
+import WelcomeStep from "./SignUpStep/WelcomeStep";
+import UserNameStep from "./SignUpStep/UserNameStep";
+import UserPhoneStep from "./SignUpStep/UserPhoneStep";
+import SmsVerificationStep from "./SignUpStep/SmsVerificationStep";
+import UserPasswordStep from "./SignUpStep/UserPasswordStep";
+import ConfirmPasswordStep from "./SignUpStep/ConfirmPasswordStep";
+import StartFaceRecognitionStep from "./SignUpStep/StartFaceRecognitionStep";
+import FaceRecognitionCompleteStep from "./SignUpStep/FaceRecognitionCompleteStep";
+import SignUpCompleteStep from "./SignUpStep/SignUpCompleteStep";
+import LoginStep from "./SignUpStep/LoginStep";
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +41,6 @@ const SignUp: React.FC = () => {
     setSmsCode,
     setPassword,
     setConfirmPassword,
-    // setFaceImage,
     nextStep,
     setStep,
   } = useUserStore();
@@ -180,190 +185,61 @@ const SignUp: React.FC = () => {
   const renderStep = () => {
     switch (currentStep) {
       case SignUpStep.Welcome:
-        return (
-          // <FaceRecognitionStep onComplete={handleSignUp}/>
-          <>
-            <GreenText text="안녕하세요!" boldChars={["안녕하세요"]} />
-            <GreenText text="저는 신비예요." boldChars={["신비"]} />
-            <GreenText text="같이 회원가입을" boldChars={["회원가입"]} />
-            <GreenText text="해볼까요?" boldChars={[]} />
-            <YellowButton height={50} width={200} onClick={nextStep}>
-              시작하기
-            </YellowButton>
-          </>
-        );
+        return <WelcomeStep onNext={() => nextStep()} />;
       case SignUpStep.UserName:
-        return (
-          <>
-            <GreenText text="이름을 알려주세요." boldChars={["이름"]} />
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="input-field"
-            />
-            <YellowButton height={50} width={200} onClick={nextStep}>
-              다음
-            </YellowButton>
-          </>
-        );
+        return <UserNameStep name={name} setName={setName} onNext={nextStep} />;
       case SignUpStep.UserPhone:
         return (
-          <>
-            <GreenText text="전화번호를" boldChars={["전화번호"]} />
-            <GreenText text="알려주세요" boldChars={[""]} />
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="input-field"
-              pattern="^\d{2,3}\d{3,4}\d{4}$"
-            />
-            <YellowButton height={50} width={200} onClick={handleSendSms}>
-              인증번호 받기
-            </YellowButton>
-          </>
+          <UserPhoneStep
+            phone={phone}
+            setPhone={setPhone}
+            onSendSms={handleSendSms}
+          />
         );
+
       case SignUpStep.SmsVerification:
         return (
-          <>
-            <GreenText text="인증번호가" boldChars={["인증번호"]} />
-            <GreenText text="안 나오면," boldChars={[]} />
-            <GreenText text="문자를 보고" boldChars={["문자"]} />
-            <GreenText text="알려주세요" boldChars={[]} />
-            <NumberPad value={smsCode} onChange={setSmsCode} maxLength={4} />
-            <YellowButton height={50} width={200} onClick={handleVerifySms}>
-              인증하기
-            </YellowButton>
-          </>
+          <SmsVerificationStep
+            smsCode={smsCode}
+            setSmsCode={setSmsCode}
+            onVerifySms={handleVerifySms}
+          />
         );
       case SignUpStep.UserPassword:
         return (
-          <>
-            {error && (
-              <SpeechBubble
-                text={error}
-                boldChars={[]}
-                textSize="text-[24px]"
-              />
-            )}
-            <GreenText text="간편비밀번호" boldChars={[""]} />
-            <GreenText text="숫자 네 자리를" boldChars={["숫자 네 자리"]} />
-            <GreenText text="눌러주세요" boldChars={[]} />
-            {/* <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-field"
-              pattern="^\d{4}$"
-            /> */}
-            <NumberPad value={password} onChange={setPassword} maxLength={4} />
-            <YellowButton height={50} width={200} onClick={nextStep}>
-              다음
-            </YellowButton>
-          </>
+          <UserPasswordStep
+            password={password}
+            setPassword={setPassword}
+            onNext={() => nextStep()}
+            error={error}
+          />
         );
+
       case SignUpStep.ConfirmPassword:
         return (
-          <>
-            <GreenText text="다시 한 번" boldChars={["다시"]} />
-            <GreenText text="눌러주세요." boldChars={["눌러주세요"]} />
-            <NumberPad
-              value={confirmPassword}
-              onChange={setConfirmPassword}
-              maxLength={4}
-            />
-            {/* <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="input-field"
-              pattern="^\d{4}$"
-            /> */}
-            <YellowButton
-              height={50}
-              width={200}
-              onClick={handlePasswordConfirmation}
-            >
-              다음
-            </YellowButton>
-          </>
+          <ConfirmPasswordStep
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            onConfirm={handlePasswordConfirmation}
+          />
         );
       case SignUpStep.StartFaceRecognition:
-        return (
-          <>
-            <GreenText text="얼굴로 로그인하면" boldChars={["얼굴"]} />
-            <GreenText text="더 편해요." boldChars={[""]} />
-            <GreenText text="등록할까요?" boldChars={["등록"]} />
-            <YellowButton height={50} width={200} onClick={nextStep}>
-              시작
-            </YellowButton>
-          </>
-        );
+        return <StartFaceRecognitionStep onStart={nextStep} />;
       case SignUpStep.FaceRecognitionInProgress:
         return <FaceRecognitionStep onComplete={() => nextStep()} />;
       case SignUpStep.FaceRecognitionComplete:
-        return (
-          <>
-            <GreenText
-              text="얼굴 인식이 완료되었습니다."
-              boldChars={["완료"]}
-            />
-            <YellowButton height={50} width={200} onClick={handleSignUp}>
-              회원가입 완료
-            </YellowButton>
-          </>
-        );
+        return <FaceRecognitionCompleteStep onComplete={handleSignUp} />;
       case SignUpStep.SignUpComplete:
-        return (
-          <>
-            <GreenText text="회원가입 끝!" boldChars={["끝"]} />
-            <GreenText text="첫 화면으로" boldChars={["첫 화면"]} />
-            <GreenText text="갈게요" boldChars={[""]} />
-            {/* <YellowButton
-              height={50}
-              width={200}
-              onClick={() => setStep(SignUpStep.Login)}
-            >
-              로그인하기
-            </YellowButton> */}
-          </>
-        );
-      //   case SignUpStep.Completed:
-      //     return (
-      //       <>
-      //         <GreenText text="회원가입이 완료되었습니다!" boldChars={["완료"]} />
-      //         <SpeechBubble
-      //           text="서비스 이용을 시작해보세요."
-      //           boldChars={["서비스"]}
-      //         />
-      //         <YellowButton height={50} width={200} onClick={() => navigate("/")}>
-      //           홈으로
-      //         </YellowButton>
-      //       </>
-      //     );
+        return <SignUpCompleteStep />;
       case SignUpStep.Login:
         return (
-          <>
-            <GreenText text="로그인" boldChars={["로그인"]} />
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="input-field"
-              placeholder="전화번호"
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input-field"
-              placeholder="비밀번호"
-            />
-            <YellowButton height={50} width={200} onClick={handleLogin}>
-              로그인
-            </YellowButton>
-          </>
+          <LoginStep
+            phone={phone}
+            setPhone={setPhone}
+            password={password}
+            setPassword={setPassword}
+            onLogin={handleLogin}
+          />
         );
       default:
         return null;

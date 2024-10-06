@@ -1,44 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import avatar from "./assets/avatar.png";
-import { useNavigate } from "react-router-dom";
-import { getCookie } from "./utils/cookieUtils";
-import { tokenStorage } from "./features/User/tokenUtils";
-import { refreshAccessToken } from "./services/api";
 
 const TitlePage: React.FC = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // What: 자동 로그인 체크
-    // Why: 사용자 경험 향상을 위해 이미 로그인한 사용자를 자동으로 로그인시킵니다.
-    const checkAutoLogin = async () => {
-      const storedPhone = getCookie("userPhone");
-      console.log(storedPhone)
-      if (storedPhone) {
-        const refreshToken = tokenStorage.getRefreshToken();
-        // const refreshToken = localStorage.getItem("refreshToken")
-        console.log(refreshToken)
-        if (refreshToken) {
-          try {
-            // TODO: 리프레시 토큰을 사용하여 새 액세스 토큰을 요청하는 API 호출
-            // const response = await refreshAccessToken(refreshToken);
-            // if (response.success) {
-            //   navigate("/main");
-            //   return;
-            // }
-            await refreshAccessToken();
-            navigate("/main");
-          } catch (error) {
-            console.error("Auto login failed:", error);
-          }
-        } 
-      }
-      // 자동 로그인 실패 시 "처음이신가요?" 페이지로 이동
-      navigate("/welcome");
-    };
-
-    checkAutoLogin();
-  }, [navigate]);
 
 
   return (
