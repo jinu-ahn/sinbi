@@ -35,9 +35,9 @@ const TransferPage: React.FC = () => {
   const renderComponent = () => {
     switch (step) {
       case 0:
-        return <MyAccounts userId={1} />;
+        return <MyAccounts/>;
       case 1:
-        return <FavoriteAccounts userId={1} />;
+        return <FavoriteAccounts />;
       case 2:
         return <RecvAccountNumber />;
       case 3:
@@ -58,7 +58,7 @@ const TransferPage: React.FC = () => {
         return <GoBackHome />;
       // case 별 컴포넌트 추가해나가면 됨
       default:
-        return <MyAccounts userId={1} />;
+        return <MyAccounts />;
     }
   };
 

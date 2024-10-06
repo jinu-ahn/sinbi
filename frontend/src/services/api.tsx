@@ -244,12 +244,13 @@ export const login = async (
 };
 
 // 내 계좌들 조회
-export const myAccounts = async (userId: number) => {
+export const myAccounts = async () => {
   try {
     const response = await api.get("/account", {
-      params: {
-        userId,
-      },
+      // 이제 userId 안 보내도 됨
+      // params: {
+      //   userId,
+      // },
     });
     return response.data;
   } catch (error) {
@@ -331,12 +332,13 @@ export const addFavorite = async (
 };
 
 // 즐겨찾는 계좌 목록 보기
-export const favoriteAccounts = async (userId: number) => {
+export const favoriteAccounts = async () => {
   try {
     const response = await api.get("/receiverAccount/list", {
-      params: {
-        userId,
-      },
+      // 이제 userId를 받지 않음
+      // params: {
+      //   userId,
+      // },
     });
     return response.data;
   } catch (error) {

@@ -45,7 +45,7 @@ interface FavAccount {
 // 즐겨찾기통장 중에서 골랐으면 이따 보내주기 위해 저장해둬야 할것
 // 상대방 계좌번호, 은행 종류, 보낼 금액
 
-const FavoriteAccounts: React.FC<{ userId: number }> = ({ userId }) => {
+const FavoriteAccounts: React.FC = () => {
   // 즐겨찾는 계좌 목록 저장할것 가져오기
   const {
     step,
@@ -63,7 +63,7 @@ const FavoriteAccounts: React.FC<{ userId: number }> = ({ userId }) => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await favoriteAccounts(userId);
+        const response = await favoriteAccounts();
         // response.data가 배열이면
         if (Array.isArray(response.data)) {
           console.log(response.data);
@@ -77,7 +77,7 @@ const FavoriteAccounts: React.FC<{ userId: number }> = ({ userId }) => {
       }
     };
     fetchAccounts();
-  }, [userId]);
+  }, []);
 
   // 오디오말하기
   const audio = new Audio(sendToWho);
