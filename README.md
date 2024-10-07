@@ -144,15 +144,25 @@
 - GitLab
 - Jira
 - Discord
-- K8S
-- Kafka
-- Jenkins
-- EC2
-- S3
-- MySQL
-- Server API(Ingress Controller)
 - pytorch
 - flask
+- EC2
+- GCP
+- S3
+- K8S
+- Jenkins
+- Argo
+- Docker
+- Nginx Ingress Controller
+- MySQL
+- Redis
+- Mattermost Notification
+- Kafka
+- Kafka-ui
+- Helm
+- S3
+- DockerHub
+
 
 ## 🌝 사용된 기술
 
