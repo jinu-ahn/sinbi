@@ -33,6 +33,29 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
     };
   }, []);
 
+
+  // SMS 인증 번호 자동 인풋
+  useEffect(() => {
+    const getOTP = async () => {
+      if ('OTPCredential' in window) {
+        try {
+          // 비동기 작업을 기다림
+          const otp = await navigator.credentials.get({ otp: { transport: ['sms'] } });
+          console.log('받은 OTP:', otp);
+          
+          // 인증번호 설정
+          if (otp && otp.code) {
+            setSmsCode(otp.code);
+          }
+        } catch (err) {
+          console.error('SMS 인증 실패:', err);
+        }
+      }
+    };
+    getOTP();
+  }, []);
+
+
   return (
     <>
       <GreenText text="인증번호가" boldChars={["인증번호"]} />
