@@ -4,6 +4,7 @@ import GreenText from "../../../components/GreenText";
 import YellowButton from "../../../components/YellowButton";
 import NumberPad from "../NumberPad";
 import VerifyAudio from "../../../assets/audio/57_인증번호가_안_나오면_문자를_보고_알려주세요.mp3";
+import { OTPCredential } from "../User.types";
 
 interface SmsVerificationStepProps {
   smsCode: string;
@@ -34,27 +35,41 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
   }, []);
 
 
-  // SMS 인증 번호 자동 인풋
-  useEffect(() => {
-    const getOTP = async () => {
-      if ('OTPCredential' in window) {
-        try {
-          // 비동기 작업을 기다림
-          const otp = await navigator.credentials.get({ otp: { transport: ['sms'] } });
-          console.log('받은 OTP:', otp);
-          
-          // 인증번호 설정
-          if (otp && otp.code) {
-            setSmsCode(otp.code);
-          }
-        } catch (err) {
-          console.error('SMS 인증 실패:', err);
-        }
-      }
+  
+  interface OTPCredentialRequestOptions extends CredentialRequestOptions {
+    otp?: {
+      transport: string[];
     };
-    getOTP();
-  }, []);
+  }
 
+// 타입 가드 함수 정의: Credential이 OTPCredential 타입인지 확인하는 함수
+function isOTPCredential(credential: Credential | null): credential is OTPCredential {
+  return credential !== null && 'code' in credential;
+}
+
+
+// SMS 인증 번호 자동 인풋
+useEffect(() => {
+  const getOTP = async () => {
+    if ('OTPCredential' in window) {
+      try {
+        // 비동기 작업을 기다림
+        const credential = await navigator.credentials.get({
+          otp: { transport: ['sms'] },
+        } as OTPCredentialRequestOptions);
+
+        // 타입 가드를 사용하여 OTPCredential인지 검사
+        if (isOTPCredential(credential)) {
+          console.log('받은 OTP:', credential.code);
+          setSmsCode(credential.code);
+        }
+      } catch (err) {
+        console.error('SMS 인증 실패:', err);
+      }
+    }
+  };
+  getOTP();
+}, []);
 
   return (
     <>
