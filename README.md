@@ -162,6 +162,7 @@
 - Helm
 - S3
 - DockerHub
+- Zustand
 
 
 ## 🌝 사용된 기술
