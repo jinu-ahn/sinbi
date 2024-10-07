@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import YellowButton from "../../components/YellowButton";
 import avatar from "../../assets/avatar.png";
 import MainVoiceCommand from "./MainVoiceCommand";
-import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
+// import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
+import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
 
 interface ButtonConfig {
   text: string[];
@@ -14,6 +15,8 @@ const MainPage: React.FC = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(true);
 
+  const { done } = useLearnNewsSimDoneStore()
+
   const buttons: ButtonConfig[] = [
     { text: ["돈", "보내기"], path: "/transfer" },
     { text: ["모든", "통장"], path: "/account-view" },
@@ -22,7 +25,15 @@ const MainPage: React.FC = () => {
   ];
 
   const handleNavigation = (path: string): void => {
-    navigate(path);
+    if (path === "/learn-news") {
+      if (!done) {
+        navigate("/sim-learn-news")
+      } else {
+        navigate(path)
+      }
+    } else {
+      navigate(path);
+    }
   };
 
   const handleCloseModal = () => {
