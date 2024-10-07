@@ -6,7 +6,7 @@ import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
 import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
 
-const AddToFavorite: React.FC = () => {
+const AddNickName: React.FC = () => {
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -104,4 +104,4 @@ const AddToFavorite: React.FC = () => {
   );
 };
 
-export default AddToFavorite;
+export default AddNickName;

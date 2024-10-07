@@ -50,7 +50,7 @@ const AccountViewVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("시작 화면") ||
       lowerCaseTranscript.includes("처음")
     ) {
-      navigate("/");
+      navigate("/main");
       resetTranscript();
     }
     else {

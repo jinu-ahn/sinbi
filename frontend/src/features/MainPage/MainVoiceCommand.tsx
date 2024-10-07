@@ -70,6 +70,11 @@ const MainVoiceCommand: React.FC = () => {
     ) {
       navigate("/learn-news");
       resetTranscript();
+    } else if (
+      lowerCaseTranscript.includes("연습")
+    ) {
+      navigate("/sim-connect-account")
+      resetTranscript();
     }
     if (
       lowerCaseTranscript.includes("신비") ||

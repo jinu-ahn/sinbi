@@ -15,7 +15,7 @@ const GoBackHome: React.FC = () => {
     // 3초 뒤에 홈으로 간다
     const timer = setTimeout(() => {
       setNickName("");
-      navigate("/");
+      navigate("/main");
     }, 3000);
     // component가 unmount되면 timeout function 중지
     return () => clearTimeout(timer);

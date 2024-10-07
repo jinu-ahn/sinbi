@@ -2,8 +2,7 @@ import {create} from 'zustand';
 import axios from 'axios';
 import { LearnNewsStore, NewsItem, ViewType } from './LearnNews.types';
 
-const API_URL = import.meta.env.VITE_API_NEWS_URL;
-// const API_URL = "http://127.0.0.1:5002";
+const API_URL = import.meta.env.VITE_API_AI_URL;
 
 
 export const useLearnNewsStore = create<LearnNewsStore>((set, get) => ({

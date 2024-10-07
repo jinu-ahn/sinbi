@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const NLP_URL = import.meta.env.VITE_API_NLP_URL
+const NLP_URL = import.meta.env.VITE_API_AI_URL
 
 // nlp ai로 보낼때
 const nlpApi = axios.create({

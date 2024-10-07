@@ -4,11 +4,20 @@ import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
+import { registerAccount } from "../../services/api";
 
 import accountDone from "../../assets/audio/17_통장_등록이_끝났어요_첫_화면으로_갈게요.mp3";
 
 const AccountConfirm: React.FC = () => {
-  const { bankType, accountNum, setAccountNum, setBankType, setError, setPhoneNum, setVerificationCode } = useConnectAccountStore();
+  const {
+    bankType,
+    accountNum,
+    setAccountNum,
+    setBankType,
+    setError,
+    setPhoneNum,
+    setVerificationCode,
+  } = useConnectAccountStore();
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -44,34 +53,49 @@ const AccountConfirm: React.FC = () => {
     logo: defaultBankLogo,
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-    // 오디오말하기
-    const audio = new Audio(accountDone);
+  // 오디오말하기
+  const audio = new Audio(accountDone);
 
-    // 오디오 플레이 (component가 mount될때만)
-    useEffect(() => {
-      // 플레이시켜
-      audio.play();
-  
-      // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
-      return () => {
-        if (!audio.paused) {
-          audio.pause();
-          audio.currentTime = 0;
-        }
-      };
-    }, []);
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    // 플레이시켜
+    audio.play();
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
+
+  // 통장 등록
+  useEffect(() => {
+    const registerAccounts = async () => {
+      try {
+        const response = await registerAccount(accountNum, bankType);
+        console.log(accountNum, bankType);
+        console.log(response);
+      } catch (err) {
+        console.error("Error fetching account data: ", err);
+      }
+    };
+
+    registerAccounts();
+  }, []);
 
   useEffect(() => {
     // 3초 뒤에 홈으로 간다
     const timer = setTimeout(() => {
-      navigate("/");
-      setAccountNum("")
-      setBankType("")
-      setError("")
-      setPhoneNum("")
-      setVerificationCode("")
+      navigate("/main");
+      setAccountNum("");
+      setBankType("");
+      setError("");
+      setPhoneNum("");
+      setVerificationCode("");
     }, 3000);
     // component가 unmount되면 timeout function 중지
     return () => clearTimeout(timer);

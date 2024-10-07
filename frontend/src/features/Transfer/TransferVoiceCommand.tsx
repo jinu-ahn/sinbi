@@ -469,7 +469,7 @@ const TransferVoiceCommand: React.FC = () => {
       if (lowerCaseTranscript.includes("응")) {
         setNickName("");
         resetTranscript();
-        navigate("/");
+        navigate("/main");
       }
     }
 
@@ -480,7 +480,7 @@ const TransferVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("처음")
     ) {
       setStep(0);
-      navigate("/");
+      navigate("/main");
       resetTranscript();
     } else {
       sendToNLP(transcript)
