@@ -21,6 +21,7 @@ export interface UserState {
   confirmPassword: string;
   faceImage: File | undefined;
   smsCode: string;
+  error: string | null;
 }
 
 export interface UserActions {
@@ -28,7 +29,8 @@ export interface UserActions {
   setPhone: (phone: string) => void;
   setPassword: (password: string) => void;
   setConfirmPassword: (password: string) => void;
-  setFaceImage: (image: File) => void;
+  setFaceImage: (image: File |undefined) => void;
+  setError: (error: string | null) => void;
   nextStep: () => void;
   prevStep: () => void;
   setStep: (step: SignUpStep) => void;

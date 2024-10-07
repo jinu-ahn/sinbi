@@ -1,16 +1,18 @@
 // src/components/signup/UserNameStep.tsx
 import React, { useEffect } from 'react';
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import SayName from "../../../assets/audio/56_이름을_말하거나_입력해주세요.mp3"
+import useUserStore from '../useUserStore';
 
-interface UserNameStepProps {
-  name: string;
-  setName: (name: string) => void;
-  onNext: () => void;
-}
+// interface UserNameStepProps {
+//   name: string;
+//   setName: (name: string) => void;
+//   onNext: () => void;
+// }
 
-const UserNameStep: React.FC<UserNameStepProps> = ({ name, setName, onNext }) => {
+const UserNameStep: React.FC = () => {
+  const { name } = useUserStore();
+
   // 오디오말하기
   const audio = new Audio(SayName);
 
@@ -21,10 +23,8 @@ const UserNameStep: React.FC<UserNameStepProps> = ({ name, setName, onNext }) =>
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
-      if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
-      }
     };
   }, []);
 
@@ -34,12 +34,10 @@ const UserNameStep: React.FC<UserNameStepProps> = ({ name, setName, onNext }) =>
       <input
         type="text"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        readOnly 
+        // onChange={(e) => setName(e.target.value)}
         className="input-field"
       />
-      <YellowButton height={50} width={200} onClick={onNext}>
-        다음
-      </YellowButton>
     </>
   );
 };

@@ -1,13 +1,13 @@
 // src/components/signup/WelcomeStep.tsx
 import React, { useEffect } from 'react';
 import GreenText from "../../../components/GreenText" 
-import YellowButton from "../../../components/YellowButton";
 import StartSignUpWithSinbi from "../../../assets/audio/55_안녕하세요_저는_신비예요_같이_회원가입을_해_볼까요.mp3"
-interface WelcomeStepProps {
-  onNext: () => void;
-}
+// import useUserStore from '../useUserStore';
 
-const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
+
+const WelcomeStep: React.FC = () => {
+  // const { nextStep } = useUserStore();
+
   // 오디오말하기
   const audio = new Audio(StartSignUpWithSinbi);
 
@@ -31,9 +31,6 @@ const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
       <GreenText text="저는 신비예요." boldChars={["신비"]} />
       <GreenText text="같이 회원가입을" boldChars={["회원가입"]} />
       <GreenText text="해볼까요?" boldChars={[]} />
-      <YellowButton height={50} width={200} onClick={onNext}>
-        시작하기
-      </YellowButton>
     </>
   );
 };

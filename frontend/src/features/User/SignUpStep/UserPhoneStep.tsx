@@ -3,14 +3,17 @@ import React, { useEffect } from 'react';
 import GreenText from "../../../components/GreenText";
 import YellowButton from "../../../components/YellowButton";
 import SayPhoneNum from "../../../assets/audio/50_전화번호를_말하거나_입력해주세요.mp3"
+import useUserStore from '../useUserStore';
 
-interface UserPhoneStepProps {
-  phone: string;
-  setPhone: (name: string) => void;
-  onSendSms: () => Promise<void>;
-}
+// interface UserPhoneStepProps {
+//   phone: string;
+//   setPhone: (name: string) => void;
+//   onSendSms: () => Promise<void>;
+// }
 
-const UserPhoneStep: React.FC<UserPhoneStepProps> = ({ phone, setPhone, onSendSms }) => {
+const UserPhoneStep: React.FC = () => {
+  const { phone } = useUserStore();
+
   // 오디오말하기
   const audio = new Audio(SayPhoneNum);
 
@@ -35,13 +38,14 @@ const UserPhoneStep: React.FC<UserPhoneStepProps> = ({ phone, setPhone, onSendSm
       <input
         type="tel"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        // onChange={(e) => setPhone(e.target.value)}
+        // readOnly
         className="input-field"
         pattern="^\d{2,3}\d{3,4}\d{4}$"
       />
-      <YellowButton height={50} width={200} onClick={onSendSms}>
+      {/* <YellowButton height={50} width={200} onClick={onSendSms}>
         인증번호 받기
-      </YellowButton>
+      </YellowButton> */}
     </>
   );
 };
