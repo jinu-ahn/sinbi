@@ -1,7 +1,6 @@
 // src/components/signup/UserPhoneStep.tsx
 import React, { useEffect } from 'react';
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import SayPhoneNum from "../../../assets/audio/50_전화번호를_말하거나_입력해주세요.mp3"
 import useUserStore from '../useUserStore';
 
@@ -12,8 +11,10 @@ import useUserStore from '../useUserStore';
 // }
 
 const UserPhoneStep: React.FC = () => {
-  const { phone } = useUserStore();
-
+  const { phone,setPhone } = useUserStore();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(e.target.value);
+  };
   // 오디오말하기
   const audio = new Audio(SayPhoneNum);
 
@@ -38,8 +39,8 @@ const UserPhoneStep: React.FC = () => {
       <input
         type="tel"
         value={phone}
+        onChange={handleInputChange}
         // onChange={(e) => setPhone(e.target.value)}
-        // readOnly
         className="input-field"
         pattern="^\d{2,3}\d{3,4}\d{4}$"
       />

@@ -11,6 +11,11 @@ interface ConfirmPasswordStepProps {
 }
 
 const ConfirmPasswordStep: React.FC<ConfirmPasswordStepProps> = ({ confirmPassword, setConfirmPassword, onConfirm }) => {
+  // const {confirmPassword, setConfirmPassword} = useUserStore()
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setConfirmPassword(e.target.value);
+  // };
+
   // 오디오말하기
   const audio = new Audio(AgainTTS);
 

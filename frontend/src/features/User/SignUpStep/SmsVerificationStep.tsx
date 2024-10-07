@@ -1,21 +1,21 @@
 // src/components/User/SignUpStep/SmsVerificationStep.tsx
 import React, { useEffect } from "react";
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
-import NumberPad from "../NumberPad";
 import VerifyAudio from "../../../assets/audio/57_인증번호가_안_나오면_문자를_보고_알려주세요.mp3";
+import useUserStore from "../useUserStore";
 
-interface SmsVerificationStepProps {
-  smsCode: string;
-  setSmsCode: (code: string) => void;
-  onVerifySms: () => Promise<void>;
-}
+// interface SmsVerificationStepProps {
+//   smsCode: string;
+//   setSmsCode: (code: string) => void;
+//   onVerifySms: () => Promise<void>;
+// }
 
-const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
-  smsCode,
-  setSmsCode,
-  onVerifySms,
-}) => {
+const SmsVerificationStep: React.FC = () => {
+const {smsCode, setSmsCode} = useUserStore()
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setSmsCode(e.target.value);
+};
+
   // 오디오말하기
   const audio = new Audio(VerifyAudio);
 
@@ -39,10 +39,12 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
       <GreenText text="안 나오면," boldChars={[]} />
       <GreenText text="문자를 보고" boldChars={["문자"]} />
       <GreenText text="알려주세요" boldChars={[]} />
-      <NumberPad value={smsCode} onChange={setSmsCode} maxLength={4} />
-      <YellowButton height={50} width={200} onClick={onVerifySms}>
-        인증하기
-      </YellowButton>
+      <input
+        type="text"
+        value={smsCode}
+        onChange={handleInputChange}
+        className="input-field"
+      />
     </>
   );
 };

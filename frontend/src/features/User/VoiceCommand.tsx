@@ -12,7 +12,7 @@ import {
   verificationCodeCheck,
 } from "../../services/api";
 import { sendToNLP } from "../../services/nlpApi";
-import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3"
+import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 const VoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -125,10 +125,10 @@ const VoiceCommand: React.FC = () => {
         handleSmsCodeInput(text);
         break;
       case SignUpStep.UserPassword:
-        handlePasswordInput(text);
+        // handlePasswordInput(text);
         break;
       case SignUpStep.ConfirmPassword:
-        handleConfirmPasswordInput(text);
+        // handleConfirmPasswordInput(text);
         break;
       case SignUpStep.StartFaceRecognition:
         if (lowerCaseTranscript.includes("시작")) {
@@ -195,6 +195,7 @@ const VoiceCommand: React.FC = () => {
       case SignUpStep.UserPhone:
         setPhone("");
         setPreviousPhone("");
+        resetTranscript();
         break;
       case SignUpStep.SmsVerification:
         setSmsCode("");
@@ -220,7 +221,11 @@ const VoiceCommand: React.FC = () => {
       case SignUpStep.UserPhone:
         setPhone(phone.slice(0, -1));
         setPreviousPhone(phone.slice(0, -1));
+        resetTranscript();
         break;
+      // setPhone(phone.slice(0, -1));
+      // setPreviousPhone(phone.slice(0, -1));
+      // break;
       case SignUpStep.SmsVerification:
         setSmsCode(smsCode.slice(0, -1));
         setPreviousSmsCode(smsCode.slice(0, -1));
@@ -259,11 +264,30 @@ const VoiceCommand: React.FC = () => {
   };
 
   const handlePhoneInput = (text: string) => {
-    const phoneMatch = text.match(/\d+/g);
-    if (phoneMatch) {
-      const newPhone = previousPhone + phoneMatch.join("");
+    const lowerCaseText = text.toLowerCase();
+
+    // 숫자 입력 처리
+    const phoneNumberMatch = text.match(/\d+/g);
+    if (phoneNumberMatch) {
+      // const newPhone = previousPhone + phoneNumberMatch.join("");
+      // console.log("new phone: ", newPhone);
+      setPhone(previousPhone + phoneNumberMatch.join(""));
+      // setPreviousPhone(newPhone);
+    }
+
+    // "다 지워" 명령어 처리
+    if (lowerCaseText.includes("다 지워")) {
+      setPhone("");
+      setPreviousPhone("");
+      resetTranscript();
+    }
+
+    // "하나 지워" 명령어 처리
+    if (lowerCaseText.includes("하나 지워")) {
+      const newPhone = phone.slice(0, -1);
       setPhone(newPhone);
       setPreviousPhone(newPhone);
+      resetTranscript();
     }
   };
 

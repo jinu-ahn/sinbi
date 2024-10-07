@@ -11,8 +11,10 @@ import useUserStore from '../useUserStore';
 // }
 
 const UserNameStep: React.FC = () => {
-  const { name } = useUserStore();
-
+  const { name,setName, error } = useUserStore();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
   // 오디오말하기
   const audio = new Audio(SayName);
 
@@ -30,11 +32,17 @@ const UserNameStep: React.FC = () => {
 
   return (
     <>
+    {/* 아무것도 입력안하고 넘어가려고 하면 에러페이지 띄움 */}
+    {error && (
+        <p className="mt-4 text-center text-[25px] font-bold text-red-500">
+          {error}
+        </p>
+      )}
       <GreenText text="이름을 알려주세요." boldChars={["이름"]} />
       <input
         type="text"
         value={name}
-        readOnly 
+        onChange={handleInputChange}
         // onChange={(e) => setName(e.target.value)}
         className="input-field"
       />

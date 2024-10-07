@@ -72,7 +72,7 @@ const SignUp: React.FC = () => {
       }
       // What: 자동 로그인 시도
       // Why: 사용자 경험 개선을 위해 저장된 정보로 자동 로그인
-      const response = await login({ phone: storedPhone});
+      const response = await login({ phone: storedPhone });
       if (response.status === "SUCCESS") {
         navigate("/main"); // 메인 페이지로 이동
       } else {
@@ -195,46 +195,21 @@ const SignUp: React.FC = () => {
       case SignUpStep.UserName:
         return <UserNameStep />;
       case SignUpStep.UserPhone:
-        return (
-          <UserPhoneStep
-            phone={phone}
-            setPhone={setPhone}
-            onSendSms={handleSendSms}
-          />
-        );
+        return <UserPhoneStep />;
 
       case SignUpStep.SmsVerification:
-        return (
-          <SmsVerificationStep
-            smsCode={smsCode}
-            setSmsCode={setSmsCode}
-            onVerifySms={handleVerifySms}
-          />
-        );
+        return <SmsVerificationStep />;
       case SignUpStep.UserPassword:
-        return (
-          <UserPasswordStep
-            password={password}
-            setPassword={setPassword}
-            onNext={() => nextStep()}
-            error={error}
-          />
-        );
+        return <UserPasswordStep />;
 
       case SignUpStep.ConfirmPassword:
-        return (
-          <ConfirmPasswordStep
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            onConfirm={handlePasswordConfirmation}
-          />
-        );
+        return <ConfirmPasswordStep />;
       case SignUpStep.StartFaceRecognition:
-        return <StartFaceRecognitionStep onStart={nextStep} />;
+        return <StartFaceRecognitionStep />;
       case SignUpStep.FaceRecognitionInProgress:
-        return <FaceRecognitionStep onComplete={() => nextStep()} />;
+        return <FaceRecognitionStep />;
       case SignUpStep.FaceRecognitionComplete:
-        return <FaceRecognitionCompleteStep onComplete={handleSignUp} />;
+        return <FaceRecognitionCompleteStep />;
       case SignUpStep.SignUpComplete:
         return <SignUpCompleteStep />;
       case SignUpStep.Login:
