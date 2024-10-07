@@ -39,16 +39,14 @@ const VoiceCommand: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
   useEffect(() => {
-    if (isListening) {
-      SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    } else {
-      SpeechRecognition.stopListening();
-    }
+    SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
     return () => {
       SpeechRecognition.stopListening();
     };
-  }, [isListening]);
+  }, []);
+
 
   useEffect(() => {
     handleVoiceCommand(transcript);
