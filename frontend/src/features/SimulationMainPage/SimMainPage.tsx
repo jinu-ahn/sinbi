@@ -6,9 +6,9 @@ import SimMainVoiceCommand from "./SimMainVoiceCommand";
 import { useSimMainStore } from "./SimMainStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
-import sayConnectAccount from "../../assets/audio/10_통장_등록이라고_말해주세요.mp3";
-import sayMyAccounts from "../../assets/audio/36_모든_통장이라고_말해주세요.mp3";
-import saySendMoney from "../../assets/audio/19_돈_보내기라고_말해주세요.mp3";
+import sayConnectAccount from "../../assets/audio/10_'통장_등록'이라고_말하거나_눌러주세요.mp3";
+import sayMyAccounts from "../../assets/audio/36_'모든_통장'이라고_말하거나_눌러주세요.mp3";
+import saySendMoney from "../../assets/audio/19_'돈_보내기'라고_말하거나_눌러주세요.mp3";
 
 interface ButtonConfig {
   text: string[];
@@ -39,12 +39,12 @@ const SimMainPage: React.FC = () => {
   // step 1 : 통장 등록
   // step 2 : 내 통장들 목록 보기
   // step 3 : 돈 보내기 (+ 즐겨찾기에서 돈 보내기)
-  const stepOneText = '"통장 등록"\n이라고\n말해보세요.';
-  const stepOneBoldChars = ["통장 등록", "말"];
-  const stepTwoText = '"모든 통장"\n이라고\n말해보세요.';
-  const stepTwoBoldChars = ["모든 통장", "말"];
-  const stepThreeText = '"돈 보내기"\n이라고\n말해보세요.';
-  const stepThreeBoldChars = ["돈 보내기", "말"];
+  const stepOneText = '"통장 등록"\n이라고\n말하거나\n눌러주세요.';
+  const stepOneBoldChars = ["통장 등록", "말", "눌러"];
+  const stepTwoText = '"모든 통장"\n이라고\n말하거나\n눌러주세요.';
+  const stepTwoBoldChars = ["모든 통장", "말", "눌러"];
+  const stepThreeText = '"돈 보내기"\n이라고\n말하거나\n눌러주세요.';
+  const stepThreeBoldChars = ["돈 보내기", "말", "눌러"];
 
   // 오디오 파일
   const sayConnectAccountAudio = new Audio(sayConnectAccount);

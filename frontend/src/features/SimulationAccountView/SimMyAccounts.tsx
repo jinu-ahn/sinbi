@@ -46,7 +46,7 @@ interface Account {
   amount: number;
 }
 
-const SimMyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
+const SimMyAccounts: React.FC = () => {
   // 내 계좌 목록 저장할것 가져오기
   const {
     accounts,
@@ -78,7 +78,7 @@ const SimMyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await myAccounts(userId);
+        const response = await myAccounts();
         // response.data가 배열이면
         if (Array.isArray(response.data)) {
           console.log(response.data);
@@ -92,7 +92,7 @@ const SimMyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
       }
     };
     fetchAccounts();
-  }, [userId]);
+  }, []);
 
   // 클릭하면 계좌 상세 페이지로 이동
   const handleAccountClick = (account: Account) => {
