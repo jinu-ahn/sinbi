@@ -170,6 +170,8 @@
 
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> 
 <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white">
+<img src="https://img.shields.io/badge/Zustand-5D3FD3?style=for-the-badge&logo=zustand&logoColor=white">
+
 ---
 ### 🌚 [BE]
 
@@ -196,11 +198,12 @@
 <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
 <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 <img src="https://img.shields.io/badge/Ingress%20Controller-000000?style=for-the-badge&logo=nginx&logoColor=white">
-
+<img src="https://img.shields.io/badge/Argo-EB6A00?style=for-the-badge&logo=argo&logoColor=white">
+<img src="https://img.shields.io/badge/Google%20Kubernetes%20Engine-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white">
 
 
 ## 🌝[기술]
-![사용된 기술](README_asset/사용된%20기술.PNG)
+![사용된 기술](README_asset/기술.PNG)
 
 **[ BACK END ]**
 
@@ -218,6 +221,7 @@
 - **TypeScript** : JavaScript의 슈퍼셋으로, 정적 타입을 사용해 더 안정적이고 유지보수하기 쉬운 코드를 작성.
 - **Three.js** : WebGL을 사용하여 3D 그래픽과 애니메이션을 구현하는 JavaScript 라이브러리.
 - **PWA (Progressive Web App)** : 매니페스트 파일을 이용하여 사용자가 웹 앱을 모바일 기기에 설치할 수 있도록 지원.
+- **Zustand** : 경량 상태 관리 라이브러리로, React 애플리케이션에서의 전역 상태 관리를 간편하게 지원.
 
 **[ INFRA ]**
 - **Kubernetes(K8S)** : 컨테이너 오케스트레이션을 통해 애플리케이션의 배포, 확장 및 관리를 자동화하여 서비스의 신뢰성과 확장성을 높임.
@@ -230,6 +234,8 @@
 - **GitLab** : 코드 버전 관리와 협업을 위한 Git 저장소로 사용, CI/CD 파이프라인 구축에 활용.
 - **Gradle** : 프로젝트 빌드 및 의존성 관리를 통해 백엔드 애플리케이션의 효율적인 빌드 프로세스 제공.
 - **Redis** : 인메모리 데이터 저장소로, 캐싱을 통해 데이터 조회 속도를 향상시키고 세션 관리와 메시지 큐 등에 사용하여 시스템 성능 최적화.
+- **Google Kubernetes Engine (GKE)** : Google Cloud에서 Kubernetes 클러스터를 관리하고 배포할 수 있는 서비스로, 인프라의 안정성과 확장성을 지원.
+- **Argo** : Kubernetes 클러스터에서 워크플로우를 자동화하고 관리하는 도구로, CI/CD 및 배포 파이프라인 구축에 활용.
 
 **[ TEAM Cooperation ]**
 
