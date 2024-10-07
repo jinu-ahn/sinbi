@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import useUserStore from "./useUserStore";
 import { SignUpStep } from "./User.types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   login,
   sendPhoneNumber,
@@ -12,9 +12,11 @@ import {
   verificationCodeCheck,
 } from "../../services/api";
 import { sendToNLP } from "../../services/nlpApi";
-
+import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3"
 const VoiceCommand: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const {
     currentStep,
     name,
@@ -23,6 +25,7 @@ const VoiceCommand: React.FC = () => {
     password,
     confirmPassword,
     faceImage,
+    // error,
     setName,
     setPhone,
     setSmsCode,
@@ -32,167 +35,204 @@ const VoiceCommand: React.FC = () => {
     nextStep,
     prevStep,
     setStep,
+    setError,
   } = useUserStore();
 
-  const [error, setError] = useState<string | null>(null);
   const { transcript, resetTranscript } = useSpeechRecognition();
-  const [isListening, setIsListening] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // const [isListening, setIsListening] = useState(false);
+  // const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [previousName, setPreviousName] = useState(name);
+  const [previousPhone, setPreviousPhone] = useState(phone);
+  const [previousSmsCode, setPreviousSmsCode] = useState(smsCode);
+  const [previousPassword, setPreviousPassword] = useState(password);
+  const [previousConfirmPassword, setPreviousConfirmPassword] =
+    useState(confirmPassword);
+
+  const playAudio = (audioFile: string) => {
+    const audio = new Audio(audioFile);
+    audio.play();
+  };
 
   // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
-  }, []);
-
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
+  }, [location]);
 
   useEffect(() => {
-    handleVoiceCommand(transcript);
+    handleVoiceCommands(transcript);
+    console.log(transcript);
   }, [transcript]);
 
-  const handleUserName = (command: string) => {
-    setName(command.trim());
-  };
+  const handleVoiceCommands = (text: string) => {
+    const lowerCaseTranscript = text.toLowerCase();
 
-  const handleUserPhone = (command: string) => {
-    const phoneNumber = command.replace(/[^0-9]/g, "");
-    setPhone(phoneNumber);
-  };
-
-  const handleSmsVerification = (command: string) => {
-    const smsCodeNumber = command.replace(/[^0-9]/g, "");
-    setSmsCode(smsCodeNumber);
-  };
-
-  const handlePassword = (command: string, isConfirmation: boolean) => {
-    const passwordNumber = command.replace(/[^0-9]/g, "");
-    if (isConfirmation) {
-      setConfirmPassword(passwordNumber);
-    } else {
-      setPassword(passwordNumber);
-    }
-  };
-
-  const handleVoiceCommand = async (command: string) => {
-    const lowerCommand = command.toLowerCase();
-
-    // 공통 명령어
-    if (lowerCommand.includes("다음") || lowerCommand.includes("넘어가")) {
-      await handleNext();
+    if (lowerCaseTranscript.includes("다 지워")) {
+      resetCurrentField();
       resetTranscript();
       return;
     }
-    if (lowerCommand.includes("이전") || lowerCommand.includes("뒤로")) {
+
+    if (lowerCaseTranscript.includes("하나 지워")) {
+      removeLastCharacter();
+      resetTranscript();
+      return;
+    }
+
+    if (
+      lowerCaseTranscript.includes("다음") ||
+      lowerCaseTranscript.includes("넘어가")
+    ) {
+      handleNext();
+      resetTranscript();
+      return;
+    }
+
+    if (
+      lowerCaseTranscript.includes("뒤로가") ||
+      lowerCaseTranscript.includes("이전")
+    ) {
       prevStep();
       resetTranscript();
       return;
     }
+
     if (
-      lowerCommand.includes("집") ||
-      lowerCommand.includes("시작 화면") ||
-      lowerCommand.includes("처음")
+      lowerCaseTranscript.includes("신비야") ||
+      lowerCaseTranscript.includes("도와줘")
     ) {
-      handleResetAndNavigateHome();
+      playAudio(sayNext);
+      resetTranscript();
       return;
     }
 
-    // 단계별 명령어 처리
     switch (currentStep) {
       case SignUpStep.Welcome:
-        handleWelcomeStep(lowerCommand);
+        if (lowerCaseTranscript.includes("시작")) {
+          nextStep();
+        }
         break;
       case SignUpStep.UserName:
-        handleUserName(command);
+        handleNameInput(text);
         break;
       case SignUpStep.UserPhone:
-        handleUserPhone(command);
+        handlePhoneInput(text);
         break;
       case SignUpStep.SmsVerification:
-        handleSmsVerification(command);
+        handleSmsCodeInput(text);
         break;
       case SignUpStep.UserPassword:
-        handlePassword(command, false);
+        handlePasswordInput(text);
         break;
       case SignUpStep.ConfirmPassword:
-        handlePassword(command, true);
+        handleConfirmPasswordInput(text);
         break;
       case SignUpStep.StartFaceRecognition:
-        handleStartFaceRecognition(lowerCommand);
+        if (lowerCaseTranscript.includes("시작")) {
+          nextStep();
+        }
         break;
       case SignUpStep.FaceRecognitionInProgress:
-        handleFaceRecognitionInProgress(lowerCommand);
+        if (
+          lowerCaseTranscript.includes("사진") ||
+          lowerCaseTranscript.includes("찍어")
+        ) {
+          // 여기서 카메라를 열고 사진을 찍는 로직을 추가해야 합니다.
+          console.log("사진 찍기 시도");
+        }
         break;
       case SignUpStep.FaceRecognitionComplete:
-        handleFaceRecognitionComplete(lowerCommand);
+        if (lowerCaseTranscript.includes("완료")) {
+          handleSignUp();
+        }
         break;
       case SignUpStep.Login:
-        handleLoginStep(lowerCommand);
+        if (lowerCaseTranscript.includes("로그인")) {
+          handleLogin();
+        }
         break;
-      default:
-        handleDefaultCase(command);
     }
 
-    resetTranscript();
-  };
-
-  const handleResetAndNavigateHome = () => {
-    setName("");
-    setPhone("");
-    setSmsCode("");
-    setPassword("");
-    setConfirmPassword("");
-    setFaceImage(undefined);
-    setStep(SignUpStep.Welcome);
-    navigate("/sim");
-    resetTranscript();
-  };
-
-  const handleWelcomeStep = (lowerCommand: string) => {
-    if (lowerCommand.includes("시작")) {
-      nextStep();
-    }
-  };
-
-  const handleStartFaceRecognition = (lowerCommand: string) => {
-    if (lowerCommand.includes("시작")) {
-      nextStep();
-    }
-  };
-
-  const handleFaceRecognitionInProgress = (lowerCommand: string) => {
-    if (lowerCommand.includes("사진") || lowerCommand.includes("찍어")) {
-      openCamera();
+    if (
+      lowerCaseTranscript.includes("집") ||
+      lowerCaseTranscript.includes("시작 화면") ||
+      lowerCaseTranscript.includes("처음")
+    ) {
+      resetAllFields();
+      setStep(SignUpStep.Welcome);
+      navigate("/");
+      resetTranscript();
+    } else {
+      sendToNLP(transcript)
+        .then((response) => {
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error(
+              "Received an unexpected response from NLP API: ",
+              response,
+            );
+          }
+          resetTranscript();
+        })
+        .catch((error) => {
+          console.error("nlp 보내는데 문제생김: ", error);
+          resetTranscript();
+        });
     }
   };
 
-  const handleFaceRecognitionComplete = async (lowerCommand: string) => {
-    if (lowerCommand.includes("완료")) {
-      await handleSignUp();
+  const resetCurrentField = () => {
+    switch (currentStep) {
+      case SignUpStep.UserName:
+        setName("");
+        setPreviousName("");
+        break;
+      case SignUpStep.UserPhone:
+        setPhone("");
+        setPreviousPhone("");
+        break;
+      case SignUpStep.SmsVerification:
+        setSmsCode("");
+        setPreviousSmsCode("");
+        break;
+      case SignUpStep.UserPassword:
+        setPassword("");
+        setPreviousPassword("");
+        break;
+      case SignUpStep.ConfirmPassword:
+        setConfirmPassword("");
+        setPreviousConfirmPassword("");
+        break;
     }
   };
 
-  const handleLoginStep = async (lowerCommand: string) => {
-    if (lowerCommand.includes("로그인")) {
-      await handleLogin();
-    }
-  };
-
-  const handleDefaultCase = async (command: string) => {
-    try {
-      const response = await sendToNLP(command);
-      if (response && response.text) {
-        console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-        await handleVoiceCommand(response.text);
-      } else {
-        console.error(
-          "Received an unexpected response from NLP API: ",
-          response,
-        );
-      }
-    } catch (error) {
-      console.error("nlp 보내는데 문제생김: ", error);
+  const removeLastCharacter = () => {
+    switch (currentStep) {
+      case SignUpStep.UserName:
+        setName(name.slice(0, -1));
+        setPreviousName(name.slice(0, -1));
+        break;
+      case SignUpStep.UserPhone:
+        setPhone(phone.slice(0, -1));
+        setPreviousPhone(phone.slice(0, -1));
+        break;
+      case SignUpStep.SmsVerification:
+        setSmsCode(smsCode.slice(0, -1));
+        setPreviousSmsCode(smsCode.slice(0, -1));
+        break;
+      case SignUpStep.UserPassword:
+        setPassword(password.slice(0, -1));
+        setPreviousPassword(password.slice(0, -1));
+        break;
+      case SignUpStep.ConfirmPassword:
+        setConfirmPassword(confirmPassword.slice(0, -1));
+        setPreviousConfirmPassword(confirmPassword.slice(0, -1));
+        break;
     }
   };
 
@@ -212,17 +252,61 @@ const VoiceCommand: React.FC = () => {
     }
   };
 
+  const handleNameInput = (text: string) => {
+    const newName = previousName + text.trim();
+    setName(newName);
+    setPreviousName(newName);
+  };
+
+  const handlePhoneInput = (text: string) => {
+    const phoneMatch = text.match(/\d+/g);
+    if (phoneMatch) {
+      const newPhone = previousPhone + phoneMatch.join("");
+      setPhone(newPhone);
+      setPreviousPhone(newPhone);
+    }
+  };
+
+  const handleSmsCodeInput = (text: string) => {
+    const smsCodeMatch = text.match(/\d+/g);
+    if (smsCodeMatch) {
+      const newSmsCode = previousSmsCode + smsCodeMatch.join("");
+      setSmsCode(newSmsCode);
+      setPreviousSmsCode(newSmsCode);
+    }
+  };
+
+  const handlePasswordInput = (text: string) => {
+    const passwordMatch = text.match(/\d+/g);
+    if (passwordMatch) {
+      const newPassword = previousPassword + passwordMatch.join("");
+      setPassword(newPassword);
+      setPreviousPassword(newPassword);
+    }
+  };
+
+  const handleConfirmPasswordInput = (text: string) => {
+    const confirmPasswordMatch = text.match(/\d+/g);
+    if (confirmPasswordMatch) {
+      const newConfirmPassword =
+        previousConfirmPassword + confirmPasswordMatch.join("");
+      setConfirmPassword(newConfirmPassword);
+      setPreviousConfirmPassword(newConfirmPassword);
+    }
+  };
+
   const handleSendSms = async () => {
     try {
       await sendPhoneNumber(phone);
       setError(null);
       nextStep();
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof Error) {
-        setError(`SMS 전송에 실패했습니다: ${error.message}`);
+        setError(`sms 전송 중 오류가 발생했습니다: ${error.message}`);
       } else {
-        setError("SMS 전송에 실패했습니다. 다시 시도해주세요.");
+        setError("sms 전송 중 알 수 없는 오류가 발생했습니다.");
       }
+      return false;
     }
   };
 
@@ -235,12 +319,13 @@ const VoiceCommand: React.FC = () => {
       } else {
         setError("인증 코드가 일치하지 않습니다. 다시 시도해주세요.");
       }
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof Error) {
-        setError(`SMS 인증에 실패했습니다: ${error.message}`);
+        setError(`SMS 인증 중 오류가 발생했습니다: ${error.message}`);
       } else {
-        setError("SMS 인증에 실패했습니다. 다시 시도해주세요.");
+        setError("SMS 인증 중 알 수 없는 오류가 발생했습니다.");
       }
+      return false;
     }
   };
 
@@ -250,6 +335,8 @@ const VoiceCommand: React.FC = () => {
       setStep(SignUpStep.UserPassword);
       setPassword("");
       setConfirmPassword("");
+      setPreviousPassword("");
+      setPreviousConfirmPassword("");
     } else {
       nextStep();
     }
@@ -263,13 +350,14 @@ const VoiceCommand: React.FC = () => {
         userPassword: password,
       };
       await signup(signUpData, faceImage);
-      nextStep();
-    } catch (error: unknown) {
+      setStep(SignUpStep.SignUpComplete);
+    } catch (error) {
       if (error instanceof Error) {
-        setError(`SMS 전송에 실패했습니다: ${error.message}`);
+        setError(`회원가입에 실패했습니다: ${error.message}`);
       } else {
-        setError("SMS 전송에 실패했습니다. 다시 시도해주세요.");
+        setError("회원가입 중 알 수 없는 오류가 발생했습니다.");
       }
+      return false;
     }
   };
 
@@ -285,45 +373,32 @@ const VoiceCommand: React.FC = () => {
       } else {
         setError("로그인에 실패했습니다. 다시 시도해주세요.");
       }
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof Error) {
         setError(`로그인에 실패했습니다: ${error.message}`);
       } else {
-        setError("로그인에 실패했습니다. 다시 시도해주세요.");
+        setError("로그인 중 알 수 없는 오류가 발생했습니다.");
       }
+      return false;
     }
   };
 
-  const openCamera = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+  const resetAllFields = () => {
+    setName("");
+    setPhone("");
+    setSmsCode("");
+    setPassword("");
+    setConfirmPassword("");
+    setFaceImage(undefined);
+    setPreviousName("");
+    setPreviousPhone("");
+    setPreviousSmsCode("");
+    setPreviousPassword("");
+    setPreviousConfirmPassword("");
+    setError(null);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setFaceImage(file);
-      nextStep();
-    }
-  };
-
-  return (
-    <div>
-      <button onClick={() => setIsListening(!isListening)}>
-        {isListening ? "음성 인식 중지" : "음성 인식 시작"}
-      </button>
-      {error && <p>{error}</p>}
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        className="hidden"
-        ref={fileInputRef}
-        capture="user"
-      />
-    </div>
-  );
+  return <div />;
 };
 
 export default VoiceCommand;

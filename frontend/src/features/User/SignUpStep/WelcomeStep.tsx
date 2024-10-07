@@ -1,9 +1,8 @@
 // src/components/signup/WelcomeStep.tsx
-import React, { useEffect } from 'react';
-import GreenText from "../../../components/GreenText" 
-import StartSignUpWithSinbi from "../../../assets/audio/55_안녕하세요_저는_신비예요_같이_회원가입을_해_볼까요.mp3"
+import React, { useEffect } from "react";
+import GreenText from "../../../components/GreenText";
+import StartSignUpWithSinbi from "../../../assets/audio/55_안녕하세요_저는_신비예요_같이_회원가입을_해_볼까요.mp3";
 // import useUserStore from '../useUserStore';
-
 
 const WelcomeStep: React.FC = () => {
   // const { nextStep } = useUserStore();
@@ -18,10 +17,8 @@ const WelcomeStep: React.FC = () => {
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
-      if (!audio.paused) {
-        audio.pause();
-        audio.currentTime = 0;
-      }
+      audio.pause();
+      audio.currentTime = 0;
     };
   }, []);
 
