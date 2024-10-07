@@ -5,6 +5,8 @@ import SpeechRecognition, {
 import { useNavigate } from "react-router-dom";
 import { useSimTransferStore } from "./SimTransferStore";
 
+import { sendToNLP } from "../../services/nlpApi";
+
 // 목소리 오디오
 import pickMyBankAccount from "../../assets/audio/22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3";
 import sendToWho from "../../assets/audio/31_누구에게_보낼지_말하거나_눌러주세요_없으면_새로운_계좌라고_말하세요.mp3";
@@ -508,21 +510,22 @@ const SimTransferVoiceCommand: React.FC = () => {
       navigate("/main");
       resetTranscript();
     }
-    // } else {
-    //   sendToNLP(transcript)
-    //     .then((response) => {
-    //       console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-    //       handleVoiceCommands(response.text);
-    //       // resetTranscript();
-    //     })
-    //     .catch((error) => {
-    //       console.error("nlp 보내는데 문제생김: ", error);
-    //       // resetTranscript();
-    //     })
-    //     .finally(() => {
-    //       resetTranscript();
-    //     });
-    // }
+    else {
+      sendToNLP(transcript)
+        .then((response) => {
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
+        })
+        .catch((error) => {
+          console.error("nlp 보내는데 문제생김: ", error);
+          resetTranscript();
+        });
+    }
   };
 
   return <div />;

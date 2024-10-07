@@ -55,18 +55,20 @@ const SimAccountViewVoiceCommand: React.FC = () => {
       setMainStep(3);
       navigate("/sim");
       resetTranscript();
-    } else {
+    } 
+    else {
       sendToNLP(transcript)
         .then((response) => {
-          console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-          handleVoiceCommands(response.text);
-          // resetTranscript();
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
         })
         .catch((error) => {
           console.error("nlp 보내는데 문제생김: ", error);
-          // resetTranscript();
-        })
-        .finally(() => {
           resetTranscript();
         });
     }
