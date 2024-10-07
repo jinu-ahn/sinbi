@@ -10,7 +10,7 @@ import {
   verificationCodeCheck,
 } from "../../services/api";
 
-// import { sendToNLP } from "../../services/nlpApi";
+import { sendToNLP } from "../../services/nlpApi";
 
 // 목소리
 // import sayAccountNumber from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
@@ -342,21 +342,22 @@ const SimConnectAccountVoiceCommand: React.FC = () => {
       navigate("/sim");
       resetTranscript();
     }
-    // } else {
-    //   sendToNLP(transcript)
-    //     .then((response) => {
-    //       console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-    //       handleVoiceCommands(response.text);
-    //       // resetTranscript();
-    //     })
-    //     .catch((error) => {
-    //       console.error("nlp 보내는데 문제생김: ", error);
-    //       // resetTranscript();
-    //     })
-    //     .finally(() => {
-    //       resetTranscript();
-    //     });
-    // }
+    else {
+      sendToNLP(transcript)
+        .then((response) => {
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
+        })
+        .catch((error) => {
+          console.error("nlp 보내는데 문제생김: ", error);
+          resetTranscript();
+        });
+    }
   };
 
   return <div />;
