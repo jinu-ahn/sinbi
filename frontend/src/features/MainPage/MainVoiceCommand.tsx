@@ -3,14 +3,17 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useNavigate, useLocation } from "react-router-dom";
+import { sendToNLP } from "../../services/nlpApi";
+
 import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3"
 
 const MainVoiceCommand: React.FC = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
   const { transcript, resetTranscript } = useSpeechRecognition();
 
-  //   한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
+  // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
     return () => {
@@ -27,11 +30,11 @@ const MainVoiceCommand: React.FC = () => {
 
   useEffect(() => {
     handleVoiceCommands(transcript);
-    console.log(transcript);
+    console.log("사용자가 한 말: ", transcript);
   }, [transcript]);
 
-  const handleVoiceCommands = (transcript: string) => {
-    const lowerCaseTranscript = transcript.toLowerCase();
+  const handleVoiceCommands = (text: string) => {
+    const lowerCaseTranscript = text.toLowerCase();
 
     // 계좌 관련 명령어
     if (
@@ -75,6 +78,21 @@ const MainVoiceCommand: React.FC = () => {
     ) {
       playAudio(chooseFunction);
       resetTranscript();
+    }
+    else {
+      sendToNLP(transcript)
+      .then((response) => {
+        console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text)
+        handleVoiceCommands(response.text)
+        // resetTranscript();
+      })
+      .catch((error) => {
+        console.error("nlp 보내는데 문제생김: ", error)
+        // resetTranscript();
+      })
+      .finally(() => {
+        resetTranscript();
+      })
     }
   };
 

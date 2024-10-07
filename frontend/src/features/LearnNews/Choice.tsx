@@ -10,7 +10,7 @@ const HomeIcon: React.FC = () => {
 
   return (
     <button 
-      onClick={() => navigate('/main')}
+      onClick={() => navigate('/')}
       className="flex h-20 w-20 items-center justify-center rounded-lg bg-yellow-400 hover:bg-yellow-500 transition-colors duration-200"
     >
       <div className="text-2xl font-bold">

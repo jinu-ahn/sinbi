@@ -4,6 +4,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAccountViewStore } from "./AccountViewStore";
+import { sendToNLP } from "../../services/nlpApi";
 
 
 const AccountViewVoiceCommand: React.FC = () => {
@@ -32,8 +33,8 @@ const AccountViewVoiceCommand: React.FC = () => {
   }, [transcript]);
 
   // transcript 전부 lowercase로 바꿔 (include로 키워드 찾을때 안걸리는 애들이 없도록 - 근데 사실 우린 한국어라 필요없긴해...)
-  const handleVoiceCommands = (transcript: string) => {
-    const lowerCaseTranscript = transcript.toLowerCase();
+  const handleVoiceCommands = (text: string) => {
+    const lowerCaseTranscript = text.toLowerCase();
 
     // 일단 통장 이름을 불러서 상세 계좌 조회로 들어가는 로직은 없음!!!
     if (
@@ -51,6 +52,21 @@ const AccountViewVoiceCommand: React.FC = () => {
     ) {
       navigate("/");
       resetTranscript();
+    }
+    else {
+      sendToNLP(transcript)
+      .then((response) => {
+        console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text)
+        handleVoiceCommands(response.text)
+        // resetTranscript();
+      })
+      .catch((error) => {
+        console.error("nlp 보내는데 문제생김: ", error)
+        // resetTranscript();
+      })
+      .finally(() => {
+        resetTranscript();
+      })
     }
   };
 
