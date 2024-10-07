@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import YellowButton from "../../components/YellowButton";
 import avatar from "../../assets/avatar.png";
 import MainVoiceCommand from "./MainVoiceCommand";
 // import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
 import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
+import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
 
 interface ButtonConfig {
   text: string[];
@@ -52,6 +53,25 @@ const MainPage: React.FC = () => {
 
   const [buttonSize, setButtonSize] = React.useState(getButtonSize());
 
+  // 오디오말하기
+  const audio = new Audio(chooseFunction);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    if (!showModal) {
+      // 플레이시켜
+      audio.play();
+    }
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, [showModal]);
+
   React.useEffect(() => {
     const handleResize = () => {
       setButtonSize(getButtonSize());
@@ -60,7 +80,6 @@ const MainPage: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-between py-8">

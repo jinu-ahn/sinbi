@@ -9,6 +9,7 @@ import {
   sendMoney,
   addFavorite,
 } from "../../services/api";
+import { sendToNLP } from "../../services/nlpApi";
 
 // 목소리 오디오
 import pickMyBankAccount from "../../assets/audio/22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3";
@@ -72,8 +73,8 @@ const TransferVoiceCommand: React.FC = () => {
   }, [transcript]);
 
   // transcript 전부 lowercase로 바꿔 (include로 키워드 찾을때 안걸리는 애들이 없도록 - 근데 사실 우린 한국어라 필요없긴해...)
-  const handleVoiceCommands = (transcript: string) => {
-    const lowerCaseTranscript = transcript.toLowerCase();
+  const handleVoiceCommands = (text: string) => {
+    const lowerCaseTranscript = text.toLowerCase();
 
     // step 0 : 내 통장 목록 띄우기
     // step 1 : 즐겨찾는 계좌 목록 띄우기
@@ -468,7 +469,7 @@ const TransferVoiceCommand: React.FC = () => {
       if (lowerCaseTranscript.includes("응")) {
         setNickName("");
         resetTranscript();
-        navigate("/");
+        navigate("/main");
       }
     }
 
@@ -479,8 +480,24 @@ const TransferVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("처음")
     ) {
       setStep(0);
-      navigate("/");
+      navigate("/main");
       resetTranscript();
+    } 
+    else {
+      sendToNLP(transcript)
+        .then((response) => {
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
+        })
+        .catch((error) => {
+          console.error("nlp 보내는데 문제생김: ", error);
+          resetTranscript();
+        });
     }
   };
 

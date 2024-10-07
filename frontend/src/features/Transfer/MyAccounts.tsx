@@ -42,7 +42,7 @@ interface Account {
   amount: number;
 }
 
-const MyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
+const MyAccounts: React.FC = () => {
   // 내 계좌 목록 저장할것 가져오기
   const { step, setStep, error, setMyAccountId, setAccounts, accounts } =
     useTransferStore();
@@ -51,7 +51,7 @@ const MyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await myAccounts(userId);
+        const response = await myAccounts();
         // response.data가 배열이면
         if (Array.isArray(response.data)) {
           console.log(response.data);
@@ -65,7 +65,7 @@ const MyAccounts: React.FC<{ userId: number }> = ({ userId }) => {
       }
     };
     fetchAccounts();
-  }, [userId]);
+  }, []);
 
   // 오디오말하기
   const audio = new Audio(pickMyBankAccount);

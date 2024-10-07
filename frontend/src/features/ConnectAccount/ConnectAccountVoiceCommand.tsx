@@ -10,9 +10,11 @@ import {
   verificationCodeCheck,
 } from "../../services/api";
 
+import { sendToNLP } from "../../services/nlpApi";
+
 // 목소리
 // import sayAccountNumber from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
-import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3"
+import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 
 const ConnectAccountVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
@@ -61,8 +63,8 @@ const ConnectAccountVoiceCommand: React.FC = () => {
   }, [transcript]);
 
   // transcript 전부 lowercase로 바꿔 (include로 키워드 찾을때 안걸리는 애들이 없도록 - 근데 사실 우린 한국어라 필요없긴해...)
-  const handleVoiceCommands = (transcript: string) => {
-    const lowerCaseTranscript = transcript.toLowerCase();
+  const handleVoiceCommands = (text: string) => {
+    const lowerCaseTranscript = text.toLowerCase();
 
     // step 0 : 계좌번호 받기
 
@@ -204,7 +206,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
         lowerCaseTranscript.includes("뒤로가") ||
         lowerCaseTranscript.includes("이전")
       ) {
-        setError(null)
+        setError(null);
         setStep(step - 1);
         resetTranscript();
       }
@@ -331,14 +333,30 @@ const ConnectAccountVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("시작 화면") ||
       lowerCaseTranscript.includes("처음")
     ) {
-      setAccountNum("")
-      setBankType("")
-      setError("")
-      setPhoneNum("")
-      setVerificationCode("")
-      setStep(0)
-      navigate("/");
+      setAccountNum("");
+      setBankType("");
+      setError("");
+      setPhoneNum("");
+      setVerificationCode("");
+      setStep(0);
+      navigate("/main");
       resetTranscript();
+    } 
+    else {
+      sendToNLP(transcript)
+        .then((response) => {
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
+        })
+        .catch((error) => {
+          console.error("nlp 보내는데 문제생김: ", error);
+          resetTranscript();
+        });
     }
   };
 

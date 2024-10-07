@@ -1,14 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
+import { registerAccount } from "../../services/api";
+import GreenText from "../../components/GreenText";
 
 import accountDone from "../../assets/audio/17_통장_등록이_끝났어요_첫_화면으로_갈게요.mp3";
+import accountNotDone from "../../assets/audio/79_통장_등록을_하지_못했어요_이미_연결하신_계좌인지_확인해보세요.mp3"; // Import error audio
 
 const AccountConfirm: React.FC = () => {
-  const { bankType, accountNum, setAccountNum, setBankType, setError, setPhoneNum, setVerificationCode } = useConnectAccountStore();
+  const {
+    bankType,
+    accountNum,
+    setAccountNum,
+    setBankType,
+    setError,
+    setPhoneNum,
+    setVerificationCode,
+  } = useConnectAccountStore();
+  
+  const [registrationError, setRegistrationError] = useState(false); // Manage error state
+
   const banks = [
     { id: "IBK", name: "IBK기업은행", logo: bankLogos["IBK기업은행"] },
     { id: "KB", name: "국민은행", logo: bankLogos["KB국민은행"] },
@@ -38,42 +52,50 @@ const AccountConfirm: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
+  const errorText = '통장 등록을 하지 못했어요. 이미 연결하신 통장이 아닌지 확인해보세요.';
+  const errorBoldChars = ["못했어요", "이미 연결", "확인"];
+
   const selectedBank = banks.find((bank) => bank.id === bankType) || {
     id: "BASIC",
     name: "기본은행",
     logo: defaultBankLogo,
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-    // 오디오말하기
-    const audio = new Audio(accountDone);
+  // 오디오말하기
+  const successAudio = new Audio(accountDone);
+  const errorAudio = new Audio(accountNotDone); // Create an audio object for error case
 
-    // 오디오 플레이 (component가 mount될때만)
-    useEffect(() => {
-      // 플레이시켜
-      audio.play();
-  
-      // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
-      return () => {
-        if (!audio.paused) {
-          audio.pause();
-          audio.currentTime = 0;
-        }
-      };
-    }, []);
+  // 통장 등록
+  useEffect(() => {
+    const registerAccounts = async () => {
+      try {
+        const response = await registerAccount(accountNum, bankType);
+        console.log(accountNum, bankType);
+        console.log(response);
+        setRegistrationError(false); // If successful, ensure error state is false
+        successAudio.play(); // Play success audio
+      } catch (err) {
+        console.error("Error fetching account data: ", err);
+        setRegistrationError(true); // Set error state to true on failure
+        errorAudio.play(); // Play error audio
+      }
+    };
+
+    registerAccounts();
+  }, [accountNum, bankType]);
 
   useEffect(() => {
-    // 3초 뒤에 홈으로 간다
     const timer = setTimeout(() => {
-      navigate("/");
-      setAccountNum("")
-      setBankType("")
-      setError("")
-      setPhoneNum("")
-      setVerificationCode("")
+      navigate("/main");
+      setAccountNum("");
+      setBankType("");
+      setError("");
+      setPhoneNum("");
+      setVerificationCode("");
     }, 3000);
-    // component가 unmount되면 timeout function 중지
+
     return () => clearTimeout(timer);
   }, [navigate]);
 
@@ -83,28 +105,33 @@ const AccountConfirm: React.FC = () => {
         <h1 className="text-center text-[40px]">통장 등록 완료</h1>
       </header>
 
-      <div className="mt-4 flex w-[350px] justify-center">
-        <YellowBox>
-          {/* 은행 로고와 이름 */}
-          <div className="flex items-center space-x-4">
-            {selectedBank && (
-              <>
-                <img
-                  src={selectedBank.logo}
-                  alt={selectedBank.name}
-                  className="h-10 w-10"
-                />
-                <p className="text-[30px] font-bold">{selectedBank.name}</p>
-              </>
-            )}
-          </div>
-
-          {/* 계좌번호 */}
-          <div>
-            <p className="text-[30px] font-bold">{accountNum}</p>
-          </div>
-        </YellowBox>
-      </div>
+      {/* Conditionally render YellowBox if no registration error */}
+      {!registrationError ? (
+        <div className="mt-4 flex w-[350px] justify-center">
+          <YellowBox>
+            <div className="flex items-center space-x-4">
+              {selectedBank && (
+                <>
+                  <img
+                    src={selectedBank.logo}
+                    alt={selectedBank.name}
+                    className="h-10 w-10"
+                  />
+                  <p className="text-[30px] font-bold">{selectedBank.name}</p>
+                </>
+              )}
+            </div>
+            <div>
+              <p className="text-[30px] font-bold">{accountNum}</p>
+            </div>
+          </YellowBox>
+        </div>
+      ) : (
+        // Render GreenText when there is a registration error
+        <div>
+          <GreenText text={errorText} boldChars={errorBoldChars} />
+        </div>
+      )}
     </div>
   );
 };
