@@ -24,16 +24,6 @@ const NumberPad: React.FC<NumberPadProps> = ({
 
   return (
     <div className="number-pad mx-auto max-w-md p-2 mobile-small:p-3 mobile-medium:p-4 mobile-large:p-5">
-      {/* Hidden input field for OTP autofill */}
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        maxLength={maxLength}
-        autoComplete="one-time-code"
-        style={{ opacity: 0, position: "absolute", pointerEvents: "none" }} // Hidden input field
-      />
-
       <div className="password-display mb-4 flex justify-center mobile-medium:mb-5 mobile-large:mb-6">
         {[...Array(maxLength)].map((_, index) => (
           // <div key={index} className={`password-dot ${index < value.length ? 'filled' : ''}`} />
