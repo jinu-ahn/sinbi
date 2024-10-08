@@ -64,7 +64,7 @@ const VoiceCommand: React.FC = () => {
 
   useEffect(() => {
     handleVoiceCommands(transcript);
-    console.log(transcript);
+    console.log("사용자가 하는 말: ", transcript);
   }, [transcript]);
 
   const handleVoiceCommands = (text: string) => {
@@ -113,19 +113,32 @@ const VoiceCommand: React.FC = () => {
       case SignUpStep.Welcome:
         if (lowerCaseTranscript.includes("시작")) {
           nextStep();
+          resetTranscript();
         }
+        // resetTranscript();
         break;
       case SignUpStep.UserName:
-        handleNameInput(text);
+        if (
+          lowerCaseTranscript.includes("어쩌구")
+        ) {
+          console.log("어쩌구라고 함")
+        } else {
+          console.log("transcript: ", transcript)
+          handleNameInput(transcript);
+        }
+        // resetTranscript();
         break;
       case SignUpStep.UserPhone:
         handlePhoneInput(text);
+        // resetTranscript();
         break;
       case SignUpStep.SmsVerification:
         handleSmsCodeInput(text);
+        // resetTranscript();
         break;
       case SignUpStep.UserPassword:
         // handlePasswordInput(text);
+        // resetTranscript();
         break;
       case SignUpStep.ConfirmPassword:
         // handleConfirmPasswordInput(text);
@@ -134,6 +147,7 @@ const VoiceCommand: React.FC = () => {
         } else {
           handleConfirmPasswordInput(text);
         }
+        // resetTranscript();
         break;
       case SignUpStep.StartFaceRecognition:
         if (lowerCaseTranscript.includes("시작")) {
@@ -142,6 +156,7 @@ const VoiceCommand: React.FC = () => {
           handleSignUp();
           setStep(SignUpStep.SignUpComplete);
         }
+        // resetTranscript();
         break;
       case SignUpStep.FaceRecognitionInProgress:
         if (
@@ -151,16 +166,19 @@ const VoiceCommand: React.FC = () => {
           // 여기서 카메라를 열고 사진을 찍는 로직을 추가해야 합니다.
           console.log("사진 찍기 시도");
         }
+        // resetTranscript();
         break;
       case SignUpStep.FaceRecognitionComplete:
         if (lowerCaseTranscript.includes("완료")) {
           handleSignUp();
         }
+        // resetTranscript();
         break;
       case SignUpStep.Login:
         if (lowerCaseTranscript.includes("로그인")) {
           handleLogin();
         }
+        // resetTranscript();
         break;
     }
 
@@ -266,9 +284,9 @@ const VoiceCommand: React.FC = () => {
   };
 
   const handleNameInput = (text: string) => {
-    const newName = previousName + text.trim();
-    setName(newName);
-    setPreviousName(newName);
+    // const newName = previousName + text.trim();
+    setName(text);
+    setPreviousName(text);
   };
 
   const handlePhoneInput = (text: string) => {
