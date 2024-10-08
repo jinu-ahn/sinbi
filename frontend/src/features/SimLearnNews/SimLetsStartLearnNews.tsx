@@ -24,7 +24,7 @@ const SimLetsStartLearnNews: React.FC = () => {
     // 오디오가 끝나고 1초 뒤 자동으로 다음 단계로 이동
     audio.addEventListener("ended", () => {
       timerId = setTimeout(() => {
-        setStep(step + 1)
+        setStep(1)
         setCurrentView("choice");
         setCurrentLearnView("");
         setSelectedCategory(null);
