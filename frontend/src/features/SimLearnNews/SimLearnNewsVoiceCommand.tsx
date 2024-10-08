@@ -2,11 +2,9 @@ import React, { useEffect } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate } from "react-router-dom";
 import { useSimLearnNewsStore } from "./SimLearnNewsStore";
 
 const SimLearnNewsVoiceCommand: React.FC = () => {
-  const navigate = useNavigate();
 
   // store에서 필요한거 전부 import!!
 

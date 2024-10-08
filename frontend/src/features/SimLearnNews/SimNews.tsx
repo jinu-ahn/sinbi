@@ -18,7 +18,6 @@ const SimNews: React.FC = () => {
     error,
     handlePrevious,
     handleNext,
-    setCurrentView,
   } = useSimLearnNewsStore();
 
   const text = '뉴스를 요약해\n들려드려요.\n"이전"이라고\n말해주세요.';
