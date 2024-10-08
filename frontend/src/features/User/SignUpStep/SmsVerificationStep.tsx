@@ -50,19 +50,23 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
     const getOTP = async () => {
       if ("OTPCredential" in window) {
         try {
+          alert("들어왔어");
           // 비동기 작업을 기다림
           const credential = await navigator.credentials.get({
             otp: { transport: ["sms"] },
           } as OTPCredentialRequestOptions);
-
+          alert("credential 까지 들어옴 : " + credential);
           // 타입 가드를 사용하여 OTPCredential인지 검사
           if (isOTPCredential(credential)) {
+            alert("OTP credential : " + credential);
             console.log("받은 OTP:", credential);
             setSmsCode(credential.code);
           } else {
+            alert("실패 : " + credential);
             console.error("실패 : ", credential);
           }
         } catch (err) {
+          alert("SMS 인증 실패");
           console.error("SMS 인증 실패:", err);
         }
       }
