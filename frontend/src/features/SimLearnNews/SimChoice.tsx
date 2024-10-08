@@ -14,7 +14,7 @@ import learnDone from "../../assets/audio/84_배우기가_끝났어요_신비와
 
 const SimChoice: React.FC = () => {
   const { setCurrentView, setStep, step } = useSimLearnNewsStore();
-  const { setDone } = useLearnNewsSimDoneStore()
+  const { setDone } = useLearnNewsSimDoneStore();
 
   // 화면 크기에 따른 버튼 크기를 결정하는 함수
   const getButtonSize = () => {
@@ -40,7 +40,7 @@ const SimChoice: React.FC = () => {
   const thirdText = "배우기 끝!\n신비와 함께\n지식을\n늘려나가요!";
   const thirdBoldChars = ["지식", "끝"];
 
-  // step 1, 6, 7에 따라 각각 다른 오디오 플레이
+  // step 1, 7, 10에 따라 각각 다른 오디오 플레이
   useEffect(() => {
     let audio: HTMLAudioElement | null = null;
 
@@ -57,8 +57,12 @@ const SimChoice: React.FC = () => {
     } else if (step === 10) {
       audio = new Audio(learnDone);
       audio.play();
-      setDone(true)
-      navigate("/learn-news")
+      audio.addEventListener("ended", () => {
+        setTimeout(() => {
+          navigate("/learn-news");
+          setDone(true);
+        }, 1000);
+      });
     }
 
     // unmount되면 중지시켜

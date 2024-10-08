@@ -5,16 +5,16 @@ import React, { useState, useEffect } from "react";
 import YellowButton from "../../components/YellowButton";
 import BlackText from "../../components/BlackText";
 import { useLearnNewsStore } from "./useLearnNewsStore";
+import { VideoTitles, CategoryType } from "./LearnNews.types";
 import YouTube from "react-youtube";
 import YellowBox from "../../components/YellowBox";
 import CustomButton from "./CustomButton";
-import { VideoTitles } from "./LearnNews.types";
 import chooseLearnField from "../../assets/audio/62_배우고_싶은_분야를_말하거나_눌러주세요.mp3";
 import chooseCaterotyTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3";
-import sayMovieTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3";
+// import sayMovieTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3";
 
-type LearnViewType = "main" | "category" | "video";
-type CategoryType = "financial" | "voice" | "fraud";
+// type LearnViewType = "main" | "category" | "video";
+// type CategoryType = "financial" | "voice" | "fraud";
 
 interface ButtonConfig {
   text: string[];
@@ -22,10 +22,17 @@ interface ButtonConfig {
 }
 
 const Learn: React.FC = () => {
-  const { setCurrentView } = useLearnNewsStore();
-  const [currentLearnView, setCurrentLearnView] = useState<LearnViewType>("main");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const {
+    setCurrentLearnView,
+    currentLearnView,
+    selectedCategory,
+    setSelectedCategory,
+    currentVideoIndex,
+    setCurrentVideoIndex,
+  } = useLearnNewsStore();
+  // const [currentLearnView, setCurrentLearnView] = useState<LearnViewType>("main");
+  // const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
+  // const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   const buttons: ButtonConfig[] = [
     { text: ["슬기로운", "금융생활"], category: "financial" },
@@ -72,10 +79,11 @@ const Learn: React.FC = () => {
     } else if (currentLearnView === "category") {
       audio = new Audio(chooseCaterotyTitle);
       audio.play();
-    } else if (currentLearnView === "video") {
-      audio = new Audio(sayMovieTitle);
-      audio.play();
     }
+    // } else if (currentLearnView === "video") {
+    //   audio = new Audio(sayMovieTitle);
+    //   audio.play();
+    // }
 
     // Cleanup the audio when the component unmounts or when the view changes
     return () => {
@@ -102,7 +110,6 @@ const Learn: React.FC = () => {
     const handleResize = () => {
       setButtonSize(getButtonSize());
     };
-
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -135,13 +142,13 @@ const Learn: React.FC = () => {
           </div>
         ))}
       </div>
-      <YellowButton
+      {/* <YellowButton
         height={50}
         width={100}
         onClick={() => setCurrentView("choice")}
       >
         뒤로
-      </YellowButton>
+      </YellowButton> */}
     </div>
   );
 
@@ -156,7 +163,10 @@ const Learn: React.FC = () => {
       <YellowBox>
         <div className="grid w-full grid-cols-1 gap-6 p-2 mobile-medium:gap-8 mobile-large:gap-10">
           {videoIds[selectedCategory!].map((_, index) => (
-            <div key={index} className="flex w-full items-center justify-center">
+            <div
+              key={index}
+              className="flex w-full items-center justify-center"
+            >
               <CustomButton
                 height={buttonSize.height}
                 width={buttonSize.width}
@@ -170,9 +180,9 @@ const Learn: React.FC = () => {
           ))}
         </div>
       </YellowBox>
-      <YellowButton height={50} width={100} onClick={() => setCurrentLearnView("main")}>
+      {/* <YellowButton height={50} width={100} onClick={() => setCurrentLearnView("main")}>
         뒤로
-      </YellowButton>
+      </YellowButton> */}
     </div>
   );
 
@@ -199,7 +209,17 @@ const Learn: React.FC = () => {
         />
       </div>
       <div className="flex w-full max-w-sm justify-between">
-        <YellowButton height={50} width={100} onClick={() => setCurrentLearnView("category")}>
+        <YellowButton
+          height={50}
+          width={100}
+          onClick={() => {
+            if (currentVideoIndex > 0) {
+              setCurrentVideoIndex(currentVideoIndex + 1);
+            } else {
+              setSelectedCategory(null)
+            }
+          }}
+        >
           뒤로
         </YellowButton>
         <YellowButton
@@ -239,7 +259,6 @@ const Learn: React.FC = () => {
 
 export default Learn;
 
-
 // import React, { useState, useEffect } from "react";
 // import YellowButton from "../../components/YellowButton";
 // import BlackText from "../../components/BlackText";
@@ -276,7 +295,7 @@ export default Learn;
 //     voice: ["보이스피싱 예방"],
 //     fraud: ["금융 사기 예방"],
 //   };
-  
+
 //   const videoIds = {
 //     financial: ["NNzNCT2mz_w", "TugQTgWTGis", "QM2XuplX1qQ"],
 //     voice: ["3QKvI5Og0nI", "0X9bOe9xttk", "CT2DXUFni2s"],
@@ -350,7 +369,7 @@ export default Learn;
 //     const handleResize = () => {
 //       setButtonSize(getButtonSize());
 //     };
-    
+
 //     window.addEventListener("resize", handleResize);
 //     return () => window.removeEventListener("resize", handleResize);
 //   }, []);
