@@ -72,7 +72,7 @@ const SimNews: React.FC = () => {
   }, [currentNews]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="z-10 flex flex-col items-center justify-center">
       <BlackText text="오늘의 금융 소식" boldChars={["금융"]} />
       {isLoading ? (
         <div>Loading...</div>
@@ -115,7 +115,7 @@ const SimNews: React.FC = () => {
         </YellowButton>
       </div>
 
-      <div className="mt-8 relative top-[60px] flex w-full justify-center">
+      <div className="z-20 mt-8 relative top-[-350px] flex w-full justify-center">
         <SpeechBubble text={text} boldChars={boldChars} />
       </div>
       {/* <YellowButton

@@ -3,6 +3,7 @@ import { useLearnNewsStore } from "./useLearnNewsStore";
 import Learn from "./Learn";
 import Choice from "./Choice";
 import News from "./News";
+import LearnNewsVoiceCommand from "./LearnNewsVoiceCommand";
 
 // 뉴스 데이터 새로고침 간격 (2시간)
 const REFRESH_INTERVAL = 2 * 60 * 60 * 1000;
@@ -15,7 +16,6 @@ const LearnNews: React.FC = () => {
     const intervalId = setInterval(fetchNews, REFRESH_INTERVAL); // 주기적으로 뉴스 데이터 새로고침
     return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 인터벌 제거
   }, [fetchNews]);
-
 
   const renderView = () => {
     switch (currentView) {
@@ -33,6 +33,7 @@ const LearnNews: React.FC = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-white p-4">
       {renderView()}
+      <LearnNewsVoiceCommand />
     </div>
   );
 };
