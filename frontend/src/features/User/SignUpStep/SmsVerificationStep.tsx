@@ -6,9 +6,9 @@ import { OTPCredential } from "../User.types"
 
 const SmsVerificationStep: React.FC = () => {
   const { smsCode, setSmsCode } = useUserStore();
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSmsCode(e.target.value);
-  };
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSmsCode(e.target.value);
+  // };
 
   // 오디오말하기
   const audio = new Audio(VerifyAudio);

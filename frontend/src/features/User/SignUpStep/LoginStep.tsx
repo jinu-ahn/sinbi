@@ -1,7 +1,6 @@
 // src/components/User/SignUpStep/LoginStep.tsx
 import React from 'react';
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import useUserStore from '../useUserStore';
 
 // interface LoginStepProps {

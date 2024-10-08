@@ -99,7 +99,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
   },
 
   handlePasswordConfirmation: () => {
-    const { password, confirmPassword, setError, setStep, nextStep } = get();
+    const { password, confirmPassword, setError, setStep, nextStep } = useUserStore.getState();
     if (password !== confirmPassword) {
       setError("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
       setStep(SignUpStep.UserPassword);
