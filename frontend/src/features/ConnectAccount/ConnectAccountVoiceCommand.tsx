@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import {
   checkVirtualAccount,
@@ -18,7 +18,6 @@ import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음�
 
 const ConnectAccountVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // AccountStore에서 필요한거 전부 import!!
   const {
@@ -50,10 +49,10 @@ const ConnectAccountVoiceCommand: React.FC = () => {
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
-  }, [location]);
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
+  }, []);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)
@@ -341,18 +340,20 @@ const ConnectAccountVoiceCommand: React.FC = () => {
       setStep(0);
       navigate("/main");
       resetTranscript();
-    } else {
+    } 
+    else {
       sendToNLP(transcript)
         .then((response) => {
-          console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-          handleVoiceCommands(response.text);
-          // resetTranscript();
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
         })
         .catch((error) => {
           console.error("nlp 보내는데 문제생김: ", error);
-          // resetTranscript();
-        })
-        .finally(() => {
           resetTranscript();
         });
     }

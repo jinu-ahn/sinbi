@@ -60,9 +60,9 @@ const TransferVoiceCommand: React.FC = () => {
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
   }, [location]);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
@@ -482,18 +482,20 @@ const TransferVoiceCommand: React.FC = () => {
       setStep(0);
       navigate("/main");
       resetTranscript();
-    } else {
+    } 
+    else {
       sendToNLP(transcript)
         .then((response) => {
-          console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
-          handleVoiceCommands(response.text);
-          // resetTranscript();
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
         })
         .catch((error) => {
           console.error("nlp 보내는데 문제생김: ", error);
-          // resetTranscript();
-        })
-        .finally(() => {
           resetTranscript();
         });
     }

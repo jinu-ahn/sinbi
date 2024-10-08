@@ -6,7 +6,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAccountViewStore } from "./AccountViewStore";
 import { sendToNLP } from "../../services/nlpApi";
 
-
 const AccountViewVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,14 +14,14 @@ const AccountViewVoiceCommand: React.FC = () => {
 
   const { transcript, resetTranscript } = useSpeechRecognition();
 
-  const {setSelectedAccount} = useAccountViewStore();
+  const { setSelectedAccount } = useAccountViewStore();
 
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
   }, [location]);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
@@ -41,8 +40,8 @@ const AccountViewVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("이전") ||
       lowerCaseTranscript.includes("뒤로")
     ) {
-      navigate("/account-view")
-      setSelectedAccount(null)
+      navigate("/account-view");
+      setSelectedAccount(null);
       resetTranscript();
     }
     if (
@@ -52,21 +51,22 @@ const AccountViewVoiceCommand: React.FC = () => {
     ) {
       navigate("/main");
       resetTranscript();
-    }
+    } 
     else {
       sendToNLP(transcript)
-      .then((response) => {
-        console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text)
-        handleVoiceCommands(response.text)
-        // resetTranscript();
-      })
-      .catch((error) => {
-        console.error("nlp 보내는데 문제생김: ", error)
-        // resetTranscript();
-      })
-      .finally(() => {
-        resetTranscript();
-      })
+        .then((response) => {
+          if (response && response.text) {
+            console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
+            handleVoiceCommands(response.text);
+          } else {
+            console.error("Received an unexpected response from NLP API: ", response);
+          }
+          resetTranscript();
+        })
+        .catch((error) => {
+          console.error("nlp 보내는데 문제생김: ", error);
+          resetTranscript();
+        });
     }
   };
 
