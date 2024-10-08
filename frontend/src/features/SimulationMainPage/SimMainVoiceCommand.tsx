@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { sendToNLP } from "../../services/nlpApi";
 
 import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3"
@@ -10,16 +10,15 @@ import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거�
 const SimMainVoiceCommand: React.FC = () => {
 
   const navigate = useNavigate();
-  const location = useLocation();
   const { transcript, resetTranscript } = useSpeechRecognition();
 
   // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
-  }, [location]);
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
+  }, []);
 
   // 오디오말하기
   const playAudio = (audioFile: string) => {

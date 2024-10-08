@@ -2,14 +2,13 @@ import React, { useEffect } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSimAccountViewStore } from "./SimAccountViewStore";
 import { sendToNLP } from "../../services/nlpApi";
 import { useSimMainStore } from "../SimulationMainPage/SimMainStore";
 
 const SimAccountViewVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // store에서 필요한거 전부 import!!
 
@@ -22,10 +21,10 @@ const SimAccountViewVoiceCommand: React.FC = () => {
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
-  }, [location]);
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
+  }, []);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)

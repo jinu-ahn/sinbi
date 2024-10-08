@@ -16,6 +16,7 @@ const LearnNews: React.FC = () => {
     return () => clearInterval(intervalId); // 컴포넌트 언마운트 시 인터벌 제거
   }, [fetchNews]);
 
+
   const renderView = () => {
     switch (currentView) {
       case "choice":

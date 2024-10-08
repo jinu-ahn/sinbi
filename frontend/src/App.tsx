@@ -7,15 +7,17 @@ import ConnectAccountPage from "./features/ConnectAccount/ConnectAccountPage";
 import AccountsViewPage from "./features/AccountView/AccountsViewPage";
 import WelcomePage from "./features/User/WelcomPage";
 import TransferPage from "./features/Transfer/TransferPage";
-import LearnNews from "./features/LearnNews/LearnNews";
+import LearnNews from "./features/LearnNews/LearnNewsPage";
 import AppInitializer from "./features/User/AppInitializer";
 import TitlePage from "./titlepage";
-// import { useEffect } from "react";
+
 
 import SimMainPage from "./features/SimulationMainPage/SimMainPage";
 import SimConnectAccountPage from "./features/SimulationConnectAccount/SimConnectAccountPage";
 import SimAccountsViewPage from "./features/SimulationAccountView/SimAccountsViewPage";
 import SimTransferPage from "./features/SimulationTransfer/SimTransferPage";
+import SimLearnNews from "./features/SimLearnNews/SimLearnNewsPage";
+
 
 // function App() {
 const App: React.FC = () => {
@@ -33,11 +35,14 @@ const App: React.FC = () => {
           <Route path="/account-view" element={<AccountsViewPage />}/>
           <Route path="/transfer" element={<TransferPage />}/>
           <Route path="/learn-news" element={<LearnNews />}/>
+
           <Route path="/sim" element={<SimMainPage />} />
           <Route path="/sim-connect-account" element={<SimConnectAccountPage />}/>
           <Route path="/sim-account-view" element={<SimAccountsViewPage />}/>
           <Route path="/sim-transfer" element={<SimTransferPage />}/>
+          <Route path="/sim-learn-news" element={<SimLearnNews />}/>
           <Route path="/title" element={<TitlePage />}/>
+          
         </Routes>
       </div>
     </BrowserRouter>
