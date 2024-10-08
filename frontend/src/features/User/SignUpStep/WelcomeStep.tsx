@@ -2,27 +2,37 @@
 import React, { useEffect } from "react";
 import GreenText from "../../../components/GreenText";
 import StartSignUpWithSinbi from "../../../assets/audio/55_안녕하세요_저는_신비예요_같이_회원가입을_해_볼까요.mp3";
-// import useUserStore from '../useUserStore';
+import useUserStore from '../useUserStore';
 
 const WelcomeStep: React.FC = () => {
-  // const { nextStep } = useUserStore();
+  const { nextStep } = useUserStore();
 
-  // 오디오말하기
-  const audio = new Audio(StartSignUpWithSinbi);
-
+  
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    // 오디오말하기
+  const audio = new Audio(StartSignUpWithSinbi);
+  const audioEndHandler = () => {
+    // 오디오 재생이 끝나고 0.5초 후에 다음 단계로 자동 이동
+    setTimeout(() => {
+      nextStep();
+    }, 500);
+  };
+  audio.addEventListener('ended', audioEndHandler);
     // 플레이시켜
     audio.play();
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
-      if (!audio.paused) {
-        audio.pause();
-        audio.currentTime = 0;
-      }
+      // if (!audio.paused) {
+      //   audio.pause();
+      //   audio.currentTime = 0;
+      // }
+      audio.removeEventListener('ended', audioEndHandler);
+      audio.pause();
+      audio.currentTime = 0;
     };
-  }, []);
+  }, [nextStep]);
 
   return (
     <>

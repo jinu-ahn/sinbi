@@ -113,7 +113,7 @@ const VoiceCommand: React.FC = () => {
       case SignUpStep.Welcome:
         if (lowerCaseTranscript.includes("시작")) {
           nextStep();
-          resetTranscript();
+          // resetTranscript();
         }
         // resetTranscript();
         break;

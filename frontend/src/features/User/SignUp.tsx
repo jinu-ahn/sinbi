@@ -213,7 +213,10 @@ const SignUp: React.FC = () => {
       case SignUpStep.SignUpComplete:
         return <SignUpCompleteStep />;
       case SignUpStep.Login:
-        return <LoginStep />;
+        return (
+          <LoginStep/>
+         
+        );
       default:
         return null;
     }
