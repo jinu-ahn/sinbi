@@ -3,11 +3,13 @@ import React, { useEffect } from 'react';
 import GreenText from "../../../components/GreenText";
 import YellowButton from "../../../components/YellowButton";
 import FaceEasy from "../../../assets/audio/52_얼굴로_로그인하면_더_편해요_얼굴을_등록할까요.mp3"
-interface StartFaceRecognitionStepProps {
-  onStart: () => void;
-}
+import useUserStore from '../useUserStore';
+// interface StartFaceRecognitionStepProps {
+//   onStart: () => void;
+// }
 
-const StartFaceRecognitionStep: React.FC<StartFaceRecognitionStepProps> = ({ onStart }) => {
+const StartFaceRecognitionStep: React.FC = () => {
+  // const { nextStep } = useUserStore();
   // 오디오말하기
   const audio = new Audio(FaceEasy);
 
@@ -30,9 +32,9 @@ const StartFaceRecognitionStep: React.FC<StartFaceRecognitionStepProps> = ({ onS
       <GreenText text="얼굴로 로그인하면" boldChars={["얼굴"]} />
       <GreenText text="더 편해요." boldChars={[""]} />
       <GreenText text="등록할까요?" boldChars={["등록"]} />
-      <YellowButton height={50} width={200} onClick={onStart}>
+      {/* <YellowButton height={50} width={200} onClick={onStart}>
         시작
-      </YellowButton>
+      </YellowButton> */}
     </>
   );
 };

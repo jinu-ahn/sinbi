@@ -1,20 +1,15 @@
 import React, { useEffect } from "react";
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import VerifyAudio from "../../../assets/audio/57_인증번호가_안_나오면_문자를_보고_알려주세요.mp3";
-import { OTPCredential } from "../User.types";
+import useUserStore from "../useUserStore";
+import { OTPCredential } from "../User.types"
 
-interface SmsVerificationStepProps {
-  smsCode: string;
-  setSmsCode: (code: string) => void;
-  onVerifySms: () => Promise<void>;
-}
+const SmsVerificationStep: React.FC = () => {
+  const { smsCode, setSmsCode } = useUserStore();
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSmsCode(e.target.value);
+  };
 
-const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
-  smsCode,
-  setSmsCode,
-  onVerifySms,
-}) => {
   // 오디오말하기
   const audio = new Audio(VerifyAudio);
 
@@ -82,12 +77,8 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
         maxLength={4} // or your OTP code length
         autoComplete="one-time-code" // Required for OTP autofill
         className="border p-2 text-center rounded-md text-lg" // Add your preferred styling here
-        placeholder="Enter OTP"
+        placeholder="인증번호를 입력하세요"
       />
-
-      <YellowButton height={50} width={200} onClick={onVerifySms}>
-        인증하기
-      </YellowButton>
     </>
   );
 };
