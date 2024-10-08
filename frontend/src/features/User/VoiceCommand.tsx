@@ -142,7 +142,10 @@ const VoiceCommand: React.FC = () => {
         break;
       case SignUpStep.ConfirmPassword:
         // handleConfirmPasswordInput(text);
-        if (lowerCaseTranscript.includes("다음") || lowerCaseTranscript.includes("넘어가")) {
+        if (
+          lowerCaseTranscript.includes("다음") ||
+          lowerCaseTranscript.includes("넘어가")
+        ) {
           handlePasswordConfirmation();
         } else {
           handleConfirmPasswordInput(text);
@@ -161,9 +164,12 @@ const VoiceCommand: React.FC = () => {
       case SignUpStep.FaceRecognitionInProgress:
         if (
           lowerCaseTranscript.includes("사진") ||
-          lowerCaseTranscript.includes("찍어")
+          lowerCaseTranscript.includes("찍어") ||
+          lowerCaseTranscript.includes("해") ||
+          lowerCaseTranscript.includes("시작")
         ) {
           // 여기서 카메라를 열고 사진을 찍는 로직을 추가해야 합니다.
+          openCamera();
           console.log("사진 찍기 시도");
         }
         // resetTranscript();
@@ -171,6 +177,12 @@ const VoiceCommand: React.FC = () => {
       case SignUpStep.FaceRecognitionComplete:
         if (lowerCaseTranscript.includes("완료")) {
           handleSignUp();
+        } else if (
+          lowerCaseTranscript.includes("다음") ||
+          lowerCaseTranscript.includes("넘어가") ||
+          lowerCaseTranscript.includes("취소")
+        ) {
+          nextStep();
         }
         // resetTranscript();
         break;
@@ -335,15 +347,23 @@ const VoiceCommand: React.FC = () => {
       // setPreviousSmsCode(newSmsCode);
     }
   };
-
-  const handlePasswordInput = (text: string) => {
-    const passwordMatch = text.match(/\d+/g);
-    if (passwordMatch) {
-      const newPassword = previousPassword + passwordMatch.join("");
-      setPassword(newPassword);
-      setPreviousPassword(newPassword);
+  const openCamera = () => {
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
     }
   };
+
+  // const handlePasswordInput = (text: string) => {
+  //   const passwordMatch = text.match(/\d+/g);
+  //   if (passwordMatch) {
+  //     const newPassword = previousPassword + passwordMatch.join("");
+  //     setPassword(newPassword);
+  //     setPreviousPassword(newPassword);
+  //   }
+  // };
 
   const handleConfirmPasswordInput = (text: string) => {
     const confirmPasswordMatch = text.match(/\d+/g);

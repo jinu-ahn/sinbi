@@ -213,15 +213,7 @@ const SignUp: React.FC = () => {
       case SignUpStep.SignUpComplete:
         return <SignUpCompleteStep />;
       case SignUpStep.Login:
-        return (
-          <LoginStep
-            phone={phone}
-            setPhone={setPhone}
-            password={password}
-            setPassword={setPassword}
-            onLogin={handleLogin}
-          />
-        );
+        return <LoginStep />;
       default:
         return null;
     }
