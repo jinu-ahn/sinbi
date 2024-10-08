@@ -12,6 +12,9 @@ import { VideoTitles } from "./LearnNews.types";
 import chooseLearnField from "../../assets/audio/62_배우고_싶은_분야를_말하거나_눌러주세요.mp3";
 import chooseCaterotyTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3";
 import sayMovieTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3";
+import chooseLearnField from "../../assets/audio/62_배우고_싶은_분야를_말하거나_눌러주세요.mp3";
+import chooseCaterotyTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3";
+import sayMovieTitle from "../../assets/audio/63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3";
 
 type LearnViewType = "main" | "category" | "video";
 type CategoryType = "financial" | "voice" | "fraud";
@@ -21,7 +24,7 @@ interface ButtonConfig {
   category: CategoryType;
 }
 
-const Learn: React.FC = () => {
+const SimLearn: React.FC = () => {
   const { setCurrentView } = useLearnNewsStore();
   const [currentLearnView, setCurrentLearnView] = useState<LearnViewType>("main");
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
@@ -32,6 +35,7 @@ const Learn: React.FC = () => {
     { text: ["보이스피싱", "예방"], category: "voice" },
     { text: ["금융 사기", "예방"], category: "fraud" },
   ];
+
   const categoryTitles: { [key in CategoryType]: string[] } = {
     financial: ["슬기로운 금융생활"],
     voice: ["보이스피싱 예방"],
@@ -101,6 +105,7 @@ const Learn: React.FC = () => {
     const handleResize = () => {
       setButtonSize(getButtonSize());
     };
+
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
