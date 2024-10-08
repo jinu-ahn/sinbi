@@ -55,7 +55,9 @@ const SimLearnNewsVoiceCommand: React.FC = () => {
 
     // 이건 금융 배우기 / 뉴스 고르는 거임
     if (currentView === "choice") {
-      if (lowerCaseTranscript.includes("금융")) {
+      if (
+        lowerCaseTranscript.includes("금융")
+      ) {
         setStep(step + 1);
         setCurrentView("learn");
         setCurrentLearnView("main");

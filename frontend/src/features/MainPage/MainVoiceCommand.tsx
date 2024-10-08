@@ -6,10 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { sendToNLP } from "../../services/nlpApi";
 import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
 
-import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3"
+import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
 
 const MainVoiceCommand: React.FC = () => {
-
   const navigate = useNavigate();
   const { transcript, resetTranscript } = useSpeechRecognition();
   const { done } = useLearnNewsSimDoneStore()
@@ -27,7 +26,6 @@ const MainVoiceCommand: React.FC = () => {
     const audio = new Audio(audioFile);
     audio.play();
   };
-
 
   useEffect(() => {
     handleVoiceCommands(transcript);
@@ -85,11 +83,11 @@ const MainVoiceCommand: React.FC = () => {
     if (
       lowerCaseTranscript.includes("신비") ||
       lowerCaseTranscript.includes("도와줘") ||
-      lowerCaseTranscript.includes("도움") 
+      lowerCaseTranscript.includes("도움")
     ) {
       playAudio(chooseFunction);
       resetTranscript();
-    }
+    } 
     else {
       sendToNLP(transcript)
         .then((response) => {

@@ -1,0 +1,13 @@
+
+spring:
+  application:
+    name: sinbi
+  profiles:
+    active: deployment,user
+  config:
+    import: optional:configserver:http://15.164.159.172:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh

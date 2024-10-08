@@ -28,6 +28,7 @@ export default defineConfig({
       },
        // 오프라인일때 캐시에서 가져오게해줌
       workbox: {
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/your-api-url\.com\/.*$/, // Adjust URL pattern based on your API

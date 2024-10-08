@@ -6,7 +6,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAccountViewStore } from "./AccountViewStore";
 import { sendToNLP } from "../../services/nlpApi";
 
-
 const AccountViewVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,7 +14,7 @@ const AccountViewVoiceCommand: React.FC = () => {
 
   const { transcript, resetTranscript } = useSpeechRecognition();
 
-  const {setSelectedAccount} = useAccountViewStore();
+  const { setSelectedAccount } = useAccountViewStore();
 
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
@@ -41,8 +40,8 @@ const AccountViewVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("이전") ||
       lowerCaseTranscript.includes("뒤로")
     ) {
-      navigate("/account-view")
-      setSelectedAccount(null)
+      navigate("/account-view");
+      setSelectedAccount(null);
       resetTranscript();
     }
     if (
@@ -52,7 +51,7 @@ const AccountViewVoiceCommand: React.FC = () => {
     ) {
       navigate("/main");
       resetTranscript();
-    }
+    } 
     else {
       sendToNLP(transcript)
         .then((response) => {
