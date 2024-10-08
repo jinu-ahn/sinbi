@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { sendToNLP } from "../../services/nlpApi";
 import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
 

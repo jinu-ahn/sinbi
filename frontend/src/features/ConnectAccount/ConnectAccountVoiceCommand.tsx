@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import {
   checkVirtualAccount,
@@ -18,7 +18,6 @@ import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음�
 
 const ConnectAccountVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // AccountStore에서 필요한거 전부 import!!
   const {
