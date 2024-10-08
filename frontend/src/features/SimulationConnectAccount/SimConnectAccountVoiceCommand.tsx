@@ -52,7 +52,7 @@ const SimConnectAccountVoiceCommand: React.FC = () => {
     // return () => {
     //   SpeechRecognition.stopListening();
     // };
-  }, []);
+  }, [location]);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)
