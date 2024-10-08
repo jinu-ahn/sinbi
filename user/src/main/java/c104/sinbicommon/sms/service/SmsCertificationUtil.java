@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmsCertificationUtil {
     private final String MESSAGE_FORMAT = "<#> Your verification code is: %s\n" +
-            "@sinbi.life";
+            "@sinbi.life #LIZWM9jkPNL";
 
     @Value("${coolsms.api.key}") // coolsms의 API 키 주입
     private String apiKey;
