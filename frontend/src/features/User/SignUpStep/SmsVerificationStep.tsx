@@ -60,8 +60,10 @@ useEffect(() => {
 
         // 타입 가드를 사용하여 OTPCredential인지 검사
         if (isOTPCredential(credential)) {
-          console.log('받은 OTP:', credential.code);
+          console.log('받은 OTP:', credential);
           setSmsCode(credential.code);
+        } else {
+          console.error("실패 : " , credential);
         }
       } catch (err) {
         console.error('SMS 인증 실패:', err);
