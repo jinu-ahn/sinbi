@@ -1,7 +1,8 @@
 export interface NewsItem {
   title: string;
   summary: string;
-  keywords: [string, number][];
+  // keywords: [string, number][];
+  keywords: Array<Array<[string, number]>>;
 }
 
 export interface LearnNewsStore {
