@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import "./NumberPad.css";
 
 interface NumberPadProps {
@@ -12,15 +12,33 @@ const NumberPad: React.FC<NumberPadProps> = ({
   onChange,
   maxLength,
 }) => {
-  const handleNumberClick = (num: number) => {
-    if (value.length < maxLength) {
-      onChange(value + num);
-    }
-  };
+  const handleNumberClick = useCallback(
+    (num: number) => {
+      if (value.length < maxLength) {
+        onChange(value + num);
+      }
+    },
+    [value, onChange, maxLength],
+  );
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     onChange(value.slice(0, -1));
-  };
+  }, [value, onChange]);
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key >= '0' && event.key <= '9') {
+      handleNumberClick(parseInt(event.key));
+    } else if (event.key === 'Backspace') {
+      handleDelete();
+    }
+  }, [handleNumberClick, handleDelete]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <div className="number-pad mx-auto max-w-md p-2 mobile-small:p-3 mobile-medium:p-4 mobile-large:p-5">

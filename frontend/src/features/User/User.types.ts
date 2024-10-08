@@ -21,6 +21,7 @@ export interface UserState {
   confirmPassword: string;
   faceImage: File | undefined;
   smsCode: string;
+  error: string | null;
 }
 
 export interface UserActions {
@@ -28,7 +29,8 @@ export interface UserActions {
   setPhone: (phone: string) => void;
   setPassword: (password: string) => void;
   setConfirmPassword: (password: string) => void;
-  setFaceImage: (image: File) => void;
+  setFaceImage: (image: File |undefined) => void;
+  setError: (error: string | null) => void;
   nextStep: () => void;
   prevStep: () => void;
   setStep: (step: SignUpStep) => void;
@@ -49,4 +51,9 @@ export interface LoginDto {
 export interface TokenDto {
   status: string;
   data: string; // "SUCCESS" 문자열이 여기에 들어갑니다.
+}
+
+// OTPCredential 타입 정의
+export interface OTPCredential extends Credential {
+  code: string ; // OTP 인증번호
 }
