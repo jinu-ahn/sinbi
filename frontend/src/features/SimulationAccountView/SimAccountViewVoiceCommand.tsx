@@ -2,14 +2,13 @@ import React, { useEffect } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSimAccountViewStore } from "./SimAccountViewStore";
 import { sendToNLP } from "../../services/nlpApi";
 import { useSimMainStore } from "../SimulationMainPage/SimMainStore";
 
 const SimAccountViewVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // store에서 필요한거 전부 import!!
 

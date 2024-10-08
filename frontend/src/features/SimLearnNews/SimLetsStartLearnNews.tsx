@@ -9,7 +9,7 @@ const SimLetsStartLearnNews: React.FC = () => {
   const firstText = "지금부터\n금융 배우기랑\n뉴스 확인하러\n가볼까요?";
   const firstBodlChars = ["금융 배우기", "뉴스"];
 
-  const { setCurrentView, setCurrentLearnView, setSelectedCategory, setStep, step } = useSimLearnNewsStore();
+  const { setCurrentView, setCurrentLearnView, setSelectedCategory, setStep } = useSimLearnNewsStore();
 
   // 오디오말하기
   const audio = new Audio(letsStartLearnNews);
