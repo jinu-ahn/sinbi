@@ -16,10 +16,10 @@ const SimMainVoiceCommand: React.FC = () => {
   // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
-  }, [location]);
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
+  }, []);
 
   // 오디오말하기
   const playAudio = (audioFile: string) => {

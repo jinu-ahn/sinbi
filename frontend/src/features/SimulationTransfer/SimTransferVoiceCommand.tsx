@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useSimTransferStore } from "./SimTransferStore";
 import { sendToNLP } from "../../services/nlpApi";
 
+import { sendToNLP } from "../../services/nlpApi";
+
 // 목소리 오디오
 import pickMyBankAccount from "../../assets/audio/22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3";
 import sendToWho from "../../assets/audio/31_누구에게_보낼지_말하거나_눌러주세요_없으면_새로운_계좌라고_말하세요.mp3";
@@ -51,9 +53,9 @@ const SimTransferVoiceCommand: React.FC = () => {
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
   }, []);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)

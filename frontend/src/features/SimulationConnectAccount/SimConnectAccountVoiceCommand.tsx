@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSimConnectAccountStore } from "./SimConnectAccountStore";
 import {
   checkVirtualAccount,
@@ -12,15 +12,12 @@ import {
 
 import { sendToNLP } from "../../services/nlpApi";
 
-// import { sendToNLP } from "../../services/nlpApi";
-
 // 목소리
 // import sayAccountNumber from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
 import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 
 const SimConnectAccountVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // AccountStore에서 필요한거 전부 import!!
   const {
@@ -52,10 +49,10 @@ const SimConnectAccountVoiceCommand: React.FC = () => {
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
-  }, [location]);
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
+  }, []);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)

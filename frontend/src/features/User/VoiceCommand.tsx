@@ -11,9 +11,9 @@ const VoiceCommand: React.FC = () => {
 
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
   }, []);
 
   useEffect(() => {

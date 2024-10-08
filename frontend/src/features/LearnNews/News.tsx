@@ -3,6 +3,8 @@ import YellowBox from "../../components/YellowBox";
 import BlackText from "../../components/BlackText";
 import YellowButton from "../../components/YellowButton";
 import { useLearnNewsStore } from "./useLearnNewsStore";
+import { useEffect } from "react";
+import listenSummationNews from "../../assets/audio/47_여기서는_뉴스를_요약해서_매일_들려드릴_거예요.mp3"
 
 const News: React.FC = () => {
   const {
@@ -14,6 +16,23 @@ const News: React.FC = () => {
     handleNext,
     setCurrentView,
   } = useLearnNewsStore();
+
+    // 오디오말하기
+    const listenSummationNewsAudio = new Audio(listenSummationNews);
+
+    // 오디오 플레이 (component가 mount될때만)
+    useEffect(() => {
+      // 플레이시켜
+      listenSummationNewsAudio.play();
+  
+      // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+      return () => {
+        if (!listenSummationNewsAudio.paused) {
+          listenSummationNewsAudio.pause();
+          listenSummationNewsAudio.currentTime = 0;
+        }
+      };
+    }, []);
 
   const currentNews = newsData[currentIndex];
 
