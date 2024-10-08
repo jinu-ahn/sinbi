@@ -1,11 +1,10 @@
 // src/components/User/SignUpStep/UserPasswordStep.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import NumberPad from "../NumberPad";
 import SpeechBubble from "../../../components/SpeechBubble";
-import SimpPW from "../../../assets/audio/51_비밀번호_네_자리를_입력해주세요.mp3"
-import useUserStore from '../useUserStore';
+import SimpPW from "../../../assets/audio/51_비밀번호_네_자리를_입력해주세요.mp3";
+import useUserStore from "../useUserStore";
 // interface UserPasswordStepProps {
 //   password: string;
 //   setPassword: (password: string) => void;
@@ -14,7 +13,7 @@ import useUserStore from '../useUserStore';
 // }
 
 const UserPasswordStep: React.FC = () => {
-  const { password, setPassword, error } = useUserStore()
+  const { password, setPassword, error } = useUserStore();
   // 오디오말하기
   const audio = new Audio(SimpPW);
 
@@ -31,32 +30,32 @@ const UserPasswordStep: React.FC = () => {
       }
     };
   }, []);
+
   const handlePasswordChange = (newPassword: string) => {
     setPassword(newPassword);
   };
 
-
   return (
     <>
       {error && (
-        <SpeechBubble
-          text={error}
-          boldChars={[]}
-          textSize="text-[24px]"
-        />
+        <SpeechBubble text={error} boldChars={[]} textSize="text-[24px]" />
       )}
       <GreenText text="간편비밀번호" boldChars={[""]} />
       <GreenText text="숫자 네 자리를" boldChars={["숫자 네 자리"]} />
       <GreenText text="눌러주세요" boldChars={[]} />
-      <NumberPad value={password} onChange={handlePasswordChange} maxLength={4} />
-      <input
+      <NumberPad
+        value={password}
+        onChange={handlePasswordChange}
+        maxLength={4}
+      />
+      {/* <input
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         maxLength={4}
         className="hidden-input"
         aria-label="비밀번호 입력"
-      />
+      /> */}
     </>
   );
 };

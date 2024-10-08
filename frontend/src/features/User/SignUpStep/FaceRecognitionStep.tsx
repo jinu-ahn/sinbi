@@ -3,18 +3,15 @@ import React, { useEffect, useRef, useState } from "react";
 import GreenText from "../../../components/GreenText";
 import YellowButton from "../../../components/YellowButton";
 import useUserStore from "../useUserStore";
-// import { tokenStorage } from "./tokenUtils"; // 토큰 저장소 import
-// import { signup, login } from "../../../services/api"; // API 함수 import
 import FaceRecAudio from "../../../assets/audio/53_얼굴을_인식할게요_눈_코_입을_화면에_맞춰주세요.mp3"
 
-interface FaceRecognitionStepProps {
-  onComplete: () => void;
-}
+// interface FaceRecognitionStepProps {
+//   onComplete: () => void;
+// }
 
-const FaceRecognitionStep: React.FC<FaceRecognitionStepProps> = ({
-  onComplete,
-}) => {
-  const { setFaceImage } = useUserStore();
+const FaceRecognitionStep: React.FC = () => {
+  const { faceImage, setFaceImage } = useUserStore();
+  // const { setFaceImage } = useUserStore();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

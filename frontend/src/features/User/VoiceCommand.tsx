@@ -129,10 +129,18 @@ const VoiceCommand: React.FC = () => {
         break;
       case SignUpStep.ConfirmPassword:
         // handleConfirmPasswordInput(text);
+        if (lowerCaseTranscript.includes("다음") || lowerCaseTranscript.includes("넘어가")) {
+          handlePasswordConfirmation();
+        } else {
+          handleConfirmPasswordInput(text);
+        }
         break;
       case SignUpStep.StartFaceRecognition:
         if (lowerCaseTranscript.includes("시작")) {
           nextStep();
+        } else if (lowerCaseTranscript.includes("아니")) {
+          handleSignUp();
+          setStep(SignUpStep.SignUpComplete);
         }
         break;
       case SignUpStep.FaceRecognitionInProgress:
@@ -264,31 +272,41 @@ const VoiceCommand: React.FC = () => {
   };
 
   const handlePhoneInput = (text: string) => {
-    const lowerCaseText = text.toLowerCase();
-
-    // 숫자 입력 처리
-    const phoneNumberMatch = text.match(/\d+/g);
-    if (phoneNumberMatch) {
-      // const newPhone = previousPhone + phoneNumberMatch.join("");
-      // console.log("new phone: ", newPhone);
-      setPhone(previousPhone + phoneNumberMatch.join(""));
-      // setPreviousPhone(newPhone);
-    }
-
-    // "다 지워" 명령어 처리
-    if (lowerCaseText.includes("다 지워")) {
-      setPhone("");
-      setPreviousPhone("");
-      resetTranscript();
-    }
-
-    // "하나 지워" 명령어 처리
-    if (lowerCaseText.includes("하나 지워")) {
-      const newPhone = phone.slice(0, -1);
+    const phoneNum = text.match(/\d+/g);
+    if (phoneNum) {
+      const newPhone = previousPhone + phoneNum.join("");
       setPhone(newPhone);
-      setPreviousPhone(newPhone);
-      resetTranscript();
     }
+
+    // const phoneNumber = transcript.match(/\d+/g);
+    //   if (phoneNumber) {
+    //     setPhone(previousPhoneNum + phoneNumberMatch.join(""));
+    //   }
+    // const lowerCaseText = text.toLowerCase();
+
+    // // 숫자 입력 처리
+    // const phoneNumberMatch = text.match(/\d+/g);
+    // if (phoneNumberMatch) {
+    //   // const newPhone = previousPhone + phoneNumberMatch.join("");
+    //   // console.log("new phone: ", newPhone);
+    //   setPhone(previousPhone + phoneNumberMatch.join(""));
+    //   // setPreviousPhone(newPhone);
+    // }
+
+    // // "다 지워" 명령어 처리
+    // if (lowerCaseText.includes("다 지워")) {
+    //   setPhone("");
+    //   setPreviousPhone("");
+    //   resetTranscript();
+    // }
+
+    // // "하나 지워" 명령어 처리
+    // if (lowerCaseText.includes("하나 지워")) {
+    //   const newPhone = phone.slice(0, -1);
+    //   setPhone(newPhone);
+    //   setPreviousPhone(newPhone);
+    //   resetTranscript();
+    // }
   };
 
   const handleSmsCodeInput = (text: string) => {
@@ -296,7 +314,7 @@ const VoiceCommand: React.FC = () => {
     if (smsCodeMatch) {
       const newSmsCode = previousSmsCode + smsCodeMatch.join("");
       setSmsCode(newSmsCode);
-      setPreviousSmsCode(newSmsCode);
+      // setPreviousSmsCode(newSmsCode);
     }
   };
 
@@ -315,7 +333,7 @@ const VoiceCommand: React.FC = () => {
       const newConfirmPassword =
         previousConfirmPassword + confirmPasswordMatch.join("");
       setConfirmPassword(newConfirmPassword);
-      setPreviousConfirmPassword(newConfirmPassword);
+      // setPreviousConfirmPassword(newConfirmPassword);
     }
   };
 
