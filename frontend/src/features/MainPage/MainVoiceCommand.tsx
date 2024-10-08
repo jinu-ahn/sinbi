@@ -4,22 +4,23 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useNavigate, useLocation } from "react-router-dom";
 import { sendToNLP } from "../../services/nlpApi";
+import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
 
 import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3"
 
 const MainVoiceCommand: React.FC = () => {
 
   const navigate = useNavigate();
-  const location = useLocation();
   const { transcript, resetTranscript } = useSpeechRecognition();
+  const { done } = useLearnNewsSimDoneStore()
 
   // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
-  }, [location]);
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
+  }, []);
 
   // 오디오말하기
   const playAudio = (audioFile: string) => {
@@ -68,8 +69,13 @@ const MainVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("뉴스") ||
       lowerCaseTranscript.includes("배우기")
     ) {
-      navigate("/learn-news");
-      resetTranscript();
+      if (!done) {
+        navigate("/sim-learn-news")
+        resetTranscript();
+      } else {
+        navigate("/learn-news");
+        resetTranscript();
+      }
     } else if (
       lowerCaseTranscript.includes("연습")
     ) {

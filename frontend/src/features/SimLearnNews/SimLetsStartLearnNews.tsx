@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
 import GreenText from "../../components/GreenText";
 import { useSimLearnNewsStore } from "./SimLearnNewsStore";
+import avatar from "../../assets/avatar.png";
 
-import letsStartLearnNews from "../../assets/audio/80_지금부터_금융_배우기랑_뉴스를_확인하러_가볼까요.mp3"
+import letsStartLearnNews from "../../assets/audio/80_지금부터_금융_배우기랑_뉴스를_확인하러_가볼까요.mp3";
 
 const SimLetsStartLearnNews: React.FC = () => {
-  const firstText = "지금부터\n금융 배우기랑\n뉴스 보러\n가볼까요?";
+  const firstText = "지금부터\n금융 배우기랑\n뉴스 확인하러\n가볼까요?";
   const firstBodlChars = ["금융 배우기", "뉴스"];
 
-  const { setCurrentView } = useSimLearnNewsStore();
+  const { setCurrentView, setCurrentLearnView, setSelectedCategory, setStep, step } = useSimLearnNewsStore();
 
   // 오디오말하기
   const audio = new Audio(letsStartLearnNews);
@@ -23,7 +24,10 @@ const SimLetsStartLearnNews: React.FC = () => {
     // 오디오가 끝나고 1초 뒤 자동으로 다음 단계로 이동
     audio.addEventListener("ended", () => {
       timerId = setTimeout(() => {
+        setStep(step + 1)
         setCurrentView("choice");
+        setCurrentLearnView("");
+        setSelectedCategory(null);
       }, 1000);
     });
 
@@ -43,6 +47,14 @@ const SimLetsStartLearnNews: React.FC = () => {
     <div>
       <div className="mb-10 mt-5">
         <GreenText text={firstText} boldChars={firstBodlChars} />
+      </div>
+
+      <div className="absolute bottom-0 left-1/2 h-[204px] w-[318px] -translate-x-1/2 transform">
+        <img
+          src={avatar}
+          alt="Avatar"
+          className="h-full w-full object-contain"
+        />
       </div>
     </div>
   );

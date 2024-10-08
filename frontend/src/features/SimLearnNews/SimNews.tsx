@@ -4,7 +4,11 @@ import BlackText from "../../components/BlackText";
 import YellowButton from "../../components/YellowButton";
 import { useSimLearnNewsStore } from "./SimLearnNewsStore";
 import { useEffect } from "react";
+import SpeechBubble from "../../components/SpeechBubble";
+
 import listenSummationNews from "../../assets/audio/47_여기서는_뉴스를_요약해서_매일_들려드릴_거예요.mp3";
+import beforeOrNext from "../../assets/audio/87_이전_이나_다음_버튼을_누르면_다른_뉴스로_넘어가요.mp3"
+import sayBefore from "../../assets/audio/86_이전_이라고_말해주세요.mp3";
 
 const SimNews: React.FC = () => {
   const {
@@ -17,22 +21,38 @@ const SimNews: React.FC = () => {
     setCurrentView,
   } = useSimLearnNewsStore();
 
-  // 오디오말하기
-  const listenSummationNewsAudio = new Audio(listenSummationNews);
+  const text = '뉴스를 요약해\n들려드려요.\n"이전"이라고\n말해주세요.';
+  const boldChars = ["뉴스", "요약", "이전", "말"];
 
-  // 오디오 플레이 (component가 mount될때만)
-  useEffect(() => {
-    // 플레이시켜
-    listenSummationNewsAudio.play();
-
-    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
-    return () => {
-      if (!listenSummationNewsAudio.paused) {
+    // 오디오 플레이 (component가 mount될때만)
+    useEffect(() => {
+      const listenSummationNewsAudio = new Audio(listenSummationNews);
+      const beforeOrNextAudio = new Audio(beforeOrNext);
+      const sayBeforeAudio = new Audio(sayBefore);
+  
+      // listenSummationNewsAudio 먼저 플레이
+      listenSummationNewsAudio.play();
+  
+      // listenSummationNewsAudio 다음에 beforeOrNextAudio
+      listenSummationNewsAudio.addEventListener("ended", () => {
+        beforeOrNextAudio.play();
+      });
+  
+      // beforeOrNextAudio 다음에 sayBeforeAudio
+      beforeOrNextAudio.addEventListener("ended", () => {
+        sayBeforeAudio.play();
+      });
+  
+      // unmount될때 다 초기화
+      return () => {
         listenSummationNewsAudio.pause();
         listenSummationNewsAudio.currentTime = 0;
-      }
-    };
-  }, []);
+        beforeOrNextAudio.pause();
+        beforeOrNextAudio.currentTime = 0;
+        sayBeforeAudio.pause();
+        sayBeforeAudio.currentTime = 0;
+      };
+    }, []);
 
   const currentNews = newsData[currentIndex];
 
@@ -66,7 +86,7 @@ const SimNews: React.FC = () => {
       ) : (
         <div>No news available</div>
       )}
-      <div className="mt-4 flex w-4/5 justify-between">
+      <div className="z-10 mt-4 flex w-4/5 justify-between">
         <YellowButton height={50} width={100} onClick={handlePrevious}>
           이전
         </YellowButton>
@@ -74,13 +94,17 @@ const SimNews: React.FC = () => {
           다음
         </YellowButton>
       </div>
-      <YellowButton
+
+      <div className="mt-8 relative top-[60px] flex w-full justify-center">
+        <SpeechBubble text={text} boldChars={boldChars} />
+      </div>
+      {/* <YellowButton
         height={50}
         width={100}
         onClick={() => setCurrentView("choice")}
       >
         뒤로
-      </YellowButton>
+      </YellowButton> */}
     </div>
   );
 };

@@ -52,9 +52,9 @@ const SimTransferVoiceCommand: React.FC = () => {
   // 사용자가 뭐라하는지 계속 들어
   useEffect(() => {
     SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    return () => {
-      SpeechRecognition.stopListening();
-    };
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
   }, []);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
