@@ -36,7 +36,7 @@ export const useSimLearnNewsStore = create<LearnNewsStore>((set, get) => ({
   fetchNews: async () => {
     set({ isLoading: true, error: null }); // 데이터 로딩 시작 시 상태 업데이트
     try {
-      const response = await axios.get<NewsItem[]>(API_URL);
+      const response = await axios.get<NewsItem[]>(`${API_URL}/news`);
       set({ newsData: response.data, isLoading: false }); // 성공 시 데이터 설정 및 로딩 상태 해제
     } catch (error) {
       console.error("Error fetching news:", error);
