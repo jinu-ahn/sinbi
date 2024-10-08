@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import YellowBox from "../../components/YellowBox";
 import BlackText from "../../components/BlackText";
 import YellowButton from "../../components/YellowButton";
@@ -18,7 +18,6 @@ const SimNews: React.FC = () => {
     error,
     handlePrevious,
     handleNext,
-    setCurrentView,
   } = useSimLearnNewsStore();
 
   const text = '뉴스를 요약해\n들려드려요.\n"이전"이라고\n말해주세요.';
@@ -55,6 +54,22 @@ const SimNews: React.FC = () => {
     }, []);
 
   const currentNews = newsData[currentIndex];
+  console.log('Current news keywords:', currentNews?.keywords);
+  // 주석: 키워드에서 숫자를 제거하는 함수
+  const cleanKeyword = (keyword: string): string => {
+    // const keywordStr = keyword.toString();
+    // return keywordStr.replace(/\d+(\.\d+)?$/, '').trim();
+    return keyword.trim();
+  };
+  // 주석: 중복 제거된 키워드 배열을 생성
+  const uniqueKeywords = useMemo(() => {
+    if (!currentNews) return [];
+    
+    const keywordSet = new Set(
+      currentNews.keywords[0].map(keywordPair => cleanKeyword(keywordPair[0]))
+    );
+    return Array.from(keywordSet);
+  }, [currentNews]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -76,9 +91,14 @@ const SimNews: React.FC = () => {
             textSize="text-lg"
           />
           <div className="mt-4 flex flex-wrap">
-            {currentNews.keywords.map(([keyword1, keyword2], index) => (
+            {uniqueKeywords.map((keywordPair, index) => (
               <span key={index} className="mb-2 mr-2 rounded bg-yellow-200 p-1">
-                {keyword1}, {keyword2}
+                {/* '0'을 기준으로 분할하여 앞부분만 사용  */}
+                {/* {keyword1.split('0')[0]},  */}
+                {/* {keyword2.split('0')[0]}  */}
+                {/* {cleanKeyword(keywordPair)} */}
+                {keywordPair}
+                {/* {cleanKeyword(keyword2)} */}
               </span>
             ))}
           </div>
