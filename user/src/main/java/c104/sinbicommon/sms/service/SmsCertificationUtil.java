@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SmsCertificationUtil {
-    private final String MESSAGE_FORMAT = "<#> 인증번호 : %s \n sinbi.life #%s";
+    private final String MESSAGE_FORMAT = "<#> 인증번호 : %s \n @sinbi.life #%s";
     private final String HASH = "#E6vcSVGXgzw";
 
     @Value("${coolsms.api.key}") // coolsms의 API 키 주입
