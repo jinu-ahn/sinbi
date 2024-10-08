@@ -26,7 +26,11 @@ redis_client = redis.StrictRedis(
 )
 
 app = Flask(__name__)
-CORS(app, resources={r"/news": {"origins": "http://localhost:5173"}})
+# / 와 /news 각각에 대한 CORS 설정
+CORS(app, resources={
+    r"/": {"origins": ["http://localhost:5173", "https://sinbi.life"]},
+    r"/news": {"origins": ["http://localhost:5173", "https://sinbi.life"]}
+})
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

@@ -8,7 +8,10 @@ import threading
 import time
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={
+    r"/": {"origins": ["http://localhost:5173", "https://sinbi.life"]},
+    r"/correct": {"origins": ["http://localhost:5173", "https://sinbi.life"]}
+})
 
 # OpenAI API 키 설정
 openai.api_key = 'sk-Tcr28s_gFHkmKQe53rZtOiJpZ885qat0dGI-Rvx_JjT3BlbkFJLuKjSJfZBG31l0dzqDOcHfk5YP3e1AuVyQMqZDn9IA'
