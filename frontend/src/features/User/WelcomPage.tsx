@@ -31,10 +31,10 @@ const WelcomePage: React.FC = () => {
       }
     };
   }, [hasInteracted, showModal]);
-  
+
   const handleCloseModal = () => {
     setShowModal(false); // 모달 숨기기
-    setHasInteracted(true);// 사용자 상호작용 표시
+    setHasInteracted(true); // 사용자 상호작용 표시
   };
 
   return (
@@ -58,7 +58,7 @@ const WelcomePage: React.FC = () => {
       <div className="flex min-h-screen flex-col items-center justify-center">
         <GreenText text="저희 은행 비서가" boldChars={[""]} />
         <GreenText text="처음이신가요?" boldChars={["처음"]} />
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 flex flex-col items-center space-y-4">
           <YellowButton
             height={50}
             width={200}
