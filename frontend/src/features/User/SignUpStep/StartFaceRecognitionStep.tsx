@@ -1,9 +1,7 @@
 // src/components/User/SignUpStep/StartFaceRecognitionStep.tsx
 import React, { useEffect } from 'react';
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import FaceEasy from "../../../assets/audio/52_얼굴로_로그인하면_더_편해요_얼굴을_등록할까요.mp3"
-import useUserStore from '../useUserStore';
 // interface StartFaceRecognitionStepProps {
 //   onStart: () => void;
 // }

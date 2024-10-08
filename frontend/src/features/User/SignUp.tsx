@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import useUserStore from "./useUserStore";
-import { LoginDto, SignUpDto, SignUpStep, TokenDto } from "./User.types";
+import {  SignUpStep } from "./User.types";
 import VoiceCommand from "./VoiceCommand";
 import {
   login,
-  sendPhoneNumber,
-  signup,
-  verificationCodeCheck,
+  // sendPhoneNumber,
+  // signup,
+  // verificationCodeCheck,
 } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/avatar.png";
 import "./User.css";
-import { getCookie, setCookie } from "../../utils/cookieUtils";
+import { getCookie } from "../../utils/cookieUtils";
 import FaceRecognitionStep from "./SignUpStep/FaceRecognitionStep";
 import WelcomeStep from "./SignUpStep/WelcomeStep";
 import UserNameStep from "./SignUpStep/UserNameStep";

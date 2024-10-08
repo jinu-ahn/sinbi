@@ -1,7 +1,6 @@
 // src/components/User/SignUpStep/ConfirmPasswordStep.tsx
 import React, { useEffect } from 'react';
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import NumberPad from "../NumberPad";
 import AgainTTS from "../../../assets/audio/04_다시_한_번_눌러주세요.mp3"
 import useUserStore from '../useUserStore';
@@ -13,7 +12,7 @@ import useUserStore from '../useUserStore';
 
 const ConfirmPasswordStep: React.FC = () => {
 
-  const {confirmPassword,setConfirmPassword, handlePasswordConfirmation} = useUserStore()
+  const {confirmPassword,setConfirmPassword} = useUserStore()
   // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setConfirmPassword(e.target.value);
   // };

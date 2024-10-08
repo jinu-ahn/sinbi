@@ -42,10 +42,10 @@ const VoiceCommand: React.FC = () => {
   // const [isListening, setIsListening] = useState(false);
   // const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [previousName, setPreviousName] = useState(name);
+  const [, setPreviousName] = useState(name);
   const [previousPhone, setPreviousPhone] = useState(phone);
   const [previousSmsCode, setPreviousSmsCode] = useState(smsCode);
-  const [previousPassword, setPreviousPassword] = useState(password);
+  const [, setPreviousPassword] = useState(password);
   const [previousConfirmPassword, setPreviousConfirmPassword] =
     useState(confirmPassword);
 
