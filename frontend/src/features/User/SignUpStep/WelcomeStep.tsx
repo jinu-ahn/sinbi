@@ -14,6 +14,7 @@ const WelcomeStep: React.FC = () => {
     // 오디오말하기
   const audio = new Audio(StartSignUpWithSinbi);
   const audioEndHandler = () => {
+    setIsAudioPlaying(false)
     // 오디오 재생이 끝나고 0.5초 후에 다음 단계로 자동 이동
     setTimeout(() => {
       nextStep();
@@ -29,7 +30,7 @@ const WelcomeStep: React.FC = () => {
       //   audio.pause();
       //   audio.currentTime = 0;
       // }
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       audio.removeEventListener('ended', audioEndHandler);
       audio.pause();
       audio.currentTime = 0;

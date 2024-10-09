@@ -53,6 +53,10 @@ const SignUp: React.FC = () => {
   // } = useUserStore();
 
   useEffect(() => {
+    console.log("isAudioPlaying: ", isAudioPlaying)
+  }, [])
+
+  useEffect(() => {
     // 자동 로그인 체크
     const storedPhone = getCookie("userPhone");
     if (storedPhone) {
