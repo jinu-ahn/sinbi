@@ -58,11 +58,14 @@ const VoiceCommand: React.FC = () => {
   // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)에 따라 들었다 멈췄다 함
   useEffect(() => {
     if (isAudioPlaying) {
-      SpeechRecognition.stopListening(); // Stop listening if audio is playing
+      console.log("I will stop listening now.");
       // SpeechRecognition.abortListening();
-    } else if (isAudioPlaying === false) {
-      SpeechRecognition.startListening({ continuous: true, language: "ko-KR" }); // Start listening when audio is not playing
+      SpeechRecognition.stopListening(); // Stop listening if audio is playing
+      console.log("I executed the stoplistening.");
     }
+    // else if (isAudioPlaying === false) {
+    //   SpeechRecognition.startListening({ continuous: true, language: "ko-KR" }); // Start listening when audio is not playing
+    // }
 
     // return () => {
     //   SpeechRecognition.stopListening(); // Ensure to stop listening when component unmounts or re-renders
@@ -71,9 +74,25 @@ const VoiceCommand: React.FC = () => {
 
   useEffect(() => {
     if (!isAudioPlaying) {
-      handleVoiceCommands(transcript); // Handle voice commands only when audio is not playing
+      console.log("I will start listening now.");
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: "ko-KR",
+      });
+      console.log("I executed startlistening.");
+    } else {
+      SpeechRecognition.startListening({
+        language: "ko-KR",
+      });
+      setTimeout(() => {
+        SpeechRecognition.stopListening();
+      }, 100);
+
+      return () => {
+        SpeechRecognition.stopListening();
+      };
     }
-  }, []);
+  }, [isAudioPlaying]);
 
   useEffect(() => {
     handleVoiceCommands(transcript);

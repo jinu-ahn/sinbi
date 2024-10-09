@@ -5,7 +5,7 @@ import useUserStore from "../useUserStore";
 import { OTPCredential } from "../User.types"
 
 const SmsVerificationStep: React.FC = () => {
-  const { smsCode, setSmsCode } = useUserStore();
+  const { smsCode, setSmsCode, setIsAudioPlaying } = useUserStore();
   // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setSmsCode(e.target.value);
   // };
@@ -15,8 +15,13 @@ const SmsVerificationStep: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
+
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
@@ -24,6 +29,7 @@ const SmsVerificationStep: React.FC = () => {
         audio.pause();
         audio.currentTime = 0;
       }
+      setIsAudioPlaying(true)
     };
   }, []);
 

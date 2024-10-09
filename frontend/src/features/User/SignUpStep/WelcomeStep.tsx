@@ -32,7 +32,7 @@ const WelcomeStep: React.FC = () => {
       //   audio.pause();
       //   audio.currentTime = 0;
       // }
-      // setIsAudioPlaying(false);
+      setIsAudioPlaying(true);
       audio.removeEventListener("ended", audioEndHandler);
       audio.pause();
       audio.currentTime = 0;

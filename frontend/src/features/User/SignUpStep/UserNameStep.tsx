@@ -47,6 +47,7 @@ const UserNameStep: React.FC = () => {
       sayNextAudio.currentTime = 0;
 
       setIsAudioPlaying(true);
+      console.log("namestep에서 true로 해놓고 unmount한다!")
     };
   }, []);
 
