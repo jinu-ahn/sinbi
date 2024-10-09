@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import useUserStore from "./useUserStore";
-import {  SignUpStep } from "./User.types";
+import { SignUpStep } from "./User.types";
 import VoiceCommand from "./VoiceCommand";
 import {
   login,
@@ -27,8 +27,14 @@ import LoginStep from "./SignUpStep/LoginStep";
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
   // const [error, setError] = useState<string | null>(null);
-  const { currentStep, error, setPhone, setStep } = useUserStore();
-
+  const {
+    currentStep,
+    error,
+    setPhone,
+    setStep,
+    isAudioPlaying,
+    setIsAudioPlaying,
+  } = useUserStore();
   // const {
   //   currentStep,
   //   name,
@@ -213,10 +219,7 @@ const SignUp: React.FC = () => {
       case SignUpStep.SignUpComplete:
         return <SignUpCompleteStep />;
       case SignUpStep.Login:
-        return (
-          <LoginStep/>
-         
-        );
+        return <LoginStep />;
       default:
         return null;
     }
@@ -241,7 +244,7 @@ const SignUp: React.FC = () => {
       {/* <button className="switch-mode-button" onClick={() => setIsLogin(!isLogin)}>
         {isLogin ? "회원가입으로 전환" : "로그인으로 전환"}
       </button> */}
-      <VoiceCommand />
+      {/* {isAudioPlaying ? <></> : <VoiceCommand />} */}
     </div>
   );
 };

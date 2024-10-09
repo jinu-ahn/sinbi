@@ -62,9 +62,9 @@ const VoiceCommand: React.FC = () => {
     } else {
       SpeechRecognition.stopListening();
     }
-    return () => {
-      SpeechRecognition.stopListening();
-    };
+    // return () => {
+    //   SpeechRecognition.stopListening();
+    // };
   }, [isAudioPlaying]);
 
   useEffect(() => {

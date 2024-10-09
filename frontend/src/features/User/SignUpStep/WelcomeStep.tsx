@@ -5,11 +5,12 @@ import StartSignUpWithSinbi from "../../../assets/audio/55_안녕하세요_저�
 import useUserStore from '../useUserStore';
 
 const WelcomeStep: React.FC = () => {
-  const { nextStep } = useUserStore();
+  const { nextStep, setIsAudioPlaying } = useUserStore();
 
   
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 오디오말하기
   const audio = new Audio(StartSignUpWithSinbi);
   const audioEndHandler = () => {
@@ -28,6 +29,7 @@ const WelcomeStep: React.FC = () => {
       //   audio.pause();
       //   audio.currentTime = 0;
       // }
+      setIsAudioPlaying(true)
       audio.removeEventListener('ended', audioEndHandler);
       audio.pause();
       audio.currentTime = 0;

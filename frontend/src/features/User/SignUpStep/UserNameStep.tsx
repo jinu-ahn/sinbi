@@ -8,7 +8,7 @@ import useUserStore from '../useUserStore';
 
 
 const UserNameStep: React.FC = () => {
-  const { name,setName, error } = useUserStore();
+  const { name,setName, error, setIsAudioPlaying } = useUserStore();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
@@ -19,6 +19,7 @@ const UserNameStep: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 먼저플레이
     sayNameAudio.play();
     // 먼저 말하고 끝나면 그 다음거 
@@ -27,11 +28,14 @@ const UserNameStep: React.FC = () => {
   });
   deleteAllAudio.addEventListener("ended", () => {
     sayNextAudio.play();
+    // setIsAudioPlaying(false)
 });
 
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      // setIsAudioPlaying(false)
+
       sayNameAudio.pause();
       sayNameAudio.currentTime = 0;
 
