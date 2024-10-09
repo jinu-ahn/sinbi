@@ -31,6 +31,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
   setFaceImage: (image: File | undefined) => set({ faceImage: image }),
   setError: (error) => set({ error }),
 
+
   nextStep: () =>
     set((state) => ({
       currentStep: (state.currentStep + 1) as SignUpStep,
@@ -108,6 +109,18 @@ const useUserStore = create<UserState & UserActions>((set) => ({
       nextStep();
     }
   },
+
+  // useUserStore.ts에 추가
+// isAudioPlaying: Boolean,
+// setIsAudioPlaying: (isPlaying: boolean) => void,
+
+// // 초기 상태 및 액션 추가
+isAudioPlaying: false,
+setIsAudioPlaying: (isPlaying) => set({ isAudioPlaying:isPlaying }),
+
+// // 새로운 상태 및 액션 추가
+// isAudioPlaying: false,
+// setIsAudioPlaying: (isPlaying: boolean) => set({ isAudioPlaying }),
   
 }));
 

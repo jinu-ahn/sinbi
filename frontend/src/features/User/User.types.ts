@@ -22,6 +22,7 @@ export interface UserState {
   faceImage: File | undefined;
   smsCode: string;
   error: string | null;
+  isAudioPlaying: boolean;
 }
 
 export interface UserActions {
@@ -35,6 +36,7 @@ export interface UserActions {
   prevStep: () => void;
   setStep: (step: SignUpStep) => void;
   setSmsCode: (code: string) => void; // SMS 코드 설정 액션 추가
+  setIsAudioPlaying: (isPlaying: boolean) => void;
 }
 
 export interface SignUpDto {

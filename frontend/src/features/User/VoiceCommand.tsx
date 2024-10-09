@@ -4,7 +4,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import useUserStore from "./useUserStore";
 import { SignUpStep } from "./User.types";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   login,
   sendPhoneNumber,
@@ -15,13 +15,11 @@ import { sendToNLP } from "../../services/nlpApi";
 import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 const VoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
 
   const {
     currentStep,
     name,
-    phone,
-    smsCode,
     password,
     confirmPassword,
     faceImage,
@@ -36,6 +34,7 @@ const VoiceCommand: React.FC = () => {
     prevStep,
     setStep,
     setError,
+    isAudioPlaying,
   } = useUserStore();
 
   const { transcript, resetTranscript } = useSpeechRecognition();
@@ -56,11 +55,21 @@ const VoiceCommand: React.FC = () => {
 
   // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
   useEffect(() => {
-    SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    // return () => {
-    //   SpeechRecognition.stopListening();
-    // };
-  }, [location]);
+    if (!isAudioPlaying) {
+      SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
+    } else {
+      SpeechRecognition.stopListening();
+    }
+    return () => {
+      SpeechRecognition.stopListening();
+    };
+  }, [isAudioPlaying]);
+
+  useEffect(() => {
+    if (!isAudioPlaying) {
+      handleVoiceCommands(transcript);
+    }
+  }, [transcript, isAudioPlaying]);
 
   useEffect(() => {
     handleVoiceCommands(transcript);
@@ -118,12 +127,10 @@ const VoiceCommand: React.FC = () => {
         // resetTranscript();
         break;
       case SignUpStep.UserName:
-        if (
-          lowerCaseTranscript.includes("어쩌구")
-        ) {
-          console.log("어쩌구라고 함")
+        if (lowerCaseTranscript.includes("어쩌구")) {
+          console.log("어쩌구라고 함");
         } else {
-          console.log("transcript: ", transcript)
+          console.log("transcript: ", transcript);
           handleNameInput(transcript);
         }
         // resetTranscript();
