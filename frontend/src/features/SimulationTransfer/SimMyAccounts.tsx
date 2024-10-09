@@ -5,7 +5,7 @@ import { useSimTransferStore } from "./SimTransferStore";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
 import SpeechBubble from "../../components/SpeechBubble";
 
-import pickThatAccount from "../../assets/audio/68_여기에서_내가_가지고_있는_통장을_확인할_수_있어요_신비_통장을_한번_눌러볼.mp3";
+import pickThatAccount from "../../assets/audio/68_여기에서_내가_가지고_있는_통장을_확인할_수_있어요_신비_통장을.mp3";
 
 interface Account {
   id: string;
