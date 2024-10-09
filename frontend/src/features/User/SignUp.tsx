@@ -54,7 +54,7 @@ const SignUp: React.FC = () => {
 
   useEffect(() => {
     console.log("isAudioPlaying: ", isAudioPlaying)
-  }, [])
+  }, [isAudioPlaying])
 
   useEffect(() => {
     // 자동 로그인 체크
