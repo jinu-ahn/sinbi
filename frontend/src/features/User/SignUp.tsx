@@ -244,7 +244,8 @@ const SignUp: React.FC = () => {
       {/* <button className="switch-mode-button" onClick={() => setIsLogin(!isLogin)}>
         {isLogin ? "회원가입으로 전환" : "로그인으로 전환"}
       </button> */}
-      {isAudioPlaying ? <></> : <VoiceCommand />}
+      {/* {isAudioPlaying ? <></> : <VoiceCommand />} */}
+      {!isAudioPlaying && <VoiceCommand />}
     </div>
   );
 };
