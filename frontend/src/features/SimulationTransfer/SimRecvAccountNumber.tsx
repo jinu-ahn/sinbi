@@ -3,7 +3,7 @@ import YellowBox from "../../components/YellowBox";
 import { useSimTransferStore } from "./SimTransferStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
-import saySinbiAccountNum from "../../assets/audio/70_저에게_한번_돈을_보내볼까요_제_계좌번호는_구팔칠육오사삼이일이에요_따라_말하시면_돼요.mp3";
+import saySinbiAccountNum from "../../assets/audio/70_저에게_한번_돈을_보내볼까요_제_계좌번호는_구팔칠육오사삼이일이에요_따라_말ᄒ.mp3";
 import howToDelete from "../../assets/audio/71_잘못_적었어도_걱정하지_마세요_'하나_지워'_'다_지워'_설명.mp3";
 import sayNext from "../../assets/audio/64_다_적었으면_'다음'이라고_말해주세요.mp3";
 
