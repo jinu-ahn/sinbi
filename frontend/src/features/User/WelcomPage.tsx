@@ -8,7 +8,6 @@ import useUserStore from "./useUserStore";
 
 const WelcomePage: React.FC = () => {
   const navigate = useNavigate();
-  const { setIsAudioPlaying } = useUserStore();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
