@@ -59,20 +59,21 @@ const VoiceCommand: React.FC = () => {
   useEffect(() => {
     if (isAudioPlaying) {
       SpeechRecognition.stopListening(); // Stop listening if audio is playing
-    } else {
+      // SpeechRecognition.abortListening();
+    } else if (isAudioPlaying === false) {
       SpeechRecognition.startListening({ continuous: true, language: "ko-KR" }); // Start listening when audio is not playing
     }
 
-    return () => {
-      SpeechRecognition.stopListening(); // Ensure to stop listening when component unmounts or re-renders
-    };
+    // return () => {
+    //   SpeechRecognition.stopListening(); // Ensure to stop listening when component unmounts or re-renders
+    // };
   }, [isAudioPlaying]); // Dependency on isAudioPlaying to dynamically control listening
 
   useEffect(() => {
     if (!isAudioPlaying) {
       handleVoiceCommands(transcript); // Handle voice commands only when audio is not playing
     }
-  }, [transcript, isAudioPlaying]);
+  }, []);
 
   useEffect(() => {
     handleVoiceCommands(transcript);
@@ -98,6 +99,7 @@ const VoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("다음") ||
       lowerCaseTranscript.includes("넘어가")
     ) {
+      // setIsAudioPlaying(true)
       handleNext();
       resetTranscript();
       return;

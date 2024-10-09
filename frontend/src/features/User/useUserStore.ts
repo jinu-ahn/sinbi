@@ -115,7 +115,7 @@ const useUserStore = create<UserState & UserActions>((set) => ({
 // setIsAudioPlaying: (isPlaying: boolean) => void,
 
 // // 초기 상태 및 액션 추가
-isAudioPlaying: false,
+isAudioPlaying: true,
 setIsAudioPlaying: (isPlaying) => set({ isAudioPlaying:isPlaying }),
 
 // // 새로운 상태 및 액션 추가

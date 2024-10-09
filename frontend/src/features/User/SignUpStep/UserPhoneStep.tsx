@@ -11,7 +11,7 @@ import DeleteOne from "../../../assets/audio/71_잘못_적었어도_걱정하지
 // }
 
 const UserPhoneStep: React.FC = () => {
-  const { phone, setPhone } = useUserStore();
+  const { phone, setPhone, setIsAudioPlaying } = useUserStore();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(e.target.value);
   };
@@ -21,12 +21,17 @@ const UserPhoneStep: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     sayPhoneAudio.play();
 
     sayPhoneAudio.addEventListener("ended", () => {
       delOneAudio.play();
     });
+
+    delOneAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
@@ -35,6 +40,8 @@ const UserPhoneStep: React.FC = () => {
 
       delOneAudio.pause();
       delOneAudio.currentTime = 0;
+
+      setIsAudioPlaying(true)
     };
   }, []);
 

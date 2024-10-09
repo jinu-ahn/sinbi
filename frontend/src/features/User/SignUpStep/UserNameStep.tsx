@@ -46,7 +46,7 @@ const UserNameStep: React.FC = () => {
       sayNextAudio.pause();
       sayNextAudio.currentTime = 0;
 
-      // setIsAudioPlaying(false);
+      setIsAudioPlaying(true);
     };
   }, []);
 
