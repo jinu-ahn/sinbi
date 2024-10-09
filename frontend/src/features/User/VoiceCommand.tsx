@@ -23,6 +23,8 @@ const VoiceCommand: React.FC = () => {
     password,
     confirmPassword,
     faceImage,
+    phone,
+    smsCode,
     // error,
     setName,
     setPhone,
