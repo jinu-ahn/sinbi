@@ -4,7 +4,6 @@ import GreenText from "../../components/GreenText";
 import YellowButton from "../../components/YellowButton";
 import isFirstTTS from "../../assets/audio/54_저희_은행_비서가_처음이신가요.mp3";
 
-import useUserStore from "./useUserStore";
 
 const WelcomePage: React.FC = () => {
   const navigate = useNavigate();
