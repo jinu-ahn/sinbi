@@ -11,17 +11,17 @@ import { useNavigate } from 'react-router-dom';
 
 const FaceRecognitionCompleteStep: React.FC = () => {
   // const {nextStep} = useUserStore()
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    // 2초 후에 '/sim'으로 이동
-    const timer = setTimeout(() => {
-      navigate('/sim');
-    }, 2000);
+  // useEffect(() => {
+  //   // 2초 후에 '/sim'으로 이동
+  //   const timer = setTimeout(() => {
+  //     navigate('/sim');
+  //   }, 2000);
 
-    // 컴포넌트가 언마운트되면 타이머를 정리
-    return () => clearTimeout(timer);
-  }, [navigate]);
+  //   // 컴포넌트가 언마운트되면 타이머를 정리
+  //   return () => clearTimeout(timer);
+  // }, [navigate]);
   return (
     <>
       <GreenText text="얼굴 인식이 완료되었습니다." boldChars={["완료"]} />
