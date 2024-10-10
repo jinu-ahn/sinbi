@@ -65,7 +65,7 @@ const News: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <BlackText text="오늘의 금융 소식" boldChars={["금융"]} />
+      <BlackText text="오늘의 소식" boldChars={["금융"]} />
       {isLoading ? (
         <div>Loading...</div>
       ) : error ? (
