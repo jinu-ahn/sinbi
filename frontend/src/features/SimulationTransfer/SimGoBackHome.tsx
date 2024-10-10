@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import { useNavigate } from "react-router-dom";
 import GreenText from "../../components/GreenText";
 import YellowBox from "../../components/YellowBox";
@@ -8,6 +9,7 @@ import letsGoHome from "../../assets/audio/78_필요하신_기능을_모두_배�
 
 const SimGoBackHome: React.FC = () => {
   const { setNickName } = useSimTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
   const boldChars = ["집"];
   const text = "필요하신 기능을\n모두 배웠어요!\n이제 집으로\n돌아갈게요.";
 
@@ -18,6 +20,7 @@ const SimGoBackHome: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
 
@@ -30,6 +33,7 @@ const SimGoBackHome: React.FC = () => {
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(false)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

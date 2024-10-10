@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { specificAccount } from "../../services/api"; // Assuming this API fetches transactions for the specific account
 import YellowBox from "../../components/YellowBox";
 import thisIsSpecificAccount from "../../assets/audio/40_이_통장의_모든_거래_내역이에요.mp3";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 interface Transaction {
   bankType: string;
@@ -32,6 +33,7 @@ const SpecificAccount: React.FC<{ accountId: string }> = ({ accountId }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 상세 계좌 내역 가져와
   useEffect(() => {
@@ -57,11 +59,17 @@ const SpecificAccount: React.FC<{ accountId: string }> = ({ accountId }) => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
 
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(false)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

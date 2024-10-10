@@ -8,8 +8,9 @@ import SpeechBubble from "../../components/SpeechBubble";
 import { useSimLearnNewsStore } from "./SimLearnNewsStore";
 import { VideoTitles } from "./SimLearnNews.types";
 import { CategoryType } from "./SimLearnNews.types";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
-import sayLearnOrNews from "../../assets/audio/81_여기서는_금융_지식을_배우거나_뉴스를_들을_수_있어요_우선은_금융_배우기.mp3"
+import sayLearnOrNews from "../../assets/audio/81_여기서는_금융_지식을_배우거나_뉴스를_들을_수_있어요_우선은_금융_배우기.mp3";
 import chooseLearnField from "../../assets/audio/82_여기서는_배우고_싶은_금융_지식의_분야를_고를_수_있어요.mp3";
 import chooseCategoryTitle from "../../assets/audio/83_여기서_방금_고른_분야의_영상들을_확인할_수_있어요.mp3";
 import sayMovieTitle from "../../assets/audio/85_여기서_영상을_보실_수_있어요.mp3";
@@ -28,6 +29,8 @@ const SimLearn: React.FC = () => {
     step,
     setStep,
   } = useSimLearnNewsStore();
+
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   interface ButtonConfig {
     text: string[];
@@ -104,10 +107,15 @@ const SimLearn: React.FC = () => {
 
   // step별 오디오
   useEffect(() => {
+    setIsAudioPlaying(true)
     const audio = new Audio(stepAudios[step]);
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     return () => {
+      setIsAudioPlaying(false)
       if (audio && !audio.paused) {
         audio.pause();
         audio.currentTime = 0;
@@ -139,7 +147,7 @@ const SimLearn: React.FC = () => {
               width={buttonSize.width}
               onClick={() => {
                 setCurrentLearnView("category");
-                setStep(step + 1)
+                setStep(step + 1);
                 setSelectedCategory(button.category);
               }}
             >

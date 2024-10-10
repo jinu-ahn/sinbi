@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useSimConnectAccountStore } from "./SimConnectAccountStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import SpeechBubble from "../../components/SpeechBubble";
 
@@ -11,6 +12,7 @@ import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음�
 const SimAccountNumber: React.FC = () => {
   const { accountNum, setAccountNum, error, setError } =
     useSimConnectAccountStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAccountNum(e.target.value);
@@ -27,6 +29,7 @@ const SimAccountNumber: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // sayAccountNumberAudio 먼저 플레이
     sayAccountNumberAudio.play();
 
@@ -40,8 +43,13 @@ const SimAccountNumber: React.FC = () => {
       sayNextAudio.play();
     });
 
+    sayNextAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // unmount될때 다 초기화
     return () => {
+      setIsAudioPlaying(false)
       sayAccountNumberAudio.pause();
       sayAccountNumberAudio.currentTime = 0;
       deleteAllAudio.pause();

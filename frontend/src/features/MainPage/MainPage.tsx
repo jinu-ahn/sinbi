@@ -5,6 +5,7 @@ import avatar from "../../assets/avatar.png";
 import MainVoiceCommand from "./MainVoiceCommand";
 // import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
 import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
 
 interface ButtonConfig {
@@ -15,8 +16,9 @@ interface ButtonConfig {
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(true);
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
-  const { done } = useLearnNewsSimDoneStore()
+  const { done } = useLearnNewsSimDoneStore();
 
   const buttons: ButtonConfig[] = [
     { text: ["돈", "보내기"], path: "/transfer" },
@@ -28,9 +30,9 @@ const MainPage: React.FC = () => {
   const handleNavigation = (path: string): void => {
     if (path === "/learn-news") {
       if (!done) {
-        navigate("/sim-learn-news")
+        navigate("/sim-learn-news");
       } else {
-        navigate(path)
+        navigate(path);
       }
     } else {
       navigate(path);
@@ -59,12 +61,17 @@ const MainPage: React.FC = () => {
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
     if (!showModal) {
+      setIsAudioPlaying(true)
       // 플레이시켜
       audio.play();
+      audio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
     }
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(false)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

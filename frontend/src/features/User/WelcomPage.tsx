@@ -3,12 +3,34 @@ import { useNavigate } from "react-router-dom";
 import GreenText from "../../components/GreenText";
 import YellowButton from "../../components/YellowButton";
 import isFirstTTS from "../../assets/audio/54_저희_은행_비서가_처음이신가요.mp3";
+
+
 const WelcomePage: React.FC = () => {
   const navigate = useNavigate();
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [showModal, setShowModal] = useState(true);
+
+  const getButtonSize = () => {
+    if (window.innerWidth >= 425) {
+      return { height: 90, width: 330 };
+    } else if (window.innerWidth >= 375) {
+      return { height: 80, width: 275 };
+    } else {
+      return { height: 70, width: 230 };
+    }
+  };
+  const [buttonSize, setButtonSize] = useState(getButtonSize());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setButtonSize(getButtonSize());
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // 오디오말하기
   useEffect(() => {
@@ -31,10 +53,10 @@ const WelcomePage: React.FC = () => {
       }
     };
   }, [hasInteracted, showModal]);
-  
+
   const handleCloseModal = () => {
     setShowModal(false); // 모달 숨기기
-    setHasInteracted(true);// 사용자 상호작용 표시
+    setHasInteracted(true); // 사용자 상호작용 표시
   };
 
   return (
@@ -58,20 +80,28 @@ const WelcomePage: React.FC = () => {
       <div className="flex min-h-screen flex-col items-center justify-center">
         <GreenText text="저희 은행 비서가" boldChars={[""]} />
         <GreenText text="처음이신가요?" boldChars={["처음"]} />
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 flex flex-col items-center space-y-6 mobile-large:space-y-8">
           <YellowButton
-            height={50}
-            width={200}
+            height={buttonSize.height}
+            width={buttonSize.width}
             onClick={() => navigate("/signup")}
           >
-            네, 처음이에요
+            <div className="flex h-full w-full flex-col items-center justify-center leading-relaxed">
+              <p className="text-center text-[26px] font-bold mobile-medium:text-[31px] mobile-large:text-[36px]">
+                네, 처음이에요
+              </p>
+            </div>
           </YellowButton>
           <YellowButton
-            height={50}
-            width={200}
+            height={buttonSize.height}
+            width={buttonSize.width}
             onClick={() => navigate("/login")}
           >
-            아니요, 해봤어요
+            <div className="flex h-full w-full flex-col items-center justify-center leading-relaxed">
+              <p className="text-center text-[26px] font-bold mobile-medium:text-[31px] mobile-large:text-[36px]">
+                아니요, 해봤어요
+              </p>
+            </div>
           </YellowButton>
         </div>
       </div>

@@ -1,30 +1,33 @@
 import React, { useEffect } from "react";
 import GreenText from "../../../components/GreenText";
-import YellowButton from "../../../components/YellowButton";
 import VerifyAudio from "../../../assets/audio/57_인증번호가_안_나오면_문자를_보고_알려주세요.mp3";
+import useUserStore from "../useUserStore";
 import { OTPCredential } from "../User.types";
+import { useAudioSTTControlStore } from "../../../store/AudioSTTControlStore";
 
-interface SmsVerificationStepProps {
-  smsCode: string;
-  setSmsCode: (code: string) => void;
-  onVerifySms: () => Promise<void>;
-}
+const SmsVerificationStep: React.FC = () => {
+  const { smsCode, setSmsCode } = useUserStore();
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSmsCode(e.target.value);
+  // };
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
-const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
-  smsCode,
-  setSmsCode,
-  onVerifySms,
-}) => {
   // 오디오말하기
   const audio = new Audio(VerifyAudio);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // 플레이시켜
     audio.play();
 
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
+
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(false);
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
@@ -40,7 +43,7 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
 
   // 타입 가드 함수 정의: Credential이 OTPCredential 타입인지 확인하는 함수
   function isOTPCredential(
-    credential: Credential | null
+    credential: Credential | null,
   ): credential is OTPCredential {
     return credential !== null && "code" in credential;
   }
@@ -50,23 +53,16 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
     const getOTP = async () => {
       if ("OTPCredential" in window) {
         try {
-          alert("들어왔어");
           // 비동기 작업을 기다림
           const credential = await navigator.credentials.get({
             otp: { transport: ["sms"] },
           } as OTPCredentialRequestOptions);
-          alert("credential 까지 들어옴 : " + credential);
           // 타입 가드를 사용하여 OTPCredential인지 검사
           if (isOTPCredential(credential)) {
-            alert("OTP credential : " + credential);
             console.log("받은 OTP:", credential);
             setSmsCode(credential.code);
-          } else {
-            alert("실패 : " + credential);
-            console.error("실패 : ", credential);
           }
         } catch (err) {
-          alert("SMS 인증 실패");
           console.error("SMS 인증 실패:", err);
         }
       }
@@ -88,13 +84,9 @@ const SmsVerificationStep: React.FC<SmsVerificationStepProps> = ({
         onChange={(e) => setSmsCode(e.target.value)}
         maxLength={4} // or your OTP code length
         autoComplete="one-time-code" // Required for OTP autofill
-        className="border p-2 text-center rounded-md text-lg" // Add your preferred styling here
-        placeholder="Enter OTP"
+        className="rounded-md border p-2 text-center text-lg" // Add your preferred styling here
+        placeholder="인증번호를 입력하세요"
       />
-
-      <YellowButton height={50} width={200} onClick={onVerifySms}>
-        인증하기
-      </YellowButton>
     </>
   );
 };
@@ -137,8 +129,6 @@ export default SmsVerificationStep;
 //     };
 //   }, []);
 
-
-  
 //   interface OTPCredentialRequestOptions extends CredentialRequestOptions {
 //     otp?: {
 //       transport: string[];
@@ -149,7 +139,6 @@ export default SmsVerificationStep;
 // function isOTPCredential(credential: Credential | null): credential is OTPCredential {
 //   return credential !== null && 'code' in credential;
 // }
-
 
 // // SMS 인증 번호 자동 인풋
 // useEffect(() => {

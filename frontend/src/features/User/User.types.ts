@@ -21,6 +21,8 @@ export interface UserState {
   confirmPassword: string;
   faceImage: File | undefined;
   smsCode: string;
+  error: string | null;
+  isAudioPlaying: boolean;
 }
 
 export interface UserActions {
@@ -28,11 +30,13 @@ export interface UserActions {
   setPhone: (phone: string) => void;
   setPassword: (password: string) => void;
   setConfirmPassword: (password: string) => void;
-  setFaceImage: (image: File) => void;
+  setFaceImage: (image: File |undefined) => void;
+  setError: (error: string | null) => void;
   nextStep: () => void;
   prevStep: () => void;
   setStep: (step: SignUpStep) => void;
   setSmsCode: (code: string) => void; // SMS 코드 설정 액션 추가
+  setIsAudioPlaying: (isPlaying: boolean) => void;
 }
 
 export interface SignUpDto {

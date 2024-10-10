@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTransferStore } from "./TransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import {
   checkVirtualAccount,
   sendMoney,
@@ -24,12 +25,16 @@ import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까
 
 const TransferVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { isAudioPlaying, setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 오디오말하기
   const playAudio = (audioFile: string) => {
+    setIsAudioPlaying(true);
     const audio = new Audio(audioFile);
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
   };
 
   // Store에서 필요한거 전부 import!!
@@ -57,13 +62,36 @@ const TransferVoiceCommand: React.FC = () => {
   const [previousAccountNum, setPreviousAccountNum] = useState(sendAccountNum);
   const [previousMoney, setpreviousMoney] = useState(money);
 
-  // 사용자가 뭐라하는지 계속 들어
+  // 사용자가 뭐라하는지 들어 + 오디오플레이 여부에 따라 들었다 안 들었다 함
   useEffect(() => {
-    SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    // return () => {
-    //   SpeechRecognition.stopListening();
-    // };
-  }, [location]);
+    if (isAudioPlaying) {
+      console.log("I will stop listening now.");
+      SpeechRecognition.stopListening();
+      console.log("I executed the stoplistening.");
+    }
+  }, [isAudioPlaying]);
+
+  useEffect(() => {
+    if (!isAudioPlaying) {
+      console.log("I will start listening now.");
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: "ko-KR",
+      });
+      console.log("I executed startlistening.");
+    } else {
+      SpeechRecognition.startListening({
+        language: "ko-KR",
+      });
+      setTimeout(() => {
+        SpeechRecognition.stopListening();
+      }, 100);
+
+      return () => {
+        SpeechRecognition.stopListening();
+      };
+    }
+  }, [isAudioPlaying]);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)
@@ -482,15 +510,17 @@ const TransferVoiceCommand: React.FC = () => {
       setStep(0);
       navigate("/main");
       resetTranscript();
-    } 
-    else {
+    } else {
       sendToNLP(transcript)
         .then((response) => {
           if (response && response.text) {
             console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
             handleVoiceCommands(response.text);
           } else {
-            console.error("Received an unexpected response from NLP API: ", response);
+            console.error(
+              "Received an unexpected response from NLP API: ",
+              response,
+            );
           }
           resetTranscript();
         })

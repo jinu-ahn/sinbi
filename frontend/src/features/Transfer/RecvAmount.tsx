@@ -1,10 +1,20 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useTransferStore } from "./TransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
+import tellHowMuch from "../../assets/audio/25_얼마를_보낼지_말해주세요.mp3";
 
 const RecvAmount: React.FC = () => {
-  const { money, setSendMoney, error, setError, formalName, favAccountId, sendAccountNum } =
-  useTransferStore();
+  const {
+    money,
+    setSendMoney,
+    error,
+    setError,
+    formalName,
+    favAccountId,
+    sendAccountNum,
+  } = useTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSendMoney(e.target.value);
@@ -12,9 +22,31 @@ const RecvAmount: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("favaccountid: ", favAccountId)
-    console.log("sendAccountNum: ", sendAccountNum)
-  }, [favAccountId, sendAccountNum])
+    console.log("favaccountid: ", favAccountId);
+    console.log("sendAccountNum: ", sendAccountNum);
+  }, [favAccountId, sendAccountNum]);
+
+  // 오디오말하기
+  const audio = new Audio(tellHowMuch);
+
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    setIsAudioPlaying(true);
+    // 플레이시켜
+    audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
+
+    // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
+    return () => {
+      setIsAudioPlaying(false);
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    };
+  }, []);
 
   return (
     <div>
@@ -32,7 +64,9 @@ const RecvAmount: React.FC = () => {
       <div className="flex w-full justify-center">
         <YellowBox>
           <div>
-            <p className="mb-[20px] text-[30px] font-bold">{formalName} <span className="font-normal">님에게</span></p>
+            <p className="mb-[20px] text-[30px] font-bold">
+              {formalName} <span className="font-normal">님에게</span>
+            </p>
           </div>
           <div className="flex items-center">
             <input

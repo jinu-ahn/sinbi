@@ -4,7 +4,6 @@ import BlackText from "../../components/BlackText";
 import YellowButton from "../../components/YellowButton";
 import { useLearnNewsStore } from "./useLearnNewsStore";
 import { useEffect } from "react";
-import listenSummationNews from "../../assets/audio/47_여기서는_뉴스를_요약해서_매일_들려드릴_거예요.mp3"
 
 const News: React.FC = () => {
   const {
@@ -14,27 +13,37 @@ const News: React.FC = () => {
     error,
     handlePrevious,
     handleNext,
-    setCurrentView,
   } = useLearnNewsStore();
 
-    // 오디오말하기
-    const listenSummationNewsAudio = new Audio(listenSummationNews);
-
-    // 오디오 플레이 (component가 mount될때만)
-    useEffect(() => {
-      // 플레이시켜
-      listenSummationNewsAudio.play();
-  
-      // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
-      return () => {
-        if (!listenSummationNewsAudio.paused) {
-          listenSummationNewsAudio.pause();
-          listenSummationNewsAudio.currentTime = 0;
-        }
-      };
-    }, []);
-
   const currentNews = newsData[currentIndex];
+
+  // 오늘의 뉴스 다 읽을 때까지 다음 페이지 자동으로 넘어가면서 다 읽어줌
+  useEffect(() => {
+    if (currentNews) {
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance();
+  
+      // tts로 읽을거 : title이랑 summary
+      const speechText = `${currentNews.title}. ${currentNews.summary}`;
+      utterance.text = speechText;
+      utterance.lang = "ko-KR";  // 한국어 읽어
+      utterance.rate = 1;
+  
+      // When the speech ends, move to the next page
+      utterance.onend = () => {
+        handleNext();
+      };
+  
+      // component가 mount되면 시작해
+      synth.speak(utterance);
+  
+      // unmount되면 말하는거 멈춰
+      return () => {
+        synth.cancel(); 
+      };
+    }
+  }, [currentNews, handleNext]);
+  
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -77,13 +86,6 @@ const News: React.FC = () => {
           다음
         </YellowButton>
       </div>
-      <YellowButton
-        height={50}
-        width={100}
-        onClick={() => setCurrentView("choice")}
-      >
-        뒤로
-      </YellowButton>
     </div>
   );
 };

@@ -4,8 +4,9 @@ import YellowBox from "../../components/YellowBox";
 import { useSimTransferStore } from "./SimTransferStore";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
 import SpeechBubble from "../../components/SpeechBubble";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
-import pickThatAccount from "../../assets/audio/68_여기에서_내가_가지고_있는_통장을_확인할_수_있어요_신비_통장을_한번_눌러볼까요.mp3";
+import pickThatAccount from "../../assets/audio/68_여기에서_내가_가지고_있는_통장을_확인할_수_있어요_신비_통장을.mp3";
 
 interface Account {
   id: string;
@@ -19,6 +20,8 @@ const SimMyAccounts: React.FC = () => {
   // 내 계좌 목록 저장할것 가져오기
   const { step, setStep, error, setMyAccountId, setAccounts, accounts } =
     useSimTransferStore();
+
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 말풍선 안 text
   const text = "신비 통장을\n눌러주세요!";
@@ -44,11 +47,16 @@ const SimMyAccounts: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(false)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

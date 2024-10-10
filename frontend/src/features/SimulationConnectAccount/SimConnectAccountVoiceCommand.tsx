@@ -4,6 +4,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useNavigate } from "react-router-dom";
 import { useSimConnectAccountStore } from "./SimConnectAccountStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import {
   checkVirtualAccount,
   sendPhoneNumber,
@@ -14,10 +15,11 @@ import { sendToNLP } from "../../services/nlpApi";
 
 // 목소리
 // import sayAccountNumber from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
-import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
+// import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 
 const SimConnectAccountVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
+  const { isAudioPlaying } = useAudioSTTControlStore();
 
   // AccountStore에서 필요한거 전부 import!!
   const {
@@ -40,19 +42,42 @@ const SimConnectAccountVoiceCommand: React.FC = () => {
   const [PreviousVerificationCode, setPreviousVerificationCode] =
     useState(phoneNum);
 
-  // 오디오말하기
-  const playAudio = (audioFile: string) => {
-    const audio = new Audio(audioFile);
-    audio.play();
-  };
+  // // 오디오말하기
+  // const playAudio = (audioFile: string) => {
+  //   const audio = new Audio(audioFile);
+  //   audio.play();
+  // };
 
-  // 사용자가 뭐라하는지 계속 들어
+  // 사용자가 뭐라하는지 들어 + 오디오플레이 여부에 따라 들었다 안 들었다 함
   useEffect(() => {
-    SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    // return () => {
-    //   SpeechRecognition.stopListening();
-    // };
-  }, []);
+    if (isAudioPlaying) {
+      console.log("I will stop listening now.");
+      SpeechRecognition.stopListening();
+      console.log("I executed the stoplistening.");
+    }
+  }, [isAudioPlaying]); 
+
+  useEffect(() => {
+    if (!isAudioPlaying) {
+      console.log("I will start listening now.");
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: "ko-KR",
+      });
+      console.log("I executed startlistening.");
+    } else {
+      SpeechRecognition.startListening({
+        language: "ko-KR",
+      });
+      setTimeout(() => {
+        SpeechRecognition.stopListening();
+      }, 100);
+
+      return () => {
+        SpeechRecognition.stopListening();
+      };
+    }
+  }, [isAudioPlaying]);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)
@@ -87,13 +112,13 @@ const SimConnectAccountVoiceCommand: React.FC = () => {
         resetTranscript();
       }
 
-      if (
-        lowerCaseTranscript.includes("신비야") ||
-        lowerCaseTranscript.includes("도와줘")
-      ) {
-        playAudio(sayNext);
-        resetTranscript();
-      }
+      // if (
+      //   lowerCaseTranscript.includes("신비야") ||
+      //   lowerCaseTranscript.includes("도와줘")
+      // ) {
+      //   playAudio(sayNext);
+      //   resetTranscript();
+      // }
 
       if (
         lowerCaseTranscript.includes("응") ||
@@ -340,15 +365,17 @@ const SimConnectAccountVoiceCommand: React.FC = () => {
       setStep(0);
       navigate("/sim");
       resetTranscript();
-    }
-    else {
+    } else {
       sendToNLP(transcript)
         .then((response) => {
           if (response && response.text) {
             console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
             handleVoiceCommands(response.text);
           } else {
-            console.error("Received an unexpected response from NLP API: ", response);
+            console.error(
+              "Received an unexpected response from NLP API: ",
+              response,
+            );
           }
           resetTranscript();
         })
