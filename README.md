@@ -104,7 +104,6 @@
 
 - React 18.3.1
 - Typescript
-- Three.js
 - Spring Boot 3.3.2
 - spring Data JPA
 - spring security
@@ -141,8 +140,8 @@
 
 ### 🌞 [FE]
 
-<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> 
-<img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white">
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"> 
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> 
 <img src="https://img.shields.io/badge/Zustand-5D3FD3?style=for-the-badge&logo=zustand&logoColor=white">
 
 ---
@@ -192,7 +191,6 @@
 
 - **React** : 컴포넌트 기반의 사용자 인터페이스를 구축하기 위한 JavaScript 라이브러리.
 - **TypeScript** : JavaScript의 슈퍼셋으로, 정적 타입을 사용해 더 안정적이고 유지보수하기 쉬운 코드를 작성.
-- **Three.js** : WebGL을 사용하여 3D 그래픽과 애니메이션을 구현하는 JavaScript 라이브러리.
 - **PWA (Progressive Web App)** : 매니페스트 파일을 이용하여 사용자가 웹 앱을 모바일 기기에 설치할 수 있도록 지원.
 - **Zustand** : 경량 상태 관리 라이브러리로, React 애플리케이션에서의 전역 상태 관리를 간편하게 지원.
 
