@@ -340,7 +340,7 @@ export const favoriteAccounts = async () => {
       //   userId,
       // },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("해당 계좌 없음", error);
     throw error;

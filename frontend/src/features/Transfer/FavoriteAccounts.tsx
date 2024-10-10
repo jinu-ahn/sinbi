@@ -18,10 +18,10 @@ const banks = [
   { id: "GWANJU", name: "광주은행", logo: "/BankLogos/광주은행.png" },
   { id: "DAEGU", name: "대구은행", logo: "/BankLogos/대구은행.png" },
   { id: "BUSAN", name: "부산은행", logo: "/BankLogos/부산은행.png" },
-  { id: "SANLIM", name: "산림조합", logo:"/BankLogos/산림조합.png" },
+  { id: "SANLIM", name: "산림조합", logo: "/BankLogos/산림조합.png" },
   { id: "SAEMAEUL", name: "새마을은행", logo: "/BankLogos/새마을은행.png" },
   { id: "SUHYUB", name: "수협은행", logo: "/BankLogos/수협은행.png" },
-  { id: "SHINHAN", name: "신한은행", logo:"/BankLogos/신한은행.png" },
+  { id: "SHINHAN", name: "신한은행", logo: "/BankLogos/신한은행.png" },
   { id: "SHINHYUB", name: "신협은행", logo: "/BankLogos/신협은행.png" },
   { id: "CITY", name: "씨티은행", logo: "/BankLogos/씨티은행.png" },
   { id: "WOORI", name: "우리은행", logo: "/BankLogos/우리은행.png" },
@@ -32,7 +32,7 @@ const banks = [
   { id: "KAKAO", name: "카카오뱅크", logo: "/BankLogos/카카오뱅크.png" },
   { id: "TOSS", name: "토스뱅크", logo: "/BankLogos/토스뱅크.png" },
   { id: "HANA", name: "하나은행", logo: "/BankLogos/하나은행.png" },
-  { id: "HANKUKTUZA", name: "한국투자증권", logo:"/BankLogos/한국투자증권.png" },
+  { id: "HANKUKTUZA", name: "한국투자증권", logo: "/BankLogos/한국투자증권.png" },
 ];
 
 interface FavAccount {
@@ -67,9 +67,9 @@ const FavoriteAccounts: React.FC = () => {
       try {
         const response = await favoriteAccounts();
         // response.data가 배열이면
-        if (Array.isArray(response.data)) {
+        if (Array.isArray(response.data.receivers)) {
           console.log(response.data);
-          setFavAccounts(response.data);
+          setFavAccounts(response.data.receivers);
         } else {
           setFavAccounts([]);
         }
