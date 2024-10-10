@@ -5,9 +5,11 @@ import SayName from "../../../assets/audio/56_이름을_말하거나_입력해�
 import DeleteAll from "../../../assets/audio/09_다_지워라고_말하면_전부_지울_수_있어요.mp3";
 import SayNext from "../../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 import useUserStore from "../useUserStore";
+import { useAudioSTTControlStore } from "../../../store/AudioSTTControlStore";
 
 const UserNameStep: React.FC = () => {
-  const { name, setName, error, setIsAudioPlaying } = useUserStore();
+  const { name, setName, error } = useUserStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };

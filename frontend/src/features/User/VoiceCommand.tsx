@@ -12,8 +12,12 @@ import {
   verificationCodeCheck,
 } from "../../services/api";
 import { sendToNLP } from "../../services/nlpApi";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
+
 import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
+
 const VoiceCommand: React.FC = () => {
+  const { isAudioPlaying } = useAudioSTTControlStore();
   const navigate = useNavigate();
   // const location = useLocation();
 
@@ -36,7 +40,7 @@ const VoiceCommand: React.FC = () => {
     prevStep,
     setStep,
     setError,
-    isAudioPlaying,
+    // isAudioPlaying,
   } = useUserStore();
 
   const { transcript, resetTranscript } = useSpeechRecognition();

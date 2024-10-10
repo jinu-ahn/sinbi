@@ -23,8 +23,10 @@ import StartFaceRecognitionStep from "./SignUpStep/StartFaceRecognitionStep";
 import FaceRecognitionCompleteStep from "./SignUpStep/FaceRecognitionCompleteStep";
 import SignUpCompleteStep from "./SignUpStep/SignUpCompleteStep";
 import LoginStep from "./SignUpStep/LoginStep";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 const SignUp: React.FC = () => {
+  const { isAudioPlaying } = useAudioSTTControlStore();
   const navigate = useNavigate();
   // const [error, setError] = useState<string | null>(null);
   const {
@@ -32,7 +34,7 @@ const SignUp: React.FC = () => {
     error,
     setPhone,
     setStep,
-    isAudioPlaying,
+    // isAudioPlaying,
     // setIsAudioPlaying,
   } = useUserStore();
   // const {
@@ -53,12 +55,12 @@ const SignUp: React.FC = () => {
   // } = useUserStore();
 
   useEffect(() => {
-    console.log("isAudioPlaying: ", isAudioPlaying)
-  }, [isAudioPlaying])
+    console.log("isAudioPlaying: ", isAudioPlaying);
+  }, [isAudioPlaying]);
 
   useEffect(() => {
-    console.log("current step: ", currentStep)
-  }, [currentStep])
+    console.log("current step: ", currentStep);
+  }, [currentStep]);
 
   useEffect(() => {
     // 자동 로그인 체크
