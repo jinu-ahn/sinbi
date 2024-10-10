@@ -100,18 +100,18 @@ const AccountConfirm: React.FC = () => {
     registerAccounts();
   }, [accountNum, bankType]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/main");
-      setAccountNum("");
-      setBankType("");
-      setError("");
-      setPhoneNum("");
-      setVerificationCode("");
-    }, 3000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     navigate("/main");
+  //     setAccountNum("");
+  //     setBankType("");
+  //     setError("");
+  //     setPhoneNum("");
+  //     setVerificationCode("");
+  //   }, 3000);
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+  //   return () => clearTimeout(timer);
+  // }, [navigate]);
 
   return (
     <div>
