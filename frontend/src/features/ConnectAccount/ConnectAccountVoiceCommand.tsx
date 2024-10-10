@@ -324,6 +324,7 @@ const ConnectAccountVoiceCommand: React.FC = () => {
 
       if (
         lowerCaseTranscript.includes("확인") ||
+        lowerCaseTranscript.includes("다음") ||
         lowerCaseTranscript.includes("끝")
       ) {
         if (!verificationCode) {
