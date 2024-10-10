@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import YellowButton from "../../components/YellowButton";
 import BlackText from "../../components/BlackText";
 import { useLearnNewsStore } from "./useLearnNewsStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import { VideoTitles, CategoryType } from "./LearnNews.types";
 import YouTube from "react-youtube";
 import YellowBox from "../../components/YellowBox";
@@ -33,6 +34,8 @@ const Learn: React.FC = () => {
   // const [currentLearnView, setCurrentLearnView] = useState<LearnViewType>("main");
   // const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
   // const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const buttons: ButtonConfig[] = [
     { text: ["슬기로운", "금융생활"], category: "financial" },
@@ -74,11 +77,19 @@ const Learn: React.FC = () => {
     let audio: HTMLAudioElement | null = null;
 
     if (currentLearnView === "main") {
+      setIsAudioPlaying(true)
       audio = new Audio(chooseLearnField);
       audio.play();
+      audio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
     } else if (currentLearnView === "category") {
+      setIsAudioPlaying(true)
       audio = new Audio(chooseCaterotyTitle);
       audio.play();
+      audio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
     }
     // } else if (currentLearnView === "video") {
     //   audio = new Audio(sayMovieTitle);
@@ -87,6 +98,7 @@ const Learn: React.FC = () => {
 
     // Cleanup the audio when the component unmounts or when the view changes
     return () => {
+      setIsAudioPlaying(true)
       if (audio) {
         audio.pause();
         audio.currentTime = 0;
@@ -216,7 +228,7 @@ const Learn: React.FC = () => {
             if (currentVideoIndex > 0) {
               setCurrentVideoIndex(currentVideoIndex + 1);
             } else {
-              setSelectedCategory(null)
+              setSelectedCategory(null);
             }
           }}
         >

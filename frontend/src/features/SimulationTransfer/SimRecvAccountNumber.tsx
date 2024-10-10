@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
 import saySinbiAccountNum from "../../assets/audio/70_저에게_한번_돈을_보내볼까요_제_계좌번호는.mp3";
@@ -10,6 +11,7 @@ import sayNext from "../../assets/audio/64_다_적었으면_'다음'이라고_�
 const SimRecvAccountNumber: React.FC = () => {
   const { sendAccountNum, setSendAccountNum, error, setError } =
     useSimTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSendAccountNum(e.target.value);
@@ -27,6 +29,7 @@ const SimRecvAccountNumber: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // saySinbiAccountNumAudio 먼저 플레이해
     saySinbiAccountNumAudio.play();
 
@@ -41,8 +44,13 @@ const SimRecvAccountNumber: React.FC = () => {
       });
     });
 
+    sayNextAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       saySinbiAccountNumAudio.pause();
       saySinbiAccountNumAudio.currentTime = 0;
 

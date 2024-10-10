@@ -6,6 +6,7 @@ import SpeechBubble from "../../components/SpeechBubble";
 import SimLearnNewsVoiceCommand from "./SimLearnNewsVoiceCommand";
 import { useNavigate } from "react-router-dom";
 import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import sayLearnFirst from "../../assets/audio/81_여기서는_금융_지식을_배우거나_뉴스를_들을_수_있어요_우선은_금융_배우기.mp3";
 import learnNews from "../../assets/audio/45_이제_뉴스_기능을_배워봐요.mp3";
@@ -15,6 +16,7 @@ import learnDone from "../../assets/audio/84_배우기가_끝났어요_신비와
 const SimChoice: React.FC = () => {
   const { setCurrentView, setStep, step } = useSimLearnNewsStore();
   const { setDone } = useLearnNewsSimDoneStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 화면 크기에 따른 버튼 크기를 결정하는 함수
   const getButtonSize = () => {
@@ -45,16 +47,25 @@ const SimChoice: React.FC = () => {
     let audio: HTMLAudioElement | null = null;
 
     if (step === 1) {
+      setIsAudioPlaying(true)
       audio = new Audio(sayLearnFirst);
       audio.play();
+      audio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
     } else if (step === 7) {
+      setIsAudioPlaying(true)
       audio = new Audio(learnNews);
       audio.play();
       audio.addEventListener("ended", () => {
         const sayNewsAudio = new Audio(sayNews);
         sayNewsAudio.play();
+        sayNewsAudio.addEventListener("ended", () => {
+          setIsAudioPlaying(false)
+        })
       });
     } else if (step === 10) {
+      setIsAudioPlaying(true)
       audio = new Audio(learnDone);
       audio.play();
       audio.addEventListener("ended", () => {
@@ -67,6 +78,7 @@ const SimChoice: React.FC = () => {
 
     // unmount되면 중지시켜
     return () => {
+      setIsAudioPlaying(true)
       if (audio && !audio.paused) {
         audio.pause();
         audio.currentTime = 0;

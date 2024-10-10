@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import bankLogos from "../../assets/bankLogos";
 import sinbiBankLogo from "../../assets/defaultBankLogo.png";
 import SpeechBubble from "../../components/SpeechBubble";
@@ -41,6 +42,7 @@ const banks = [
 const SimRecvBankType: React.FC = () => {
   const { sendBankType, setSendBankType, error, setError } =
     useSimTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   useEffect(() => {
     console.log("bankType : ", sendBankType);
@@ -57,6 +59,7 @@ const SimRecvBankType: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // saySinbiAudio 먼저 플레이해
     saySinbiAudio.play();
 
@@ -65,8 +68,13 @@ const SimRecvBankType: React.FC = () => {
       sayNextAudio.play();
     });
 
+    sayNextAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       saySinbiAudio.pause();
       saySinbiAudio.currentTime = 0;
 

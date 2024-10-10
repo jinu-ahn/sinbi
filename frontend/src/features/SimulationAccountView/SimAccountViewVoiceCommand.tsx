@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { useSimAccountViewStore } from "./SimAccountViewStore";
 import { sendToNLP } from "../../services/nlpApi";
 import { useSimMainStore } from "../SimulationMainPage/SimMainStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 const SimAccountViewVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
+  const { isAudioPlaying } = useAudioSTTControlStore();
 
   // store에서 필요한거 전부 import!!
 
@@ -18,13 +20,36 @@ const SimAccountViewVoiceCommand: React.FC = () => {
 
   const { setMainStep } = useSimMainStore();
 
-  // 사용자가 뭐라하는지 계속 들어
+  // 사용자가 뭐라하는지 들어 + 오디오플레이 여부에 따라 들었다 안 들었다 함
   useEffect(() => {
-    SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    // return () => {
-    //   SpeechRecognition.stopListening();
-    // };
-  }, []);
+    if (isAudioPlaying) {
+      console.log("I will stop listening now.");
+      SpeechRecognition.stopListening();
+      console.log("I executed the stoplistening.");
+    }
+  }, [isAudioPlaying]);
+
+  useEffect(() => {
+    if (!isAudioPlaying) {
+      console.log("I will start listening now.");
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: "ko-KR",
+      });
+      console.log("I executed startlistening.");
+    } else {
+      SpeechRecognition.startListening({
+        language: "ko-KR",
+      });
+      setTimeout(() => {
+        SpeechRecognition.stopListening();
+      }, 100);
+
+      return () => {
+        SpeechRecognition.stopListening();
+      };
+    }
+  }, [isAudioPlaying]);
 
   // 사용자가 뭐라 더 말할때마다 (transcript가 바뀔때마다)
   // handleVoiceCommand에 집어넣어 (전부 lowercase로 바꿔줌)
@@ -54,15 +79,17 @@ const SimAccountViewVoiceCommand: React.FC = () => {
       setMainStep(3);
       navigate("/sim");
       resetTranscript();
-    } 
-    else {
+    } else {
       sendToNLP(transcript)
         .then((response) => {
           if (response && response.text) {
             console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
             handleVoiceCommands(response.text);
           } else {
-            console.error("Received an unexpected response from NLP API: ", response);
+            console.error(
+              "Received an unexpected response from NLP API: ",
+              response,
+            );
           }
           resetTranscript();
         })

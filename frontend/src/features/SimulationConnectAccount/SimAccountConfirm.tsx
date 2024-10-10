@@ -8,6 +8,7 @@ import SpeechBubble from "../../components/SpeechBubble";
 import { registerAccount } from "../../services/api";
 
 import { useSimMainStore } from "../SimulationMainPage/SimMainStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import accountDone from "../../assets/audio/65_통장_등록이_끝났어요_'집'_또는_'시작_화면'이라고_얘기해_보세요.mp3";
 
@@ -51,6 +52,7 @@ const SimAccountConfirm: React.FC = () => {
   ];
 
   const { setMainStep } = useSimMainStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const selectedBank = banks.find((bank) => bank.id === bankType) || {
     id: "BASIC",
@@ -83,12 +85,17 @@ const SimAccountConfirm: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
     setMainStep(2);
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

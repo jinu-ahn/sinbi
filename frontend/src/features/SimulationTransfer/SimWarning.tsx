@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
 import warningVoice from "../../assets/audio/35_모르는_사람에게_돈_보내면_위험해요.mp3";
@@ -7,6 +8,7 @@ import continueOrNot from "../../assets/audio/59_계속하고_싶으면_'알았�
 const SimWarning: React.FC = () => {
   const boldChars = ["모르는 사람", "위험"];
   const text = "모르는 사람에게 돈 보내면 위험해요!";
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const renderTextWithBold = () => {
     const regex = new RegExp(`(${boldChars.join("|")})`, "g");
@@ -41,6 +43,7 @@ const SimWarning: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // warningaudio 먼저 플레이해
     warningAudio.play();
 
@@ -49,8 +52,13 @@ const SimWarning: React.FC = () => {
       continueAudio.play();
     });
 
+    continueAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       warningAudio.pause();
       warningAudio.currentTime = 0;
 

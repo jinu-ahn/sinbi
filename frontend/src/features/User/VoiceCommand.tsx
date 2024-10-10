@@ -17,7 +17,7 @@ import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import sayNext from "../../assets/audio/06_다음으로_넘어가려면_다음이라고_말해주세요.mp3";
 
 const VoiceCommand: React.FC = () => {
-  const { isAudioPlaying } = useAudioSTTControlStore();
+  const { isAudioPlaying, setIsAudioPlaying } = useAudioSTTControlStore();
   const navigate = useNavigate();
   // const location = useLocation();
 
@@ -55,26 +55,22 @@ const VoiceCommand: React.FC = () => {
     useState(confirmPassword);
 
   const playAudio = (audioFile: string) => {
+    setIsAudioPlaying(true);
     const audio = new Audio(audioFile);
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
   };
 
-  // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)에 따라 들었다 멈췄다 함
+  // 사용자가 뭐라하는지 들어 + 오디오플레이 여부에 따라 들었다 안 들었다 함
   useEffect(() => {
     if (isAudioPlaying) {
       console.log("I will stop listening now.");
-      // SpeechRecognition.abortListening();
-      SpeechRecognition.stopListening(); // Stop listening if audio is playing
+      SpeechRecognition.stopListening();
       console.log("I executed the stoplistening.");
     }
-    // else if (isAudioPlaying === false) {
-    //   SpeechRecognition.startListening({ continuous: true, language: "ko-KR" }); // Start listening when audio is not playing
-    // }
-
-    // return () => {
-    //   SpeechRecognition.stopListening(); // Ensure to stop listening when component unmounts or re-renders
-    // };
-  }, [isAudioPlaying]); // Dependency on isAudioPlaying to dynamically control listening
+  }, [isAudioPlaying]);
 
   useEffect(() => {
     if (!isAudioPlaying) {
@@ -98,6 +94,7 @@ const VoiceCommand: React.FC = () => {
     }
   }, [isAudioPlaying]);
 
+  // 사용자가 하는 말 console에 프린트
   useEffect(() => {
     handleVoiceCommands(transcript);
     console.log("사용자가 하는 말: ", transcript);

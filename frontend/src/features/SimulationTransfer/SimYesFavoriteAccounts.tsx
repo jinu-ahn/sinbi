@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 // import { favoriteAccounts } from "../../services/api";
 import YellowBox from "../../components/YellowBox";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
-import sinbiBankLogo from "../../assets/defaultBankLogo.png"
+import sinbiBankLogo from "../../assets/defaultBankLogo.png";
 
 import sayNewAccount from "../../assets/audio/77_아까_추가한_제_계좌가_여기_뜨네요_저한테_다시_한번_돈을_보내봐요_은행_비서.mp3";
 
@@ -32,27 +33,42 @@ const SimYesFavoriteAccounts: React.FC = () => {
     setFavAccountId,
   } = useSimTransferStore();
 
-  const text = '"은행 비서"\n말하거나\n눌러주세요.'
-  const boldChars = ["말", "눌러", "은행 비서"]
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
+  const text = '"은행 비서"\n말하거나\n눌러주세요.';
+  const boldChars = ["말", "눌러", "은행 비서"];
 
   // 가짜 즐겨찾는 계좌
   // setFavAccounts()
-  const practiceFavAccount = [{ recvAccountNum: "987654321", bankType: "SINBI", id: 1, recvAlias: '은행 비서', recvName: "신비"}]
+  const practiceFavAccount = [
+    {
+      recvAccountNum: "987654321",
+      bankType: "SINBI",
+      id: 1,
+      recvAlias: "은행 비서",
+      recvName: "신비",
+    },
+  ];
 
   useEffect(() => {
-    setFavAccounts(practiceFavAccount)
-  }, [])
+    setFavAccounts(practiceFavAccount);
+  }, []);
 
   // 오디오말하기
   const audio = new Audio(sayNewAccount);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
@@ -86,7 +102,7 @@ const SimYesFavoriteAccounts: React.FC = () => {
       )}
 
       {/* 즐겨찾기 통장 리스트 */}
-      <div className="mt-4 flex w-[350px] h-[330px] justify-center">
+      <div className="mt-4 flex h-[330px] w-[350px] justify-center">
         <YellowBox>
           <ul className="h-[250px] overflow-y-auto">
             {/* div 크기 고정 안에서 scroll */}
@@ -115,7 +131,7 @@ const SimYesFavoriteAccounts: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="flex flex-col justify-center items-center h-full">
+              <div className="flex h-full flex-col items-center justify-center">
                 <li className="text-[28px]">즐겨찾는</li>
                 <li className="text-[28px]">계좌 목록이</li>
                 <li className="text-[28px]">없습니다.</li>

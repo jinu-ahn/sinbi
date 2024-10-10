@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import bankLogos from "../../assets/bankLogos";
 
 import chooseBank from "../../assets/audio/13_은행을_말하거나_찾아서_눌러주세요.mp3";
@@ -36,17 +37,24 @@ const banks = [
 
 const BankType: React.FC = () => {
   const { bankType, setBankType, error, setError } = useConnectAccountStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 오디오말하기
   const audio = new Audio(chooseBank);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
 
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
-
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import sayAccountNumber from "../../assets/audio/12_계좌번호를_말하거나_입력해주세요.mp3";
 import deleteAll from "../../assets/audio/09_다_지워라고_말하면_전부_지울_수_있어요.mp3";
@@ -15,12 +15,15 @@ const AccountNumber: React.FC = () => {
     setError(null);
   };
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   // 오디오말하기
   const sayAccountNumberAudio = new Audio(sayAccountNumber);
   const deleteAllAudio = new Audio(deleteAll);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // sayAccountNumberAudio 먼저 플레이해
     sayAccountNumberAudio.play();
 
@@ -29,8 +32,13 @@ const AccountNumber: React.FC = () => {
       deleteAllAudio.play();
     });
 
+    deleteAllAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       sayAccountNumberAudio.pause();
       sayAccountNumberAudio.currentTime = 0;
 

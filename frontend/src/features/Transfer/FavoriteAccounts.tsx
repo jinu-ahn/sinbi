@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { favoriteAccounts } from "../../services/api";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
 import { useTransferStore } from "./TransferStore";
@@ -58,6 +59,7 @@ const FavoriteAccounts: React.FC = () => {
     setFormalName,
     setFavAccountId,
   } = useTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 즐겨찾는 계좌 불러와서 accounts list에 저장
   useEffect(() => {
@@ -81,14 +83,19 @@ const FavoriteAccounts: React.FC = () => {
 
   // 오디오말하기
   const audio = new Audio(sendToWho);
-  
+
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true);
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

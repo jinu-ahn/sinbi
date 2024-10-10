@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import bankLogos from "../../assets/bankLogos";
@@ -8,7 +9,7 @@ import SpeechBubble from "../../components/SpeechBubble";
 
 import whatNickname from "../../assets/audio/29_무슨_이름으로_기억할까요.mp3";
 import sayMyName from "../../assets/audio/75_은행_비서_라고_말해주세요.mp3";
-import sayNext from "../../assets/audio/64_다_적었으면_'다음'이라고_말해주세요.mp3"
+import sayNext from "../../assets/audio/64_다_적었으면_'다음'이라고_말해주세요.mp3";
 
 const SimAddNickName: React.FC = () => {
   const banks = [
@@ -40,11 +41,13 @@ const SimAddNickName: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const bubbleText = '"은행 비서"\n라고\n말해주세요.'
-  const bubbleBoldChars = ["은행 비서", "말"]
+  const bubbleText = '"은행 비서"\n라고\n말해주세요.';
+  const bubbleBoldChars = ["은행 비서", "말"];
 
   const { nickName, setNickName, formalName, sendBankType, sendAccountNum } =
     useSimTransferStore();
+
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
     id: "BASIC",
@@ -59,35 +62,41 @@ const SimAddNickName: React.FC = () => {
     setNickName(e.target.value);
   };
 
-    // 오디오 플레이 (component가 mount될때만)
-    useEffect(() => {
-      const whatNicknameAudio = new Audio(whatNickname);
-      const sayMyNameAudio = new Audio(sayMyName);
-      const sayNextAudio = new Audio(sayNext);
-  
-      // whatNicknameAudio 먼저 플레이
-      whatNicknameAudio.play();
-  
-      // whatNicknameAudio 다음에 sayMyNameAudio
-      whatNicknameAudio.addEventListener("ended", () => {
-        sayMyNameAudio.play();
-      });
-  
-      // sayMyNameAudio 다음에 sayNextAudio
-      sayMyNameAudio.addEventListener("ended", () => {
-        sayNextAudio.play();
-      });
-  
-      // unmount될때 다 초기화
-      return () => {
-        whatNicknameAudio.pause();
-        whatNicknameAudio.currentTime = 0;
-        sayMyNameAudio.pause();
-        sayMyNameAudio.currentTime = 0;
-        sayNextAudio.pause();
-        sayNextAudio.currentTime = 0;
-      };
-    }, []);
+  // 오디오 플레이 (component가 mount될때만)
+  useEffect(() => {
+    setIsAudioPlaying(true)
+    const whatNicknameAudio = new Audio(whatNickname);
+    const sayMyNameAudio = new Audio(sayMyName);
+    const sayNextAudio = new Audio(sayNext);
+
+    // whatNicknameAudio 먼저 플레이
+    whatNicknameAudio.play();
+
+    // whatNicknameAudio 다음에 sayMyNameAudio
+    whatNicknameAudio.addEventListener("ended", () => {
+      sayMyNameAudio.play();
+    });
+
+    // sayMyNameAudio 다음에 sayNextAudio
+    sayMyNameAudio.addEventListener("ended", () => {
+      sayNextAudio.play();
+    });
+
+    sayNextAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
+    // unmount될때 다 초기화
+    return () => {
+      setIsAudioPlaying(true)
+      whatNicknameAudio.pause();
+      whatNicknameAudio.currentTime = 0;
+      sayMyNameAudio.pause();
+      sayMyNameAudio.currentTime = 0;
+      sayNextAudio.pause();
+      sayNextAudio.currentTime = 0;
+    };
+  }, []);
 
   return (
     <div className="mt-[20px]">

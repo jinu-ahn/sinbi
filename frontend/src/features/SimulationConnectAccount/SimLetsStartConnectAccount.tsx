@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import GreenText from "../../components/GreenText";
 import { useSimConnectAccountStore } from "./SimConnectAccountStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import letsStartConnectAccount from "../../assets/audio/11_지금부터_통장_등록을_같이_시작해요_천천히_따라오세요.mp3";
 
@@ -11,12 +12,14 @@ const SimLetsStart: React.FC = () => {
   const secondBoldChars = [""];
 
   const { setStep } = useSimConnectAccountStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 오디오말하기
   const audio = new Audio(letsStartConnectAccount);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
 
@@ -24,6 +27,7 @@ const SimLetsStart: React.FC = () => {
 
     // 오디오가 끝나고 1초 뒤 자동으로 다음 단계로 이동
     audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
       timerId = setTimeout(() => {
         setStep(1);
       }, 1000);
@@ -31,6 +35,7 @@ const SimLetsStart: React.FC = () => {
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

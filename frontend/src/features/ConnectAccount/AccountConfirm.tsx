@@ -6,6 +6,7 @@ import bankLogos from "../../assets/bankLogos";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
 import { registerAccount } from "../../services/api";
 import GreenText from "../../components/GreenText";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import accountDone from "../../assets/audio/17_통장_등록이_끝났어요_첫_화면으로_갈게요.mp3";
 import accountNotDone from "../../assets/audio/79_통장_등록을_하지_못했어요_이미_연결하신_계좌인지_확인해보세요.mp3"; // Import error audio
@@ -20,7 +21,7 @@ const AccountConfirm: React.FC = () => {
     setPhoneNum,
     setVerificationCode,
   } = useConnectAccountStore();
-  
+
   const [registrationError, setRegistrationError] = useState(false); // Manage error state
 
   const banks = [
@@ -52,7 +53,8 @@ const AccountConfirm: React.FC = () => {
     { id: "HANKUKTUZA", name: "한국투자증권", logo: bankLogos["한국투자증권"] },
   ];
 
-  const errorText = '통장 등록을 하지 못했어요. 이미 연결하신 통장이 아닌지 확인해보세요.';
+  const errorText =
+    "통장 등록을 하지 못했어요. 이미 연결하신 통장이 아닌지 확인해보세요.";
   const errorBoldChars = ["못했어요", "이미 연결", "확인"];
 
   const selectedBank = banks.find((bank) => bank.id === bankType) || {
@@ -63,6 +65,8 @@ const AccountConfirm: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   // 오디오말하기
   const successAudio = new Audio(accountDone);
   const errorAudio = new Audio(accountNotDone); // Create an audio object for error case
@@ -71,15 +75,24 @@ const AccountConfirm: React.FC = () => {
   useEffect(() => {
     const registerAccounts = async () => {
       try {
+        setIsAudioPlaying(true)
         const response = await registerAccount(accountNum, bankType);
         console.log(accountNum, bankType);
         console.log(response);
         setRegistrationError(false); // If successful, ensure error state is false
         successAudio.play(); // Play success audio
+        successAudio.addEventListener("ended", () => {
+          setIsAudioPlaying(false)
+        })
       } catch (err) {
+        setIsAudioPlaying(true)
         console.error("Error fetching account data: ", err);
         setRegistrationError(true); // Set error state to true on failure
         errorAudio.play(); // Play error audio
+        errorAudio.addEventListener("ended", () => {
+          setIsAudioPlaying(false)
+        })
+        
       }
     };
 

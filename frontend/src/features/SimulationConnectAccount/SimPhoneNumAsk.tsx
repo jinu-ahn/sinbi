@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useSimConnectAccountStore } from "./SimConnectAccountStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
 import sayPhoneNum from "../../assets/audio/50_전화번호를_말하거나_입력해주세요.mp3";
@@ -8,6 +9,7 @@ import sayNext from "../../assets/audio/64_다_적었으면_'다음'이라고_�
 import sendYouCode from "../../assets/audio/63_문자로_인증번호를_보내드릴게요.mp3";
 
 const SimPhoneNumAsk: React.FC = () => {
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
   const { phoneNum, setPhoneNum, error } = useSimConnectAccountStore();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhoneNum(e.target.value);
@@ -18,6 +20,7 @@ const SimPhoneNumAsk: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     const sayPhoneNumAudio = new Audio(sayPhoneNum);
     const sayNextAudio = new Audio(sayNext);
     const sendYouCodeAudio = new Audio(sendYouCode);
@@ -35,8 +38,13 @@ const SimPhoneNumAsk: React.FC = () => {
       sendYouCodeAudio.play();
     });
 
+    sendYouCodeAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
+
     // unmount될때 다 초기화
     return () => {
+      setIsAudioPlaying(true);
       sayPhoneNumAudio.pause();
       sayPhoneNumAudio.currentTime = 0;
       sayNextAudio.pause();
