@@ -85,6 +85,14 @@ const AccountConfirm: React.FC = () => {
         successAudio.addEventListener("ended", () => {
           setIsAudioPlaying(false)
         })
+        setTimeout(() => {
+          navigate("/main")
+          setAccountNum("")
+          setBankType("")
+          setError("")
+          setPhoneNum("")
+          setVerificationCode("")
+        }, 2000)
       } catch (err) {
         setIsAudioPlaying(true)
         console.error("Error fetching account data: ", err);
