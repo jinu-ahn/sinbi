@@ -223,8 +223,8 @@ const VoiceCommand: React.FC = () => {
         ) {
           // handleSignUp();
           // nextStep();
-            handleSignUp();
-            setStep(SignUpStep.SignUpComplete);
+          handleSignUp();
+          setStep(SignUpStep.SignUpComplete);
         } else if (lowerCaseTranscript.includes("취소")) {
           prevStep();
         }
@@ -475,21 +475,27 @@ const VoiceCommand: React.FC = () => {
       };
       const response = await signup(signUpData, faceImage);
       // setStep(SignUpStep.SignUpComplete);
+      console.log("음성명령회원가입", response);
       if (response && response.status === 200) {
         // 성공 상태 코드를 확인
+        console.log('음성가입성공')
         setStep(SignUpStep.SignUpComplete);
         // 회원가입 성공 후 '/sim'으로 네비게이트
         setTimeout(() => {
+          console.log('2초지나서sim으로')
           navigate("/sim");
         }, 2000); // 2초 후에 이동
       } else {
+        console.log('음성명령가입 실패')
         setError("회원가입에 실패했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
       if (error instanceof Error) {
         setError(`회원가입에 실패했습니다: ${error.message}`);
+        console.log(`회원가입에 실패했습니다: ${error.message}`);
       } else {
         setError("회원가입 중 알 수 없는 오류가 발생했습니다.");
+        console.log("회원가입 중 알 수 없는 오류가 발생했습니다.");
       }
       return false;
     }
