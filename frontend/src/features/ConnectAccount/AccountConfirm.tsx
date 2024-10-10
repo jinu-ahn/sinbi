@@ -8,7 +8,7 @@ import GreenText from "../../components/GreenText";
 import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import accountDone from "../../assets/audio/17_통장_등록이_끝났어요_첫_화면으로_갈게요.mp3";
-import accountNotDone from "../../assets/audio/79_통장_등록을_하지_못했어요_이미_연결하신_계좌인지_확인해보세요.mp3"; // Import error audio
+// import accountNotDone from "../../assets/audio/79_통장_등록을_하지_못했어요_이미_연결하신_계좌인지_확인해보세요.mp3"; // Import error audio
 
 
 
@@ -70,7 +70,7 @@ const AccountConfirm: React.FC = () => {
 
   // 오디오말하기
   const successAudio = new Audio(accountDone);
-  const errorAudio = new Audio(accountNotDone); // Create an audio object for error case
+  // const errorAudio = new Audio(accountNotDone); // Create an audio object for error case
 
   // 통장 등록
   useEffect(() => {
@@ -97,10 +97,10 @@ const AccountConfirm: React.FC = () => {
         setIsAudioPlaying(true)
         console.error("Error fetching account data: ", err);
         setRegistrationError(true); // Set error state to true on failure
-        errorAudio.play(); // Play error audio
-        errorAudio.addEventListener("ended", () => {
-          setIsAudioPlaying(false)
-        })
+        // errorAudio.play(); // Play error audio
+        // errorAudio.addEventListener("ended", () => {
+        //   setIsAudioPlaying(false)
+        // })
         
       }
     };
@@ -124,7 +124,7 @@ const AccountConfirm: React.FC = () => {
   return (
     <div>
       <header>
-        <h1 className="text-center text-[40px]">통장 등록 완료</h1>
+        <h1 className="text-center text-[40px]">통장 등록</h1>
       </header>
 
       {/* Conditionally render YellowBox if no registration error */}
