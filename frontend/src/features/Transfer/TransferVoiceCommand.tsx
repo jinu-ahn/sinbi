@@ -470,11 +470,13 @@ const TransferVoiceCommand: React.FC = () => {
         resetTranscript();
       }
     } else if (step === 9) {
-      setNickName(transcript);
+      if (transcript !== "") {
+        setNickName(transcript);
+      }
       if (lowerCaseTranscript.includes("다 지워")) {
         resetTranscript();
         setNickName("");
-      } 
+      }
       // else {
       // }
       if (lowerCaseTranscript.includes("다음")) {
