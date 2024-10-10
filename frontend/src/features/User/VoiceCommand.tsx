@@ -221,8 +221,10 @@ const VoiceCommand: React.FC = () => {
           lowerCaseTranscript.includes("응") ||
           lowerCaseTranscript.includes("넘어가")
         ) {
-          handleSignUp();
+          // handleSignUp();
           // nextStep();
+            handleSignUp();
+            setStep(SignUpStep.SignUpComplete);
         } else if (lowerCaseTranscript.includes("취소")) {
           prevStep();
         }
