@@ -1,7 +1,6 @@
 // src/components/User/SignUpStep/FaceRecognitionCompleteStep.tsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import GreenText from "../../../components/GreenText";
-import { useNavigate } from 'react-router-dom';
 // import useUserStore from '../useUserStore';
 
 // interface FaceRecognitionCompleteStepProps {
