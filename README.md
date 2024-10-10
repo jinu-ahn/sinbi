@@ -51,78 +51,50 @@
 
 ## 2️⃣ 서비스 소개
 
-### 1. 메인페이지
+### 1. 회원가입/로그인
 
-✔️ 메인 페이지 기능/모바일
+✔️ 회원가입/로그인
 
-​ ✔️ 진행중인 워케이션
+​ ✔️ 음성 가이드를 통한 회원가입
 
-​ ✔️ 워케이션 효과 및 경제적 파급효과
+​ ✔️ SMS 인증을 통한 회원가입
 
-![main.gif](./exec/시연_과정/gifs/main.gif)
+​ ✔️ 전화번호로 로그인
 
-### 2. 회원가입 및 로그인
+​ ✔️ 얼굴 인증을 통한 로그인
 
-​ ✔️ 회원 가입 및 로그인 기능 /모바일
+<img src="README_asset/회원가입.gif" width="230" height="400">
 
-​ ✔️ 지역 선택
+### 2. 통장 등록
 
-![user.gif](./exec/시연_과정/gifs/user.gif)
+​ ✔️ 음성 인식을 통한 통장 등록
 
-### 3. 대시보드
 
-​ ✔️ 대시보드 기능/모바일
+<img src="README_asset/통장등록.gif" width="230" height="400">
 
-​ ✔️ 일정 관리
+### 3. 돈 보내기
 
-​ ✔️ AI 일정 리마인드
+​ ✔️ 음성 인식을 통한 돈 보내기
 
-![dashboard.gif](./exec/시연_과정/gifs/dashboard.gif)
+​ ✔️ 자주 거래 하는 상대방 통장 등록하기
 
-### 4. 내 채널
+<img src="README_asset/통장등록.gif" width="230" height="400">
 
-​ ✔️ 내 채널 기능/모바일
+### 4. 모든 통장
 
-​ ✔️ 피드 작성/삭제
+​ ✔️ 등록된 모든 통장을 조회
 
-​ ✔️ 프로필 사진 변경
+<img src="README_asset/모든통장.gif" width="230" height="400">
 
-![feed.gif](./exec/시연_과정/gifs/feed.gif)
+### 5. 뉴스/배우기
 
-### 5. 정보 채널
+​ ✔️ AI를 통해 최신 뉴스 크롤링 및 요약
 
-​ ✔️ 정보 채널 기능/모바일
+​ ✔️ 음성으로 뉴스를 읽어드림
 
-​ ✔️ 다양한 피드 보기/작성/삭제
+​ ✔️ 배우기를 통해 금융 상식을 배울 수 있음
 
-![information.gif](./exec/시연_과정/gifs/모임채널%20생성.gif)
-
-### 6. 모임 채널
-
-​ ✔️ 모임 채널 기능/모바일
-
-​ ✔️ 모임 채널 생성/삭제
-
-​ ✔️ 모임 채널 보기
-
-![모임채널.gif](./exec/시연_과정/gifs/모임채널%20생성.gif)
-
-### 7. 모임채널 - 공유지도
-
-​ ✔️ 공유 지도 기능/모바일
-
-​ ✔️ 공유 지도 검색
-
-![모임채널 핵심기술.gif](./exec/시연_과정/gifs/search.gif)
-
-### 8. 모임 채널 - 채팅 및 영상 통화
-
-​ ✔️ 기능/모바일
-
-​ ✔️ 채팅 및 영상 통화
-
-![모임채널 핵심기술.gif](./exec/시연_과정/gifs/rtc.gif)
-
+<img src="README_asset/뉴스.gif" width="230" height="400">
 
 ---
 
@@ -249,7 +221,7 @@
 
 ## 🌝 시스템 아키텍쳐
 
-![시스템 아키텍쳐](README_asset/아키텍쳐.PNG)
+![시스템 아키텍쳐](README_asset/아키텍처.png)
 
 ## 🌝 ERD
 
@@ -264,73 +236,252 @@
 ```
 📦src
  ┣ 📂assets
- ┃ ┣ 📂logoSVG
- ┃ ┃ ┣ 📜btn_apple.svg
- ┃ ┃ ┣ 📜btn_gmail.svg
- ┃ ┃ ┣ 📜btn_google.svg
- ┃ ┃ ┣ 📜btn_kakao.svg
- ┃ ┃ ┗ 📜btn_naver.svg
- ┃ ┣ 📜404.png
- ┃ ┣ 📜500.png
- ┃ ┣ 📜back.svg
- ┃ ┣ 📜background.svg
- ┃ ┣ 📜censoredImg.png
- ┃ ┣ 📜detailBG.jpg
- ┃ ┣ 📜icons.jsx
- ┃ ┣ 📜img_generator.png
- ┃ ┣ 📜login.svg
- ┃ ┣ 📜logout.svg
- ┃ ┣ 📜react.svg
- ┃ ┣ 📜send.svg
- ┃ ┗ 📜user.svg
+ ┃ ┣ 📂audio
+ ┃ ┃ ┣ 📜01_네_무엇을_도와드릴까요.mp3
+ ┃ ┃ ┣ 📜02_원하는_기능을_말하거나_눌러주세요.mp3
+ ┃ ┃ ┣ 📜03_다시_한_번_또박또박_말해주세요.mp3
+ ┃ ┃ ┣ 📜04_다시_한_번_눌러주세요.mp3
+ ┃ ┃ ┣ 📜05_뒤로_가려면_이전이라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜06_다음으로_넘어가려면_다음이라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜07_완료되었어요_시작화면으로_이동할게요.mp3
+ ┃ ┃ ┣ 📜08_좋으면_응_싫으면_아니_라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜09_다_지워라고_말하면_전부_지울_수_있어요.mp3
+ ┃ ┃ ┣ 📜10_'통장_등록'이라고_말하거나_눌러주세요.mp3
+ ┃ ┃ ┣ 📜11_지금부터_통장_등록을_같이_시작해요_천천히_따라오세요.mp3
+ ┃ ┃ ┣ 📜12_계좌번호를_말하거나_입력해주세요.mp3
+ ┃ ┃ ┣ 📜13_은행을_말하거나_찾아서_눌러주세요.mp3
+ ┃ ┃ ┣ 📜14_해당하는_계좌가_없어요_다시_한번_확인해주세요.mp3
+ ┃ ┃ ┣ 📜15_이_계좌가_맞나요.mp3
+ ┃ ┃ ┣ 📜16_인증번호를_보냈어요.mp3
+ ┃ ┃ ┣ 📜17_통장_등록이_끝났어요_첫_화면으로_갈게요.mp3
+ ┃ ┃ ┣ 📜18_새로운_계좌_버튼을_눌러주세요.mp3
+ ┃ ┃ ┣ 📜19_'돈_보내기'라고_말하거나_눌러주세요.mp3
+ ┃ ┃ ┣ 📜20_지금부터_돈_보내기를_같이_연습해요_걱정_마세요_가짜_돈이에요.mp3
+ ┃ ┃ ┣ 📜21_새로운_계좌라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3
+ ┃ ┃ ┣ 📜23_연습으로_신비은행_일이삼_다시_일이_다시_삼사오육칠팔로_보내볼게요.mp3
+ ┃ ┃ ┣ 📜24_만원이라고_한번_말해볼까요.mp3
+ ┃ ┃ ┣ 📜25_얼마를_보낼지_말해주세요.mp3
+ ┃ ┃ ┣ 📜26_자주_쓸_계좌면_응_이라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜27_응이라고_말해보세요.mp3
+ ┃ ┃ ┣ 📜28_쉽게_기억할_이름을_정해요_작은_아들이라고_말해보세요.mp3
+ ┃ ┃ ┣ 📜29_무슨_이름으로_기억할까요.mp3
+ ┃ ┃ ┣ 📜30_자주_보내는_계좌로_가짜로_돈을_보내봐요.mp3
+ ┃ ┃ ┣ 📜31_누구에게_보낼지_말하거나_눌러주세요_없으면_새로운_계좌라고_말하세요.mp3
+ ┃ ┃ ┣ 📜32_아까_즐겨찾기에_저장한_작은_아들로_보내봐요_작은_아들이라고_말해보세요.mp3
+ ┃ ┃ ┣ 📜33_성공적으로_돈을_보냈어요.mp3
+ ┃ ┃ ┣ 📜34_돈_보내기_연습이_끝났어요_첫_화면으로_갈게요.mp3
+ ┃ ┃ ┣ 📜35_모르는_사람에게_돈_보내면_위험해요.mp3
+ ┃ ┃ ┣ 📜36_'모든_통장'이라고_말하거나_눌러주세요.mp3
+ ┃ ┃ ┣ 📜37_지금부터_가지고_계신_통장을_모두_보여드릴게요.mp3
+ ┃ ┃ ┣ 📜38_현재_가지고_계신_통장_목록이에요.mp3
+ ┃ ┃ ┣ 📜39_자세히_볼_통장을_눌러주세요.mp3
+ ┃ ┃ ┣ 📜40_이_통장의_모든_거래_내역이에요.mp3
+ ┃ ┃ ┣ 📜41_지금부터_금융_배우기랑_뉴스_보러_가볼까요.mp3
+ ┃ ┃ ┣ 📜42_금융_배우기라고_말해보세요.mp3
+ ┃ ┃ ┣ 📜43_하나를_골라볼까요_금융_사기_예방이라고_말해보세요.mp3
+ ┃ ┃ ┣ 📜44_금융_투자사기라고_말해보세요.mp3
+ ┃ ┃ ┣ 📜45_이제_뉴스_기능을_배워봐요.mp3
+ ┃ ┃ ┣ 📜46_뉴스라고_말해보세요.mp3
+ ┃ ┃ ┣ 📜47_여기서는_뉴스를_요약해서_매일_들려드릴_거예요.mp3
+ ┃ ┃ ┣ 📜48_배우기_끝_첫_화면으로_돌아갈게요.mp3
+ ┃ ┃ ┣ 📜49_시작_화면으로_가고_싶으시면_시작_화면이라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜50_전화번호를_말하거나_입력해주세요.mp3
+ ┃ ┃ ┣ 📜51_비밀번호_네_자리를_입력해주세요.mp3
+ ┃ ┃ ┣ 📜52_얼굴로_로그인하면_더_편해요_얼굴을_등록할까요.mp3
+ ┃ ┃ ┣ 📜53_얼굴을_인식할게요_눈_코_입을_화면에_맞춰주세요.mp3
+ ┃ ┃ ┣ 📜54_저희_은행_비서가_처음이신가요.mp3
+ ┃ ┃ ┣ 📜55_안녕하세요_저는_신비예요_같이_회원가입을_해_볼까요.mp3
+ ┃ ┃ ┣ 📜56_이름을_말하거나_입력해주세요.mp3
+ ┃ ┃ ┣ 📜57_인증번호가_안_나오면_문자를_보고_알려주세요.mp3
+ ┃ ┃ ┣ 📜58_원하는_기능을_말하거나_눌러주세요.mp3
+ ┃ ┃ ┣ 📜59_계속하고_싶으면_'알았어'_뒤로_가고_싶으면_'이전'이라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜60_돈을_보낼까요.mp3
+ ┃ ┃ ┣ 📜61_앞으로도_이분께_자주_보내실_건가요.mp3
+ ┃ ┃ ┣ 📜62_맞으면_'맞아'_틀리면_'아니'라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜62_배우고_싶은_분야를_말하거나_눌러주세요.mp3
+ ┃ ┃ ┣ 📜63_듣고_싶은_영상_제목을_말하거나_눌러주세요.mp3
+ ┃ ┃ ┣ 📜63_문자로_인증번호를_보내드릴게요.mp3
+ ┃ ┃ ┣ 📜64_다_적었으면_'다음'이라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜64_오늘의_뉴스를_알려드릴게요.mp3
+ ┃ ┃ ┣ 📜65_통장_등록이_끝났어요_'집'_또는_'시작_화면'이라고_얘기해_보세요.mp3
+ ┃ ┃ ┣ 📜66_지금_눈앞에_보이는_통장을_눌러주세요.mp3
+ ┃ ┃ ┣ 📜67_내_통장_확인이_끝났어요_'집'_또는_'시작_화면'이라고_얘기해_보세요.mp3
+ ┃ ┃ ┣ 📜68_여기에서_내가_가지고_있는_통장을_확인할_수_있어요_신비_통장을.mp3
+ ┃ ┃ ┣ 📜69_여기에서_내가_돈을_자주_보낼_사람들을_보여줄_거예요_아직_아무것도_없네요.mp3
+ ┃ ┃ ┣ 📜70_저에게_한번_돈을_보내볼까요_제_계좌번호는.mp3
+ ┃ ┃ ┣ 📜71_잘못_적었어도_걱정하지_마세요_'하나_지워'_'다_지워'_설명.mp3
+ ┃ ┃ ┣ 📜72_신비은행_이라고_말하거나_찾아서_눌러주세요.mp3
+ ┃ ┃ ┣ 📜73_저한테_돈을_보내봐요_오천원이라고_말해볼까요.mp3
+ ┃ ┃ ┣ 📜74_저를_자주_보낼_계좌_목록에_추가해볼까요_응_이라_말해주세요.mp3
+ ┃ ┃ ┣ 📜75_은행_비서_라고_말해주세요.mp3
+ ┃ ┃ ┣ 📜76_자주_보내는_계좌로_돈_보내기를_같이_연습해요_걱정_마세요_가짜_돈이에요.mp3
+ ┃ ┃ ┣ 📜77_아까_추가한_제_계좌가_여기_뜨네요_저한테_다시_한번_돈을_보내봐요_은행_비서.mp3
+ ┃ ┃ ┣ 📜78_필요하신_기능을_모두_배웠어요_이제_시작_화면으로_돌아갈게요.mp3
+ ┃ ┃ ┣ 📜79_통장_등록을_하지_못했어요_이미_연결하신_계좌인지_확인해보세요.mp3
+ ┃ ┃ ┣ 📜80_지금부터_금융_배우기랑_뉴스를_확인하러_가볼까요.mp3
+ ┃ ┃ ┣ 📜81_여기서는_금융_지식을_배우거나_뉴스를_들을_수_있어요_우선은_금융_배우기.mp3
+ ┃ ┃ ┣ 📜82_여기서는_배우고_싶은_금융_지식의_분야를_고를_수_있어요.mp3
+ ┃ ┃ ┣ 📜83_여기서_방금_고른_분야의_영상들을_확인할_수_있어요.mp3
+ ┃ ┃ ┣ 📜84_배우기가_끝났어요_신비와_함께_지식을_늘려나가요.mp3
+ ┃ ┃ ┣ 📜85_여기서_영상을_보실_수_있어요.mp3
+ ┃ ┃ ┣ 📜86_이전_이라고_말해주세요.mp3
+ ┃ ┃ ┗ 📜87_이전_이나_다음_버튼을_누르면_다른_뉴스로_넘어가요.mp3
+ ┃ ┣ 📂video
+ ┃ ┃ ┗ 📜howcanIhelp.mp4
+ ┃ ┣ 📜avatar.png
+ ┃ ┣ 📜bankLogos.ts
+ ┃ ┗ 📜defaultBankLogo.png
  ┣ 📂components
- ┃ ┣ 📜Button.jsx
- ┃ ┗ 📜NavigationBar.jsx
- ┣ 📂pages
- ┃ ┣ 📂DreamPage
- ┃ ┃ ┣ 📂components
- ┃ ┃ ┃ ┣ 📜ContentBox.jsx
- ┃ ┃ ┃ ┣ 📜DatePicker.jsx
- ┃ ┃ ┃ ┣ 📜ImageGenerator.jsx
- ┃ ┃ ┃ ┣ 📜InterpretationBox.jsx
- ┃ ┃ ┃ ┣ 📜ShareSettings.jsx
- ┃ ┃ ┃ ┗ 📜UpperBar.jsx
- ┃ ┃ ┣ 📜DreamDetailPage.jsx
- ┃ ┃ ┗ 📜DreamRegisterPage.jsx
- ┃ ┣ 📂LoginPage
- ┃ ┃ ┣ 📂components
- ┃ ┃ ┃ ┣ 📜FadeInText.jsx
- ┃ ┃ ┃ ┗ 📜LoginSuccess.jsx
- ┃ ┃ ┗ 📜LoginPage.jsx
- ┃ ┣ 📂SkeletonPage
- ┃ ┃ ┣ 📂components
- ┃ ┃ ┃ ┗ 📜SkeletonBlock.jsx
- ┃ ┃ ┣ 📜SquareDetailSkeletonPage.jsx
- ┃ ┃ ┣ 📜SquareSkeletonPage.jsx
- ┃ ┃ ┗ 📜StatisticsSkeletonPage.jsx
- ┃ ┣ 📂StreamingPage
- ┃ ┃ ┣ 📂components
- ┃ ┃ ┃ ┣ 📂legacy
- ┃ ┃ ┃ ┃ ┣ 📜StreamingList_WebRTC.jsx
- ┃ ┃ ┃ ┃ ┗ 📜StreamingRoom_WebRTC.jsx
- ┃ ┃ ┃ ┣ 📜StreamingList.jsx
- ┃ ┃ ┃ ┗ 📜StreamingRoom.jsx
- ┃ ┃ ┗ 📜StreamingPage.jsx
- ┃ ┣ 📜ErrorPage.jsx
- ┃ ┣ 📜MainPage.jsx
- ┃ ┣ 📜SettingsPage.jsx
- ┃ ┣ 📜SquareDetailPage.jsx
- ┃ ┣ 📜SquarePage.jsx
- ┃ ┗ 📜StatisticsPage.jsx
- ┣ 📂recoil
- ┃ ┗ 📜atoms.js
+ ┃ ┣ 📜BlackText.tsx
+ ┃ ┣ 📜CommonComponent.types.ts
+ ┃ ┣ 📜GreenText.tsx
+ ┃ ┣ 📜SpeechBubble.tsx
+ ┃ ┣ 📜YellowBox.tsx
+ ┃ ┗ 📜YellowButton.tsx
+ ┣ 📂features
+ ┃ ┣ 📂AccountView
+ ┃ ┃ ┣ 📜AccountsViewPage.tsx
+ ┃ ┃ ┣ 📜AccountViewStore.tsx
+ ┃ ┃ ┣ 📜AccountViewVoiceCommand.tsx
+ ┃ ┃ ┣ 📜MyAccounts.tsx
+ ┃ ┃ ┗ 📜SpecificAccount.tsx
+ ┃ ┣ 📂ConnectAccount
+ ┃ ┃ ┣ 📜AccountCheck.tsx
+ ┃ ┃ ┣ 📜AccountConfirm.tsx
+ ┃ ┃ ┣ 📜AccountNumber.tsx
+ ┃ ┃ ┣ 📜BankType.tsx
+ ┃ ┃ ┣ 📜ConnectAccount.types.ts
+ ┃ ┃ ┣ 📜ConnectAccountPage.tsx
+ ┃ ┃ ┣ 📜ConnectAccountStore.tsx
+ ┃ ┃ ┣ 📜ConnectAccountVoiceCommand.tsx
+ ┃ ┃ ┣ 📜PhoneNumAsk.tsx
+ ┃ ┃ ┗ 📜VerificationCode.tsx
+ ┃ ┣ 📂LearnNews
+ ┃ ┃ ┣ 📜Choice.tsx
+ ┃ ┃ ┣ 📜CustomButton.tsx
+ ┃ ┃ ┣ 📜Learn.tsx
+ ┃ ┃ ┣ 📜LearnNews.types.ts
+ ┃ ┃ ┣ 📜LearnNewsPage.tsx
+ ┃ ┃ ┣ 📜LearnNewsVoiceCommand.tsx
+ ┃ ┃ ┣ 📜News.tsx
+ ┃ ┃ ┗ 📜useLearnNewsStore.ts
+ ┃ ┣ 📂MainPage
+ ┃ ┃ ┣ 📜MainPage.tsx
+ ┃ ┃ ┗ 📜MainVoiceCommand.tsx
+ ┃ ┣ 📂SimLearnNews
+ ┃ ┃ ┣ 📜CustomButton.tsx
+ ┃ ┃ ┣ 📜SimChoice.tsx
+ ┃ ┃ ┣ 📜SimLearn.tsx
+ ┃ ┃ ┣ 📜SimLearnNews.types.ts
+ ┃ ┃ ┣ 📜SimLearnNewsPage.tsx
+ ┃ ┃ ┣ 📜SimLearnNewsStore.ts
+ ┃ ┃ ┣ 📜SimLearnNewsVoiceCommand.tsx
+ ┃ ┃ ┣ 📜SimLetsStartLearnNews.tsx
+ ┃ ┃ ┗ 📜SimNews.tsx
+ ┃ ┣ 📂SimulationAccountView
+ ┃ ┃ ┣ 📜SimAccountsViewPage.tsx
+ ┃ ┃ ┣ 📜SimAccountViewStore.tsx
+ ┃ ┃ ┣ 📜SimAccountViewVoiceCommand.tsx
+ ┃ ┃ ┣ 📜SimMyAccounts.tsx
+ ┃ ┃ ┗ 📜SimSpecificAccount.tsx
+ ┃ ┣ 📂SimulationConnectAccount
+ ┃ ┃ ┣ 📜SimAccountCheck.tsx
+ ┃ ┃ ┣ 📜SimAccountConfirm.tsx
+ ┃ ┃ ┣ 📜SimAccountConnect.types.ts
+ ┃ ┃ ┣ 📜SimAccountNumber.tsx
+ ┃ ┃ ┣ 📜SimBankType.tsx
+ ┃ ┃ ┣ 📜SimConnectAccountPage.tsx
+ ┃ ┃ ┣ 📜SimConnectAccountStore.tsx
+ ┃ ┃ ┣ 📜SimConnectAccountVoiceCommand.tsx
+ ┃ ┃ ┣ 📜SimLetsStartConnectAccount.tsx
+ ┃ ┃ ┣ 📜SimPhoneNumAsk.tsx
+ ┃ ┃ ┗ 📜SimVerificationCode.tsx
+ ┃ ┣ 📂SimulationMainPage
+ ┃ ┃ ┣ 📜SimMainPage.tsx
+ ┃ ┃ ┣ 📜SimMainStore.tsx
+ ┃ ┃ ┗ 📜SimMainVoiceCommand.tsx
+ ┃ ┣ 📂SimulationTransfer
+ ┃ ┃ ┣ 📜SimAddedToFavorite.tsx
+ ┃ ┃ ┣ 📜SimAddNickName.tsx
+ ┃ ┃ ┣ 📜SimAddToFavorite.tsx
+ ┃ ┃ ┣ 📜SimGoBackHome.tsx
+ ┃ ┃ ┣ 📜SimLetsStartSendMoney.tsx
+ ┃ ┃ ┣ 📜SimLetsStartSendMoneyToFavorite.tsx
+ ┃ ┃ ┣ 📜SimMyAccounts.tsx
+ ┃ ┃ ┣ 📜SimNoFavoriteAccounts.tsx
+ ┃ ┃ ┣ 📜SimRecvAccountNumber.tsx
+ ┃ ┃ ┣ 📜SimRecvAmount.tsx
+ ┃ ┃ ┣ 📜SimRecvBankType.tsx
+ ┃ ┃ ┣ 📜SimTransferCheck.tsx
+ ┃ ┃ ┣ 📜SimTransferConfirm.tsx
+ ┃ ┃ ┣ 📜SimTransferPage.tsx
+ ┃ ┃ ┣ 📜SimTransferStore.tsx
+ ┃ ┃ ┣ 📜SimTransferVoiceCommand.tsx
+ ┃ ┃ ┣ 📜SimWarning.tsx
+ ┃ ┃ ┗ 📜SimYesFavoriteAccounts.tsx
+ ┃ ┣ 📂Transfer
+ ┃ ┃ ┣ 📜AddNickName.tsx
+ ┃ ┃ ┣ 📜AddToFavorite.tsx
+ ┃ ┃ ┣ 📜FavoriteAccounts.tsx
+ ┃ ┃ ┣ 📜GoBackHome.tsx
+ ┃ ┃ ┣ 📜MyAccounts.tsx
+ ┃ ┃ ┣ 📜RecvAccountNumber.tsx
+ ┃ ┃ ┣ 📜RecvAmount.tsx
+ ┃ ┃ ┣ 📜RecvBankType.tsx
+ ┃ ┃ ┣ 📜TransferCheck.tsx
+ ┃ ┃ ┣ 📜TransferConfirm.tsx
+ ┃ ┃ ┣ 📜TransferPage.tsx
+ ┃ ┃ ┣ 📜TransferStore.tsx
+ ┃ ┃ ┣ 📜TransferVoiceCommand.tsx
+ ┃ ┃ ┗ 📜Warning.tsx
+ ┃ ┗ 📂User
+ ┃ ┃ ┣ 📂LoginStep
+ ┃ ┃ ┃ ┣ 📜FaceRecognitionLogin.tsx
+ ┃ ┃ ┃ ┣ 📜LoginPhoneStep.tsx
+ ┃ ┃ ┃ ┗ 📜LoginPWStep.tsx
+ ┃ ┃ ┣ 📂SignUpStep
+ ┃ ┃ ┃ ┣ 📜ConfirmPasswordStep.tsx
+ ┃ ┃ ┃ ┣ 📜FaceRecognitionCompleteStep.tsx
+ ┃ ┃ ┃ ┣ 📜FaceRecognitionStep.tsx
+ ┃ ┃ ┃ ┣ 📜LoginStep.tsx
+ ┃ ┃ ┃ ┣ 📜SignUpCompleteStep.tsx
+ ┃ ┃ ┃ ┣ 📜SmsVerificationStep.tsx
+ ┃ ┃ ┃ ┣ 📜StartFaceRecognitionStep.tsx
+ ┃ ┃ ┃ ┣ 📜UserNameStep.tsx
+ ┃ ┃ ┃ ┣ 📜UserPasswordStep.tsx
+ ┃ ┃ ┃ ┣ 📜UserPhoneStep.tsx
+ ┃ ┃ ┃ ┗ 📜WelcomeStep.tsx
+ ┃ ┃ ┣ 📜AppInitializer.tsx
+ ┃ ┃ ┣ 📜Login.tsx
+ ┃ ┃ ┣ 📜NumberPad.css
+ ┃ ┃ ┣ 📜NumberPad.tsx
+ ┃ ┃ ┣ 📜SignUp.tsx
+ ┃ ┃ ┣ 📜tokenUtils.ts
+ ┃ ┃ ┣ 📜User.css
+ ┃ ┃ ┣ 📜User.types.ts
+ ┃ ┃ ┣ 📜useUserStore.ts
+ ┃ ┃ ┣ 📜VoiceCommand.tsx
+ ┃ ┃ ┗ 📜WelcomPage.tsx
+ ┣ 📂hooks
+ ┃ ┗ 📜.gitkeep
+ ┣ 📂services
+ ┃ ┣ 📜api.tsx
+ ┃ ┗ 📜nlpApi.tsx
+ ┣ 📂store
+ ┃ ┣ 📜AudioSTTControlStore.tsx
+ ┃ ┗ 📜LearnNewsSimDoneStore.tsx
  ┣ 📂utils
- ┃ ┣ 📜api.js
- ┃ ┣ 📜firebase.js
- ┃ ┗ 📜utils.js
- ┣ 📜App.jsx
+ ┃ ┣ 📜.gitkeep
+ ┃ ┗ 📜cookieUtils.ts
+ ┣ 📜App.css
+ ┣ 📜App.tsx
+ ┣ 📜declaration.d.ts
+ ┣ 📜global.d.ts
  ┣ 📜index.css
- ┗ 📜main.jsx
+ ┣ 📜main.tsx
+ ┣ 📜titlepage.tsx
+ ┗ 📜vite-env.d.ts
 ```
 
 ## 🌚[BE]
