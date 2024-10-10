@@ -382,7 +382,9 @@ const TransferVoiceCommand: React.FC = () => {
       }
     } else if (step === 5) {
       if (
+        lowerCaseTranscript.includes("알았어") ||
         lowerCaseTranscript.includes("알겠어") ||
+        lowerCaseTranscript.includes("네") ||
         lowerCaseTranscript.includes("응") ||
         lowerCaseTranscript.includes("다음")
       ) {
@@ -468,12 +470,14 @@ const TransferVoiceCommand: React.FC = () => {
         resetTranscript();
       }
     } else if (step === 9) {
+      setNickName(transcript);
       if (lowerCaseTranscript.includes("다 지워")) {
         setNickName("");
         resetTranscript();
-      } else {
-        setNickName(transcript);
-      }
+        setNickName("");
+      } 
+      // else {
+      // }
       if (lowerCaseTranscript.includes("다음")) {
         // 즐겨찾기에 추가하는 로직
         addFavorite(formalName, sendAccountNum, sendBankType, nickName)
@@ -495,6 +499,7 @@ const TransferVoiceCommand: React.FC = () => {
       }
     } else if (step === 10) {
       if (lowerCaseTranscript.includes("응")) {
+        setStep(0)
         setNickName("");
         resetTranscript();
         navigate("/main");
