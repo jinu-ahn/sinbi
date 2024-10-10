@@ -41,7 +41,7 @@ const SpecificAccount: React.FC<{ accountId: string }> = ({ accountId }) => {
       try {
         const response = await specificAccount(accountId);
         if (response && response.data) {
-          setTransactions(response.data);
+          setTransactions(response.data.transactionHistory);
         }
         setLoading(false);
       } catch (err) {
@@ -121,9 +121,8 @@ const SpecificAccount: React.FC<{ accountId: string }> = ({ accountId }) => {
                       {/* 오른쪽 : 내역 (돈) */}
                       <div className="text-right">
                         <p
-                          className={`text-lg font-bold ${
-                            isDeposit ? "text-green-500" : "text-red-500"
-                          }`}
+                          className={`text-lg font-bold ${isDeposit ? "text-green-500" : "text-red-500"
+                            }`}
                         >
                           {amountSign}
                           {transaction.transferAmount} 원

@@ -77,12 +77,12 @@ export const signup = async (signUpDto: SignUpDto, image?: File) => {
   }
   try {
     console.log(signUpDto);
-    console.log('api formdata: ',formData);
+    console.log('api formdata: ', formData);
 
     const response = await api.post("/user/signup", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    console.log('회원가입시:',response)
+    console.log('회원가입시:', response)
     return response;
   } catch (error) {
     console.error("회원가입 불가: ", error);
@@ -267,7 +267,7 @@ export const specificAccount = async (accountId: string) => {
       //   accountId,
       // },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("해당 계좌 없음", error);
     throw error;
