@@ -472,7 +472,6 @@ const TransferVoiceCommand: React.FC = () => {
     } else if (step === 9) {
       setNickName(transcript);
       if (lowerCaseTranscript.includes("다 지워")) {
-        setNickName("");
         resetTranscript();
         setNickName("");
       } 
