@@ -185,7 +185,13 @@ const VoiceCommand: React.FC = () => {
         // resetTranscript();
         break;
       case SignUpStep.StartFaceRecognition:
-        if (lowerCaseTranscript.includes("시작")) {
+        if (
+          lowerCaseTranscript.includes("시작") ||
+          lowerCaseTranscript.includes("다음") ||
+          lowerCaseTranscript.includes("네") ||
+          lowerCaseTranscript.includes("예") || 
+          lowerCaseTranscript.includes("응")
+        ) {
           nextStep();
         } else if (lowerCaseTranscript.includes("아니")) {
           handleSignUp();

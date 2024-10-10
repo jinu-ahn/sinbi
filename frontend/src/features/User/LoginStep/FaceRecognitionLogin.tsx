@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { login } from '../../services/api';
-import GreenText from '../../components/GreenText';
-import YellowButton from '../../components/YellowButton';
+import { login } from '../../../services/api';
+import GreenText from '../../../components/GreenText';
+import YellowButton from '../../../components/YellowButton';
 
 interface FaceRecognitionLoginProps {
   phone: string;

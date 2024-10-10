@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../../services/api";
 import { LoginDto, TokenDto } from "./User.types";
 import useUserStore from "./useUserStore";
-import GreenText from "../../components/GreenText";
-import YellowButton from "../../components/YellowButton";
-import NumberPad from "./NumberPad";
 import { setCookie } from "../../utils/cookieUtils";
-import FaceRecognitionLogin from "./FaceRecognitionLogin";
+import FaceRecognitionLogin from "./LoginStep/FaceRecognitionLogin";
+import LoginPhoneStep from "./LoginStep/LoginPhoneStep";
+import LoginPWStep from "./LoginStep/LoginPWStep";
 
 // What: 로그인 단계를 정의하는 enum
 // Why: 코드의 가독성을 높이고 타입 안정성을 제공하기 위해
@@ -22,7 +21,6 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loginStep, setLoginStep] = useState<LoginStep>(LoginStep.Phone);
-
 
   // What: 전화번호 제출 처리
   // Why: 사용자가 입력한 전화번호의 유효성을 검사하고 다음 단계로 진행
@@ -76,20 +74,11 @@ const Login: React.FC = () => {
     switch (loginStep) {
       case LoginStep.Phone:
         return (
-          <>
-            <GreenText text="전화번호를" boldChars={["전화번호"]} />
-            <GreenText text="알려주세요" boldChars={[""]} />
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="input-field"
-              placeholder="전화번호"
-            />
-            <YellowButton height={50} width={200} onClick={handlePhoneSubmit}>
-              다음
-            </YellowButton>
-          </>
+          <LoginPhoneStep
+            phone={phone}
+            setPhone={setPhone}
+            onSubmit={handlePhoneSubmit}
+          />
         );
 
       case LoginStep.Face:
@@ -103,14 +92,11 @@ const Login: React.FC = () => {
 
       case LoginStep.Password:
         return (
-          <>
-            <GreenText text="비밀번호를" boldChars={["비밀번호"]} />
-            <GreenText text="입력해주세요" boldChars={[""]} />
-            <NumberPad value={password} onChange={setPassword} maxLength={4} />
-            <YellowButton height={50} width={200} onClick={handlePasswordLogin}>
-              로그인
-            </YellowButton>
-          </>
+          <LoginPWStep
+            password={password}
+            setPassword={setPassword}
+            onSubmit={handlePasswordLogin}
+          />
         );
 
       default:
