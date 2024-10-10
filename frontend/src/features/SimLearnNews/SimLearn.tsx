@@ -115,7 +115,7 @@ const SimLearn: React.FC = () => {
     })
 
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       if (audio && !audio.paused) {
         audio.pause();
         audio.currentTime = 0;

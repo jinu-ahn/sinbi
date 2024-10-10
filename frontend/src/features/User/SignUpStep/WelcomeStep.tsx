@@ -23,6 +23,7 @@ const WelcomeStep: React.FC = () => {
       // setIsAudioPlaying(false);
       // 오디오 재생이 끝나고 0.5초 후에 다음 단계로 자동 이동
       setTimeout(() => {
+        setIsAudioPlaying(false)
         nextStep();
       }, 500);
     };
@@ -34,7 +35,7 @@ const WelcomeStep: React.FC = () => {
       //   audio.pause();
       //   audio.currentTime = 0;
       // }
-      setIsAudioPlaying(true);
+      setIsAudioPlaying(false);
       audio.removeEventListener("ended", audioEndHandler);
       audio.pause();
       audio.currentTime = 0;

@@ -98,7 +98,7 @@ const Learn: React.FC = () => {
 
     // Cleanup the audio when the component unmounts or when the view changes
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       if (audio) {
         audio.pause();
         audio.currentTime = 0;

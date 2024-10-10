@@ -90,7 +90,7 @@ const SimAddNickName: React.FC = () => {
 
     // unmount될때 다 초기화
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       whatNicknameAudio.pause();
       whatNicknameAudio.currentTime = 0;
       sayMyNameAudio.pause();

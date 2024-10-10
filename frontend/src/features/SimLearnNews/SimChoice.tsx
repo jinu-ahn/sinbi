@@ -78,7 +78,7 @@ const SimChoice: React.FC = () => {
 
     // unmount되면 중지시켜
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       if (audio && !audio.paused) {
         audio.pause();
         audio.currentTime = 0;

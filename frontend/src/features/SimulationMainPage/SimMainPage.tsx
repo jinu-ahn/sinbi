@@ -79,7 +79,7 @@ const SimMainPage: React.FC = () => {
 
     // step 이 바뀌거나 unmount되면 초기화
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       sayConnectAccountAudio.pause();
       sayConnectAccountAudio.currentTime = 0;
       sayMyAccountsAudio.pause();

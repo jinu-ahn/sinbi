@@ -80,7 +80,7 @@ const SimAccountCheck: React.FC = () => {
 
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       isThisAccountRightAudio.pause();
       isThisAccountRightAudio.currentTime = 0;
 
@@ -112,7 +112,7 @@ const SimAccountCheck: React.FC = () => {
 
       // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
       return () => {
-        setIsAudioPlaying(true)
+        setIsAudioPlaying(false)
         // errorAudio.removeEventListener("ended", handleErrorAudioEnded);
 
         if (!errorAudio.paused) {

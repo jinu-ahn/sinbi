@@ -56,7 +56,7 @@ const Choice: React.FC = () => {
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       if (!sayChooseFunctionAudio.paused) {
         sayChooseFunctionAudio.pause();
         sayChooseFunctionAudio.currentTime = 0;

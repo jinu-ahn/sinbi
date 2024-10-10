@@ -29,7 +29,6 @@ const UserNameStep: React.FC = () => {
     });
     deleteAllAudio.addEventListener("ended", () => {
       sayNextAudio.play();
-      // setIsAudioPlaying(false)
     });
     sayNextAudio.addEventListener("ended", () => {
       setIsAudioPlaying(false);
@@ -37,7 +36,7 @@ const UserNameStep: React.FC = () => {
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
-      // setIsAudioPlaying(false)
+      setIsAudioPlaying(false)
 
       sayNameAudio.pause();
       sayNameAudio.currentTime = 0;
@@ -48,8 +47,6 @@ const UserNameStep: React.FC = () => {
       sayNextAudio.pause();
       sayNextAudio.currentTime = 0;
 
-      setIsAudioPlaying(true);
-      console.log("namestep에서 true로 해놓고 unmount한다!")
     };
   }, []);
 

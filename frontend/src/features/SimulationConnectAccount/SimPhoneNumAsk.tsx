@@ -44,7 +44,7 @@ const SimPhoneNumAsk: React.FC = () => {
 
     // unmount될때 다 초기화
     return () => {
-      setIsAudioPlaying(true);
+      setIsAudioPlaying(false);
       sayPhoneNumAudio.pause();
       sayPhoneNumAudio.currentTime = 0;
       sayNextAudio.pause();

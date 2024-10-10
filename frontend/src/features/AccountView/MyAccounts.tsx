@@ -108,7 +108,7 @@ const MyAccounts: React.FC = () => {
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
-        setIsAudioPlaying(true)
+        setIsAudioPlaying(false)
       }
     };
   }, []);

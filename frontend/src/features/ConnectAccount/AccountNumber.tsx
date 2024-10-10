@@ -38,7 +38,7 @@ const AccountNumber: React.FC = () => {
 
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       sayAccountNumberAudio.pause();
       sayAccountNumberAudio.currentTime = 0;
 

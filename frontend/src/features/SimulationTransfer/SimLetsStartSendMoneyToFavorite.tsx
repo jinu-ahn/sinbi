@@ -27,6 +27,7 @@ const SimLetsStartSendMoneyToFavorite: React.FC = () => {
 
     // 오디오가 끝나고 1초 뒤 자동으로 다음 단계로 이동
     audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
       timerId = setTimeout(() => {
         setStep(13);
       }, 1000);
@@ -34,6 +35,7 @@ const SimLetsStartSendMoneyToFavorite: React.FC = () => {
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(false)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

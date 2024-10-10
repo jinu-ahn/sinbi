@@ -49,7 +49,7 @@ const SimAccountNumber: React.FC = () => {
 
     // unmount될때 다 초기화
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       sayAccountNumberAudio.pause();
       sayAccountNumberAudio.currentTime = 0;
       deleteAllAudio.pause();

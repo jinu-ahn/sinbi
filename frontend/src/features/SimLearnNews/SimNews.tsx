@@ -51,7 +51,7 @@ const SimNews: React.FC = () => {
 
     // unmount될때 다 초기화
     return () => {
-      setIsAudioPlaying(true)
+      setIsAudioPlaying(false)
       listenSummationNewsAudio.pause();
       listenSummationNewsAudio.currentTime = 0;
       beforeOrNextAudio.pause();

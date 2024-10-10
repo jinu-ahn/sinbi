@@ -23,9 +23,7 @@ const UserPhoneStep: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
-    console.log("Setting IsAudioPlaying to true");
     setIsAudioPlaying(true);
-    console.log("Finished set IsAudioPlaying to true");
     // 플레이시켜
     sayPhoneAudio.play();
 
@@ -45,9 +43,7 @@ const UserPhoneStep: React.FC = () => {
       delOneAudio.pause();
       delOneAudio.currentTime = 0;
 
-      console.log("Setting IsAudioPlaying to true when Unmount");
-      setIsAudioPlaying(true);
-      console.log("Finished setting IsAudioPlayed to true when Unmount");
+      setIsAudioPlaying(false);
     };
   }, []);
 
