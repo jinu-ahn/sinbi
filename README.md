@@ -78,7 +78,7 @@
 
 ​ ✔️ 자주 거래 하는 상대방 통장 등록하기
 
-<img src="README_asset/통장등록.gif" width="230" height="400">
+<img src="README_asset/이체.gif" width="230" height="400">
 
 ### 4. 모든 통장
 
