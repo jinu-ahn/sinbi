@@ -217,12 +217,12 @@ const VoiceCommand: React.FC = () => {
           lowerCaseTranscript.includes("완료") ||
           lowerCaseTranscript.includes("확인") ||
           lowerCaseTranscript.includes("다음") ||
-          lowerCaseTranscript.includes("네") || 
-          lowerCaseTranscript.includes("응") || 
+          lowerCaseTranscript.includes("네") ||
+          lowerCaseTranscript.includes("응") ||
           lowerCaseTranscript.includes("넘어가")
         ) {
           handleSignUp();
-          nextStep();
+          // nextStep();
         } else if (lowerCaseTranscript.includes("취소")) {
           prevStep();
         }
@@ -471,8 +471,18 @@ const VoiceCommand: React.FC = () => {
         userPhone: phone,
         userPassword: password,
       };
-      await signup(signUpData, faceImage);
-      setStep(SignUpStep.SignUpComplete);
+      const response = await signup(signUpData, faceImage);
+      // setStep(SignUpStep.SignUpComplete);
+      if (response && response.status === 200) {
+        // 성공 상태 코드를 확인
+        setStep(SignUpStep.SignUpComplete);
+        // 회원가입 성공 후 '/sim'으로 네비게이트
+        setTimeout(() => {
+          navigate("/sim");
+        }, 2000); // 2초 후에 이동
+      } else {
+        setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+      }
     } catch (error) {
       if (error instanceof Error) {
         setError(`회원가입에 실패했습니다: ${error.message}`);
