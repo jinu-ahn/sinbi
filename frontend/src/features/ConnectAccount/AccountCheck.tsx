@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import isThisAccountRight from "../../assets/audio/15_이_계좌가_맞나요.mp3";
 import anErrorOccurred from "../../assets/audio/14_해당하는_계좌가_없어요_다시_한번_확인해주세요.mp3";
@@ -39,6 +40,8 @@ const AccountCheck: React.FC = () => {
   ];
   
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   const selectedBank = banks.find((bank) => bank.id === bankType) || {
     id: "BASIC",
     name: "기본은행",
@@ -51,13 +54,19 @@ const AccountCheck: React.FC = () => {
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
     if (!error) {
+      setIsAudioPlaying(true)
       // 플레이시켜
       isThisAccountRightaudio.play();
+
+      isThisAccountRightaudio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
     }
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
       if (!isThisAccountRightaudio.paused) {
+        setIsAudioPlaying(true)
         isThisAccountRightaudio.pause();
         isThisAccountRightaudio.currentTime = 0;
       }
@@ -67,20 +76,24 @@ const AccountCheck: React.FC = () => {
   // 에러났으면 플레이할 오디오
   useEffect(() => {
     if (error) {
+      setIsAudioPlaying(true)
+      
       const errorAudio = new Audio(anErrorOccurred);
       const backAudio = new Audio(goBack);
 
       errorAudio.play();
 
-      errorAudio.addEventListener("ended", handleErrorAudioEnded);
-
-      function handleErrorAudioEnded() {
+      errorAudio.addEventListener("ended", () => {
         backAudio.play();
-      }
+      });
+
+      backAudio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
 
       // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
       return () => {
-        errorAudio.removeEventListener("ended", handleErrorAudioEnded);
+        setIsAudioPlaying(true)
 
         if (!errorAudio.paused) {
           errorAudio.pause();

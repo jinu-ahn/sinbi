@@ -1,9 +1,10 @@
 // src/components/User/SignUpStep/ConfirmPasswordStep.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
+import { useAudioSTTControlStore } from "../../../store/AudioSTTControlStore";
 import GreenText from "../../../components/GreenText";
 import NumberPad from "../NumberPad";
-import AgainTTS from "../../../assets/audio/04_다시_한_번_눌러주세요.mp3"
-import useUserStore from '../useUserStore';
+import AgainTTS from "../../../assets/audio/04_다시_한_번_눌러주세요.mp3";
+import useUserStore from "../useUserStore";
 // interface ConfirmPasswordStepProps {
 //   confirmPassword: string;
 //   setConfirmPassword: (password: string) => void;
@@ -11,8 +12,8 @@ import useUserStore from '../useUserStore';
 // }
 
 const ConfirmPasswordStep: React.FC = () => {
-
-  const {confirmPassword,setConfirmPassword} = useUserStore()
+  const { confirmPassword, setConfirmPassword } = useUserStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
   // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setConfirmPassword(e.target.value);
   // };
@@ -22,11 +23,16 @@ const ConfirmPasswordStep: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true);
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

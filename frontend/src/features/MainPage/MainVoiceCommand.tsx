@@ -5,27 +5,52 @@ import SpeechRecognition, {
 import { useNavigate } from "react-router-dom";
 import { sendToNLP } from "../../services/nlpApi";
 import { useLearnNewsSimDoneStore } from "../../store/LearnNewsSimDoneStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
-import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
+// import chooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
 
 const MainVoiceCommand: React.FC = () => {
   const navigate = useNavigate();
   const { transcript, resetTranscript } = useSpeechRecognition();
-  const { done } = useLearnNewsSimDoneStore()
+  const { done } = useLearnNewsSimDoneStore();
+  const { isAudioPlaying } = useAudioSTTControlStore();
 
-  // 한국어를 듣게 지정 + 바뀌는 위치 (페이지)따라 들었다 멈췄다 함
+  // 사용자가 뭐라하는지 들어 + 오디오플레이 여부에 따라 들었다 안 들었다 함
   useEffect(() => {
-    SpeechRecognition.startListening({ continuous: true, language: "ko-KR" });
-    // return () => {
-    //   SpeechRecognition.stopListening();
-    // };
-  }, []);
+    if (isAudioPlaying) {
+      console.log("I will stop listening now.");
+      SpeechRecognition.stopListening();
+      console.log("I executed the stoplistening.");
+    }
+  }, [isAudioPlaying]);
 
-  // 오디오말하기
-  const playAudio = (audioFile: string) => {
-    const audio = new Audio(audioFile);
-    audio.play();
-  };
+  useEffect(() => {
+    if (!isAudioPlaying) {
+      console.log("I will start listening now.");
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: "ko-KR",
+      });
+      console.log("I executed startlistening.");
+    } else {
+      SpeechRecognition.startListening({
+        language: "ko-KR",
+      });
+      setTimeout(() => {
+        SpeechRecognition.stopListening();
+      }, 100);
+
+      return () => {
+        SpeechRecognition.stopListening();
+      };
+    }
+  }, [isAudioPlaying]);
+
+  // // 오디오말하기
+  // const playAudio = (audioFile: string) => {
+  //   const audio = new Audio(audioFile);
+  //   audio.play();
+  // };
 
   useEffect(() => {
     handleVoiceCommands(transcript);
@@ -68,26 +93,24 @@ const MainVoiceCommand: React.FC = () => {
       lowerCaseTranscript.includes("배우기")
     ) {
       if (!done) {
-        navigate("/sim-learn-news")
+        navigate("/sim-learn-news");
         resetTranscript();
       } else {
         navigate("/learn-news");
         resetTranscript();
       }
-    } else if (
-      lowerCaseTranscript.includes("연습")
-    ) {
-      navigate("/sim-connect-account")
+    } else if (lowerCaseTranscript.includes("연습")) {
+      navigate("/sim-connect-account");
       resetTranscript();
     }
-    if (
-      lowerCaseTranscript.includes("신비") ||
-      lowerCaseTranscript.includes("도와줘") ||
-      lowerCaseTranscript.includes("도움")
-    ) {
-      playAudio(chooseFunction);
-      resetTranscript();
-    } 
+    // if (
+    //   lowerCaseTranscript.includes("신비") ||
+    //   lowerCaseTranscript.includes("도와줘") ||
+    //   lowerCaseTranscript.includes("도움")
+    // ) {
+    //   playAudio(chooseFunction);
+    //   resetTranscript();
+    // } 
     else {
       sendToNLP(transcript)
         .then((response) => {
@@ -95,7 +118,10 @@ const MainVoiceCommand: React.FC = () => {
             console.log("nlp로 보내고 돌아온 데이터입니다: ", response.text);
             handleVoiceCommands(response.text);
           } else {
-            console.error("Received an unexpected response from NLP API: ", response);
+            console.error(
+              "Received an unexpected response from NLP API: ",
+              response,
+            );
           }
           resetTranscript();
         })

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import YellowButton from "../../components/YellowButton";
 import { useLearnNewsStore } from "./useLearnNewsStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 // import { useNavigate } from "react-router-dom";
 import Avatar from "../../assets/avatar.png";
 import sayChooseFunction from "../../assets/audio/58_원하는_기능을_말하거나_눌러주세요.mp3";
@@ -25,6 +26,7 @@ import sayChooseFunction from "../../assets/audio/58_원하는_기능을_말하�
 
 const Choice: React.FC = () => {
   const { setCurrentView } = useLearnNewsStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 화면 크기에 따른 버튼 크기를 결정하는 함수
   const getButtonSize = () => {
@@ -44,11 +46,17 @@ const Choice: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     sayChooseFunctionAudio.play();
 
+    sayChooseFunctionAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true)
       if (!sayChooseFunctionAudio.paused) {
         sayChooseFunctionAudio.pause();
         sayChooseFunctionAudio.currentTime = 0;

@@ -4,6 +4,7 @@ import YellowButton from "../../components/YellowButton";
 import avatar from "../../assets/avatar.png";
 import SimMainVoiceCommand from "./SimMainVoiceCommand";
 import { useSimMainStore } from "./SimMainStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
 import sayConnectAccount from "../../assets/audio/10_'통장_등록'이라고_말하거나_눌러주세요.mp3";
@@ -20,6 +21,7 @@ const SimMainPage: React.FC = () => {
   const [showModal, setShowModal] = useState(true);
 
   const { mainStep } = useSimMainStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const buttons: ButtonConfig[] = [
     { text: ["돈", "보내기"], path: "/sim-transfer" },
@@ -55,16 +57,29 @@ const SimMainPage: React.FC = () => {
   useEffect(() => {
     if (!showModal) {
       if (mainStep === 1) {
+        setIsAudioPlaying(true)
         sayConnectAccountAudio.play();
+        sayConnectAccountAudio.addEventListener("ended", () => {
+          setIsAudioPlaying(false)
+        })
       } else if (mainStep === 2) {
+        setIsAudioPlaying(true)
         sayMyAccountsAudio.play();
+        sayMyAccountsAudio.addEventListener("ended", () => {
+          setIsAudioPlaying(false)
+        })
       } else if (mainStep === 3) {
+        setIsAudioPlaying(true)
         saySendMoneyAudio.play();
+        saySendMoneyAudio.addEventListener("ended", () => {
+          setIsAudioPlaying(false)
+        })
       }
     }
 
     // step 이 바뀌거나 unmount되면 초기화
     return () => {
+      setIsAudioPlaying(true)
       sayConnectAccountAudio.pause();
       sayConnectAccountAudio.currentTime = 0;
       sayMyAccountsAudio.pause();

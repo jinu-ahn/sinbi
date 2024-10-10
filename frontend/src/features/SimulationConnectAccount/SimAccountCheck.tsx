@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useSimConnectAccountStore } from "./SimConnectAccountStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
 import SpeechBubble from "../../components/SpeechBubble";
 
@@ -49,6 +50,8 @@ const SimAccountCheck: React.FC = () => {
     logo: defaultBankLogo,
   };
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   const text = error
     ? '계좌가 없어요.\n뒤로 가려면\n"이전"이라고\n말해주세요.'
     : '계좌가 맞나요?\n"맞아" 혹은\n"아니"로\n대답해주세요.';
@@ -61,6 +64,7 @@ const SimAccountCheck: React.FC = () => {
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
     if (!error) {
+      setIsAudioPlaying(true)
       // sendMoneyAskAudio 먼저 플레이해
       isThisAccountRightAudio.play();
 
@@ -68,10 +72,15 @@ const SimAccountCheck: React.FC = () => {
       isThisAccountRightAudio.addEventListener("ended", () => {
         sayYesAudio.play();
       });
+
+      sayYesAudio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
     }
 
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       isThisAccountRightAudio.pause();
       isThisAccountRightAudio.currentTime = 0;
 
@@ -83,20 +92,28 @@ const SimAccountCheck: React.FC = () => {
   // 에러났으면 플레이할 오디오
   useEffect(() => {
     if (error) {
+      setIsAudioPlaying(true)
       const errorAudio = new Audio(anErrorOccurred);
       const backAudio = new Audio(goBack);
 
       errorAudio.play();
 
-      errorAudio.addEventListener("ended", handleErrorAudioEnded);
-
-      function handleErrorAudioEnded() {
+      errorAudio.addEventListener("ended", () => {
         backAudio.play();
-      }
+      });
+
+      backAudio.addEventListener("ended", () => {
+        setIsAudioPlaying(false)
+      })
+
+      // function handleErrorAudioEnded() {
+      //   backAudio.play();
+      // }
 
       // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
       return () => {
-        errorAudio.removeEventListener("ended", handleErrorAudioEnded);
+        setIsAudioPlaying(true)
+        // errorAudio.removeEventListener("ended", handleErrorAudioEnded);
 
         if (!errorAudio.paused) {
           errorAudio.pause();

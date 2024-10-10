@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useConnectAccountStore } from "./ConnectAccountStore";
 import { OTPCredential } from "./ConnectAccount.types";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import sentVerificationCode from "../../assets/audio/16_인증번호를_보냈어요.mp3";
 import sayVerificationCode from "../../assets/audio/57_인증번호가_안_나오면_문자를_보고_알려주세요.mp3";
@@ -13,12 +14,15 @@ const VerificationCode: React.FC = () => {
     setVerificationCode(e.target.value);
   };
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   // 오디오말하기
   const sentVerificationCodeAudio = new Audio(sentVerificationCode);
   const sayVerificationCodeAudio = new Audio(sayVerificationCode);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // sentVerificationCodeAudio 먼저 플레이해
     sentVerificationCodeAudio.play();
 
@@ -27,8 +31,13 @@ const VerificationCode: React.FC = () => {
       sayVerificationCodeAudio.play();
     });
 
+    sayVerificationCodeAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       sentVerificationCodeAudio.pause();
       sentVerificationCodeAudio.currentTime = 0;
 

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import YellowBox from "../../components/YellowBox";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
 import sendMeMoney from "../../assets/audio/73_저한테_돈을_보내봐요_오천원이라고_말해볼까요.mp3";
@@ -16,14 +17,15 @@ const SimRecvAmount: React.FC = () => {
     favAccountId,
     sendAccountNum,
   } = useSimTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSendMoney(e.target.value);
     setError(null);
   };
 
-  const text = '"5000원"\n이라고\n말해주세요.'
-  const boldChars = ["5000원", "말"]
+  const text = '"5000원"\n이라고\n말해주세요.';
+  const boldChars = ["5000원", "말"];
 
   useEffect(() => {
     console.log("favaccountid: ", favAccountId);
@@ -36,6 +38,7 @@ const SimRecvAmount: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // sendMeMoneyAudio 먼저 플레이해
     sendMeMoneyAudio.play();
 
@@ -44,8 +47,13 @@ const SimRecvAmount: React.FC = () => {
       sayNextudio.play();
     });
 
+    sayNextudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       sendMeMoneyAudio.pause();
       sendMeMoneyAudio.currentTime = 0;
 

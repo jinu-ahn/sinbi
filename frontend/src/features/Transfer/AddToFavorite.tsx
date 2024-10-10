@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useTransferStore } from "./TransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
@@ -39,6 +40,8 @@ const AddToFavorite: React.FC = () => {
 
   const { formalName, sendAccountNum, sendBankType } = useTransferStore();
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
     id: "BASIC",
     name: "기본은행",
@@ -54,6 +57,7 @@ const AddToFavorite: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // addToFavoriteAudio 먼저 플레이해
     addToFavoriteAudio.play();
 
@@ -62,8 +66,13 @@ const AddToFavorite: React.FC = () => {
       yesOrNoAudio.play();
     });
 
+    yesOrNoAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true);
       addToFavoriteAudio.pause();
       addToFavoriteAudio.currentTime = 0;
 

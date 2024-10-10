@@ -3,6 +3,7 @@ import { myAccounts } from "../../services/api";
 import YellowBox from "../../components/YellowBox";
 import SpecificAccount from "./SpecificAccount";
 import { useAccountViewStore } from "./AccountViewStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
 import thisIsAccountList from "../../assets/audio/38_현재_가지고_계신_통장_목록이에요.mp3";
 
@@ -55,6 +56,8 @@ const MyAccounts: React.FC = () => {
     setSelectedAccount,
   } = useAccountViewStore();
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   // 내 계좌 불러와서 accounts list에 저장
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -92,14 +95,20 @@ const MyAccounts: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
+
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
+        setIsAudioPlaying(true)
       }
     };
   }, []);

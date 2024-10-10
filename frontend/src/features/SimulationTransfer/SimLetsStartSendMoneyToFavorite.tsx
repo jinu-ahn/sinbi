@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import GreenText from "../../components/GreenText";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 
-import letsStartSendMoney from "../../assets/audio/76_자주_보내는_계좌로_돈_보내기를_같이_연습해요_걱정_마세요_가짜_돈이에요.mp3"
+import letsStartSendMoney from "../../assets/audio/76_자주_보내는_계좌로_돈_보내기를_같이_연습해요_걱정_마세요_가짜_돈이에요.mp3";
 
 const SimLetsStartSendMoneyToFavorite: React.FC = () => {
   const firstText = "자주 보낼 계좌로\n돈 보내기를\n같이 연습해요.";
@@ -11,12 +12,14 @@ const SimLetsStartSendMoneyToFavorite: React.FC = () => {
   const secondBoldChars = ["가짜"];
 
   const { setStep } = useSimTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 오디오말하기
   const audio = new Audio(letsStartSendMoney);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // 플레이시켜
     audio.play();
 

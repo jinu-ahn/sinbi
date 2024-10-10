@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 // import { favoriteAccounts } from "../../services/api";
 import YellowBox from "../../components/YellowBox";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
 import sayNewAccount from "../../assets/audio/69_여기에서_내가_돈을_자주_보낼_사람들을_보여줄_거예요_아직_아무것도_없네요.mp3";
@@ -61,8 +62,10 @@ const SimNoFavoriteAccounts: React.FC = () => {
     setFavAccountId,
   } = useSimTransferStore();
 
-  const text = '새로운 계좌를\n말하거나\n눌러주세요.'
-  const boldChars = ["말", "눌러", "새로운 계좌"]
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
+  const text = "새로운 계좌를\n말하거나\n눌러주세요.";
+  const boldChars = ["말", "눌러", "새로운 계좌"];
 
   // 가짜 즐겨찾는 계좌
   // setFavAccounts()
@@ -73,11 +76,16 @@ const SimNoFavoriteAccounts: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
@@ -123,7 +131,7 @@ const SimNoFavoriteAccounts: React.FC = () => {
       )}
 
       {/* 즐겨찾기 통장 리스트 */}
-      <div className="mt-4 flex w-[350px] h-[330px] justify-center">
+      <div className="mt-4 flex h-[330px] w-[350px] justify-center">
         <YellowBox>
           <ul className="h-[250px] overflow-y-auto">
             {/* div 크기 고정 안에서 scroll */}
@@ -152,7 +160,7 @@ const SimNoFavoriteAccounts: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className="flex flex-col justify-center items-center h-full">
+              <div className="flex h-full flex-col items-center justify-center">
                 <li className="text-[28px]">즐겨찾는</li>
                 <li className="text-[28px]">계좌 목록이</li>
                 <li className="text-[28px]">없습니다.</li>

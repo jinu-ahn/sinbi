@@ -2,34 +2,36 @@ import React, { useEffect } from "react";
 import GreenText from "../../../components/GreenText";
 import VerifyAudio from "../../../assets/audio/57_인증번호가_안_나오면_문자를_보고_알려주세요.mp3";
 import useUserStore from "../useUserStore";
-import { OTPCredential } from "../User.types"
+import { OTPCredential } from "../User.types";
+import { useAudioSTTControlStore } from "../../../store/AudioSTTControlStore";
 
 const SmsVerificationStep: React.FC = () => {
-  const { smsCode, setSmsCode, setIsAudioPlaying } = useUserStore();
+  const { smsCode, setSmsCode } = useUserStore();
   // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setSmsCode(e.target.value);
   // };
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 오디오말하기
   const audio = new Audio(VerifyAudio);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
-    setIsAudioPlaying(true)
+    setIsAudioPlaying(true);
     // 플레이시켜
     audio.play();
 
     audio.addEventListener("ended", () => {
-      setIsAudioPlaying(false)
-    })
+      setIsAudioPlaying(false);
+    });
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true);
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;
       }
-      setIsAudioPlaying(true)
     };
   }, []);
 
@@ -41,7 +43,7 @@ const SmsVerificationStep: React.FC = () => {
 
   // 타입 가드 함수 정의: Credential이 OTPCredential 타입인지 확인하는 함수
   function isOTPCredential(
-    credential: Credential | null
+    credential: Credential | null,
   ): credential is OTPCredential {
     return credential !== null && "code" in credential;
   }
@@ -82,7 +84,7 @@ const SmsVerificationStep: React.FC = () => {
         onChange={(e) => setSmsCode(e.target.value)}
         maxLength={4} // or your OTP code length
         autoComplete="one-time-code" // Required for OTP autofill
-        className="border p-2 text-center rounded-md text-lg" // Add your preferred styling here
+        className="rounded-md border p-2 text-center text-lg" // Add your preferred styling here
         placeholder="인증번호를 입력하세요"
       />
     </>
@@ -127,8 +129,6 @@ export default SmsVerificationStep;
 //     };
 //   }, []);
 
-
-  
 //   interface OTPCredentialRequestOptions extends CredentialRequestOptions {
 //     otp?: {
 //       transport: string[];
@@ -139,7 +139,6 @@ export default SmsVerificationStep;
 // function isOTPCredential(credential: Credential | null): credential is OTPCredential {
 //   return credential !== null && 'code' in credential;
 // }
-
 
 // // SMS 인증 번호 자동 인풋
 // useEffect(() => {

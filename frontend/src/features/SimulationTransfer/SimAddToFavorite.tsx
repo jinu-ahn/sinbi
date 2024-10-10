@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import defaultBankLogo from "../../assets/defaultBankLogo.png";
@@ -39,6 +40,7 @@ const SimAddToFavorite: React.FC = () => {
 ];
 
   const { formalName, sendAccountNum, sendBankType } = useSimTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   const selectedBank = banks.find((bank) => bank.id === sendBankType) || {
     id: "BASIC",
@@ -49,20 +51,24 @@ const SimAddToFavorite: React.FC = () => {
   const boldChars = ["또"];
   const text = `다음에도 또 보낼래요?`;
 
-  const bubbleText = '"응"이라고\n말해주세요.'
-  const bubbleBoldChars = ["응", "말"]
-
+  const bubbleText = '"응"이라고\n말해주세요.';
+  const bubbleBoldChars = ["응", "말"];
 
   // 오디오말하기
   const audio = new Audio(addMeToFavorite);
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true)
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

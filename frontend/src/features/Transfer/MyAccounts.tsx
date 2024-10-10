@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { myAccounts } from "../../services/api";
 import YellowBox from "../../components/YellowBox";
 import { useTransferStore } from "./TransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import pickMyBankAccount from "../../assets/audio/22_어느_통장에서_돈을_보낼까요_하나를_골라_눌러주세요.mp3";
 
 
@@ -46,6 +47,7 @@ const MyAccounts: React.FC = () => {
   // 내 계좌 목록 저장할것 가져오기
   const { step, setStep, error, setMyAccountId, setAccounts, accounts } =
     useTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
 
   // 내 계좌 불러와서 accounts list에 저장
   useEffect(() => {
@@ -72,11 +74,16 @@ const MyAccounts: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true);
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSimTransferStore } from "./SimTransferStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import BlackText from "../../components/BlackText";
 import YellowBox from "../../components/YellowBox";
 import sayYesOrNo from "../../assets/audio/08_좋으면_응_싫으면_아니_라고_말해주세요.mp3";
@@ -7,6 +8,7 @@ import sendMoneyAsk from "../../assets/audio/60_돈을_보낼까요.mp3";
 
 const SimTransferCheck: React.FC = () => {
   const { formalName, money } = useSimTransferStore();
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
   const boldChars = [`${formalName}`, `${money}`, "원"];
   const text = `${formalName} 님에게 ${money} 원 보낼까요?`;
 
@@ -16,6 +18,7 @@ const SimTransferCheck: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // sendMoneyAskAudio 먼저 플레이해
     sendMoneyAskAudio.play();
 
@@ -24,8 +27,13 @@ const SimTransferCheck: React.FC = () => {
       yesOrNoAudio.play();
     });
 
+    yesOrNoAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       sendMoneyAskAudio.pause();
       sendMoneyAskAudio.currentTime = 0;
 

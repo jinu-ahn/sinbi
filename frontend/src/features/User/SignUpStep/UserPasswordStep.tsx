@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import GreenText from "../../../components/GreenText";
 import NumberPad from "../NumberPad";
 import SpeechBubble from "../../../components/SpeechBubble";
+import { useAudioSTTControlStore } from "../../../store/AudioSTTControlStore";
 import SimpPW from "../../../assets/audio/51_비밀번호_네_자리를_입력해주세요.mp3";
 import useUserStore from "../useUserStore";
 // interface UserPasswordStepProps {
@@ -17,13 +18,20 @@ const UserPasswordStep: React.FC = () => {
   // 오디오말하기
   const audio = new Audio(SimpPW);
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true);
     // 플레이시켜
     audio.play();
+    audio.addEventListener("ended", () => {
+      setIsAudioPlaying(false);
+    });
 
     // 근데 component가 unmount 되면 플레이 중지! 시간 0초로 다시 되돌려
     return () => {
+      setIsAudioPlaying(true);
       if (!audio.paused) {
         audio.pause();
         audio.currentTime = 0;

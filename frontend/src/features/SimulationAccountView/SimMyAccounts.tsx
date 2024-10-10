@@ -3,6 +3,7 @@ import { myAccounts } from "../../services/api";
 import YellowBox from "../../components/YellowBox";
 import SpecificAccount from "./SimSpecificAccount";
 import { useSimAccountViewStore } from "./SimAccountViewStore";
+import { useAudioSTTControlStore } from "../../store/AudioSTTControlStore";
 import SpeechBubble from "../../components/SpeechBubble";
 
 import thisIsAccountList from "../../assets/audio/38_현재_가지고_계신_통장_목록이에요.mp3";
@@ -58,6 +59,8 @@ const SimMyAccounts: React.FC = () => {
     setSelectedAccount,
   } = useSimAccountViewStore();
 
+  const { setIsAudioPlaying } = useAudioSTTControlStore();
+
   const [speechBubbleText, setSpeechBubbleText] = useState<string>("");
   const [speechBubbleBoldChars, setSpeechBubbleBoldChars] = useState<string[]>(
     [],
@@ -72,7 +75,8 @@ const SimMyAccounts: React.FC = () => {
   const specificAccountBoldChars = ["거래 내역", "확인", "집"];
 
   // 집으로 돌아가요 말풍선 안 내용
-  const letsGoHomeText = '내 통장 확인 끝! 이제 "집" 또는 "시작 화면"이라고 말해주세요.';
+  const letsGoHomeText =
+    '내 통장 확인 끝! 이제 "집" 또는 "시작 화면"이라고 말해주세요.';
   const letsGoHomeBoldChars = ["집", "말", "시작 화면", "끝"];
 
   // 내 계좌 불러와서 accounts list에 저장
@@ -113,6 +117,7 @@ const SimMyAccounts: React.FC = () => {
 
   // 오디오 플레이 (component가 mount될때만)
   useEffect(() => {
+    setIsAudioPlaying(true)
     // thisIsAccountListAudio 먼저 플레이해
     thisIsAccountListAudio.play();
 
@@ -121,8 +126,13 @@ const SimMyAccounts: React.FC = () => {
       clickOneAudio.play();
     });
 
+    clickOneAudio.addEventListener("ended", () => {
+      setIsAudioPlaying(false)
+    })
+
     // component unmount되면 중지시키고 둘다 0으로 되돌려
     return () => {
+      setIsAudioPlaying(true)
       thisIsAccountListAudio.pause();
       thisIsAccountListAudio.currentTime = 0;
 
